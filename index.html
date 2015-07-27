@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BS Map Editor</title>
+    <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #editor-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 600px;
+      bottom: 0;
+    }
+
+    #editor {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 20px;
+      border: none;
+      outline: none;
+      font-family: 'Consolas', 'Courier', monospace;
+      font-size: 16px;
+      line-height: 1.5;
+      white-space: nowrap;
+      resize: none;
+      box-sizing: border-box;
+      background: none;
+    }
+
+    #preview {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 600px;
+      overflow: scroll;
+      padding: 20px;
+      box-sizing: border-box;
+      font-size: 0;
+    }
+
+    #preview > div {
+      text-align: center;
+    }
+
+    #preview > div > div {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    #preview > div > div > img {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      position: absolute;
+    }
+    </style>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+    <script>
+    // https://upload.wikimedia.org/wikipedia/commons/0/00/BSicon_xtKRZ.svg
+    $(function () {
+      var $preview = $('#preview')
+        , $editor = $('#editor')
+
+      function render () {
+        var content = $editor.val()
+        localStorage.setItem('content', content)
+
+        var rendered = content.split('\n').map(function (row) {
+          return '<div>' + row.replace(/~~.+$/, '').split('\\').map(function (cell) {
+            return '<div>' + cell.split('!~').map(function (layer) {
+              layer = layer.trim()
+              if (layer) {
+                var name = 'BSicon_' + (layer.replace(/ /, '_')) + '.svg'
+                  , hash = CryptoJS.MD5(name).toString(CryptoJS.enc.Hex)
+                  , file = hash.substring(0, 1) + '/' + hash.substring(0, 2) + '/' + encodeURIComponent(name) + '/40px-' + encodeURIComponent(name) + '.png'
+                return '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/' + file + '">'
+              }
+            }).join('') + '</div>'
+          }).join('') + '</div>'
+        }).join('')
+
+        $preview.html(rendered)
+      }
+
+      $editor.on('keyup', function () {
+        localStorage.setItem('content', $editor.val())
+        render()
+      })
+
+      $editor.val(localStorage.getItem('content'))
+      render()
+    })
+    </script>
+  </head>
+  <body>
+    <div id="preview"></div>
+    <div id="editor-container"><textarea id="editor"></textarea></div>
+  </body>
+</html>
