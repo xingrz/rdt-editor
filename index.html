@@ -57,7 +57,12 @@
       padding: 0;
     }
 
+    #preview > div > div.focus {
+      box-shadow: 0px 0px 5px #000000;
+    }
+
     #preview > div > div > img {
+      display: block;
       width: 20px;
       height: 20px;
       margin: 0;
@@ -95,9 +100,27 @@
         $preview.html(rendered)
       }
 
+      function syncFocus () {
+        var content = $editor.val()
+          , selection = $editor.prop('selectionStart')
+
+        var lines = content.substring(0, selection).split('\n')
+
+        var line = lines.length
+          , row = lines.pop().split('\\').length
+
+        $preview.find('.focus').removeClass('focus')
+        $preview.find('> div:nth-child(' + line + ') > div:nth-child(' + row + ')').addClass('focus')
+      }
+
       $editor.on('keyup', function () {
         localStorage.setItem('content', $editor.val())
         render()
+        syncFocus()
+      })
+
+      $editor.on('mouseup', function () {
+        syncFocus()
       })
 
       $editor.val(localStorage.getItem('content'))
