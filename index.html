@@ -55,10 +55,24 @@
       height: 20px;
       margin: 0;
       padding: 0;
+      cursor: pointer;
     }
 
-    #preview > div > div.focus {
-      box-shadow: 0px 0px 5px #000000;
+    #preview > div > div:empty,
+    #preview > div > div:not(:empty) > :last-child {
+      transition: box-shadow 200ms;
+    }
+
+    #preview > div > div:hover:empty,
+    #preview > div > div:hover:not(:empty) > :last-child {
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+
+    #preview > div > div.focus:empty,
+    #preview > div > div.focus:not(:empty) > :last-child {
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
+      z-index: 10;
     }
 
     #preview > div > div > img {
@@ -74,7 +88,6 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
     <script>
-    // https://upload.wikimedia.org/wikipedia/commons/0/00/BSicon_xtKRZ.svg
     $(function () {
       var $preview = $('#preview')
         , $editor = $('#editor')
@@ -83,9 +96,9 @@
         var content = $editor.val()
         localStorage.setItem('content', content)
 
-        var rendered = content.split('\n').map(function (row) {
-          return '<div>' + row.replace(/~~.+$/, '').split('\\').map(function (cell) {
-            return '<div>' + cell.split('!~').map(function (layer) {
+        var rendered = content.split('\n').map(function (row, i) {
+          return '<div>' + row.replace(/~~.+$/, '').split('\\').map(function (cell, j) {
+            return '<div data-row="' + i + '" data-cell="' + j + '">' + cell.split('!~').map(function (layer) {
               layer = layer.trim()
               if (layer) {
                 var name = 'BSicon_' + (layer.replace(/ /, '_')) + '.svg'
@@ -101,17 +114,39 @@
       }
 
       function syncFocus () {
-        var content = $editor.val()
-          , selection = $editor.prop('selectionStart')
+        var selection = $editor.prop('selectionStart')
 
-        var lines = content.substring(0, selection).split('\n')
+        var rows = $editor.val().substring(0, selection).split('\n')
 
-        var line = lines.length
-          , row = lines.pop().split('\\').length
+        var row = rows.length - 1
+          , cell = rows.pop().split('\\').length - 1
 
         $preview.find('.focus').removeClass('focus')
-        $preview.find('> div:nth-child(' + line + ') > div:nth-child(' + row + ')').addClass('focus')
+        $preview.find('> div > div[data-row="' + row + '"][data-cell="' + cell + '"]').addClass('focus')
       }
+
+      $preview.on('click', '> div > div[data-row][data-cell]', function () {
+        var $this = $(this)
+
+        var row = $this.data('row')
+          , cell = $this.data('cell')
+
+        var rows = $editor.val().split('\n').slice(0, row + 1)
+          , cells = rows.pop().split('\\').slice(0, cell + 1)
+
+        var above = rows.join('\n').length
+        above = above == 0 ? 0 : above + 1
+
+        var selection = above + cells.join('\\').length
+
+        $editor
+          .prop('selectionStart', selection)
+          .prop('selectionEnd', selection)
+          .focus()
+
+        $preview.find('.focus').removeClass('focus')
+        $this.addClass('focus')
+      })
 
       $editor.on('keyup', function () {
         localStorage.setItem('content', $editor.val())
