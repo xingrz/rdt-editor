@@ -85,8 +85,9 @@
       position: absolute;
     }
     </style>
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+    <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
+    <script src="http://cdn.staticfile.org/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+    <script src="http://cdn.staticfile.org/crypto-js/3.1.2/rollups/md5.js"></script>
     <script>
     $(function () {
       var $preview = $('#preview')
@@ -148,11 +149,11 @@
         $this.addClass('focus')
       })
 
-      $editor.on('keyup', function () {
+      $editor.on('keyup', $.debounce(250, function () {
         localStorage.setItem('content', $editor.val())
         render()
         syncFocus()
-      })
+      }))
 
       $editor.on('mouseup', function () {
         syncFocus()
