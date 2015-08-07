@@ -138,11 +138,14 @@
         var above = rows.join('\n').length
         above = above == 0 ? 0 : above + 1
 
-        var selection = above + cells.join('\\').length
+        var selection = cells.pop()
+
+        var selectionStart = above + cells.join('\\').length + 1
+          , selectionEnd = selectionStart + selection.length
 
         $editor
-          .prop('selectionStart', selection)
-          .prop('selectionEnd', selection)
+          .prop('selectionStart', selectionStart)
+          .prop('selectionEnd', selectionEnd)
           .focus()
 
         $preview.find('.focus').removeClass('focus')
