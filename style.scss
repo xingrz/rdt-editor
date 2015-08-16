@@ -9,10 +9,10 @@ html, body {
 
 #editor-container {
   position: absolute;
-  top: 5px;
+  top: 0;
   left: 0;
   right: 600px;
-  bottom: -5px;
+  bottom: 0;
 }
 
 #editor {
@@ -33,9 +33,9 @@ html, body {
 
 #preview-container {
   position: absolute;
-  top: 5px;
+  top: 0;
   right: 0;
-  bottom: -5px;
+  bottom: 0;
   width: 600px;
   overflow: scroll;
   background: #f9f9f9;
