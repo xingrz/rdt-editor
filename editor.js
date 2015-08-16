@@ -4,7 +4,6 @@ $(function () {
 
   function render () {
     var content = $editor.val()
-    localStorage.setItem('content', content)
 
     var maxLength = 0
 
@@ -30,7 +29,7 @@ $(function () {
             return '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/' + file + '">'
           }
         }).join('') + '</div>'
-      }).join('') + '<div class="text" data-row="' + i + '" title="' + text + '">' + text + '</div></div>'
+      }).join('') + '<div class="text" data-row="' + i + '" title="' + text + '"><span>' + text + '</span></div></div>'
     }).join('')
 
     $preview.css('width', maxLength * 20).html(rendered)

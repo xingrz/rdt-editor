@@ -93,12 +93,19 @@ html, body {
 
       &.text {
         width: 200px;
-        font-size: 12px;
-        font-family: 'Consolas', 'Courier', monospace;
-        line-height: 20px;
-        text-align: left;
-        text-overflow: ellipsis;
-        overflow: hidden;
+
+        > span {
+          display: block;
+          width: 200px;
+          height: 20px;
+          font-size: 12px;
+          font-family: 'Consolas', 'Courier', monospace;
+          line-height: 20px;
+          text-align: left;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          position: absolute;
+        }
       }
 
     }
