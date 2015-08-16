@@ -59,7 +59,6 @@ html, body {
      */
     > div {
       display: inline-block;
-      width: 20px;
       height: 20px;
       margin: 0;
       padding: 0;
@@ -75,18 +74,33 @@ html, body {
         background: #d9d9d9;
       }
 
-      /**
-       * 单元格里的图层
-       */
-      > img {
-        display: block;
+      &.cell {
         width: 20px;
-        height: 20px;
-        margin: 0;
-        padding: 0;
-        border: none;
-        position: absolute;
+
+        /**
+         * 单元格里的图层
+         */
+        > img {
+          display: block;
+          width: 20px;
+          height: 20px;
+          margin: 0;
+          padding: 0;
+          border: none;
+          position: absolute;
+        }
       }
+
+      &.text {
+        width: 200px;
+        font-size: 12px;
+        font-family: 'Consolas', 'Courier', monospace;
+        line-height: 20px;
+        text-align: left;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
     }
   }
 
