@@ -137,11 +137,14 @@
           , cells = rows.pop().split('\\').slice(0, cell + 1)
 
         var above = rows.join('\n').length
-        above = above == 0 ? 0 : above + 1
+        above = rows.length ? above + 1 : 0
 
         var selection = cells.pop()
 
-        var selectionStart = above + cells.join('\\').length + 1
+        var cell = cells.join('\\').length
+        cell = cells.length ? cell + 1 : 0
+
+        var selectionStart = above + cell
           , selectionEnd = selectionStart + selection.length
 
         $editor
