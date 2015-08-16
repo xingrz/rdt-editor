@@ -1,0 +1,93 @@
+---
+---
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#editor-container {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 600px;
+  bottom: -5px;
+}
+
+#editor {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 20px;
+  border: none;
+  outline: none;
+  font-family: 'Consolas', 'Courier', monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: nowrap;
+  resize: none;
+  box-sizing: border-box;
+  background: none;
+}
+
+#preview-container {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  bottom: -5px;
+  width: 600px;
+  overflow: scroll;
+  background: #f9f9f9;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 1.0);
+  box-sizing: border-box;
+}
+
+#preview {
+  border: 40px solid transparent;
+  font-size: 0;
+
+  /**
+   * 行
+   */
+  > div {
+    text-align: center;
+    white-space: nowrap;
+
+    /**
+     * 单元格
+     */
+    > div {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+
+      transition: background 200ms;
+
+      &:hover {
+        background: #e9e9e9;
+      }
+
+      &.focus {
+        background: #d9d9d9;
+      }
+
+      /**
+       * 单元格里的图层
+       */
+      > img {
+        display: block;
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        position: absolute;
+      }
+    }
+  }
+
+}
