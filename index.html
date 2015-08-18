@@ -7,7 +7,18 @@
     <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
     <script src="http://cdn.staticfile.org/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
     <script src="http://cdn.staticfile.org/crypto-js/3.1.2/rollups/md5.js"></script>
+    <script src="http://cdn.staticfile.org/mustache.js/0.8.1/mustache.min.js"></script>
     <script src="editor.js"></script>
+    <script id="template-row" type="x-tmpl-mustache">
+      <div>
+        {{#cols}}
+        <div class="cell" data-row="{{i}}" data-col="{{j}}" title="{{raw}}">
+          {{#layers}}<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/{{a}}/{{b}}/{{name}}/40px-{{name}}.png">{{/layers}}
+        </div>
+        {{/cols}}
+        <div class="text" data-row="{{i}}" title="{{text}}"><span>{{text}}</span></div>
+      </div>
+    </script>
   </head>
   <body>
     <div id="editor-container"><textarea id="editor"></textarea></div>

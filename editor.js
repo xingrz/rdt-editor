@@ -2,34 +2,20 @@ $(function () {
   var $preview = $('#preview')
     , $editor = $('#editor')
 
+  var TEMPLATE_ROW = $('#template-row').html()
+  Mustache.parse(TEMPLATE_ROW)
+
   function render () {
     var content = $editor.val()
 
     var maxLength = 0
 
     var rendered = content.split('\n').map(function (row, i) {
-      var rows = row.split('\\')
-      if (rows.length > maxLength) {
-        maxLength = rows.length
+      var cols = row.split('\\')
+      if (cols.length > maxLength) {
+        maxLength = cols.length
       }
-      var text = ''
-      return '<div>' + rows.map(function (col, j) {
-        var divider = col.indexOf('~~')
-        if (divider >= 0) {
-          text = col.substring(divider).trim()
-          col = col.substring(0, divider)
-        }
-
-        return '<div class="cell" data-row="' + i + '" data-col="' + j + '" title="' + col + '">' + col.split('!~').map(function (layer) {
-          layer = layer.trim()
-          if (layer) {
-            var name = 'BSicon_' + (layer.replace(/ /, '_')) + '.svg'
-              , hash = CryptoJS.MD5(name).toString(CryptoJS.enc.Hex)
-              , file = hash.substring(0, 1) + '/' + hash.substring(0, 2) + '/' + encodeURIComponent(name) + '/40px-' + encodeURIComponent(name) + '.png'
-            return '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/' + file + '">'
-          }
-        }).join('') + '</div>'
-      }).join('') + '<div class="text" data-row="' + i + '" title="' + text + '"><span>' + text + '</span></div></div>'
+      return renderRow(row, i)
     }).join('')
 
     $preview.css('width', maxLength * 20).html(rendered)
@@ -40,6 +26,45 @@ $(function () {
 
     $('#preview-container').css('width', width)
     $('#editor-container').css('right', width)
+  }
+
+  function renderRow (row, i) {
+    var structure = {
+      i: i,
+      cols: [],
+      text: ''
+    }
+
+    structure.cols = row.split('\\').map(function (col, j) {
+      var divider = col.indexOf('~~')
+      if (divider >= 0) {
+        structure.text = col.substring(divider).trim()
+        col = col.substring(0, divider)
+      }
+
+      var column = {
+        j: j,
+        raw: col,
+        layers: []
+      }
+
+      col.split('!~').forEach(function (layer) {
+        layer = layer.trim()
+        if (layer) {
+          var name = 'BSicon_' + (layer.replace(/ /, '_')) + '.svg'
+            , hash = CryptoJS.MD5(name).toString(CryptoJS.enc.Hex)
+          column.layers.push({
+            a: hash.substring(0, 1),
+            b: hash.substring(0, 2),
+            name: encodeURIComponent(name)
+          })
+        }
+      })
+
+      return column
+    })
+
+    return Mustache.render(TEMPLATE_ROW, structure)
   }
 
   function syncFocus () {
