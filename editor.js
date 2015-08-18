@@ -11,18 +11,13 @@ $(function () {
     var maxLength = 0
 
     var rendered = content.split('\n').map(function (row, i) {
-      var cols = row.split('\\')
-      if (cols.length > maxLength) {
-        maxLength = cols.length
-      }
+      maxLength = Math.max(maxLength, row.split('\\').length)
       return renderRow(row, i)
     }).join('')
 
     $preview.css('width', maxLength * 20).html(rendered)
 
-    var width = maxLength * 20 + 80 + 200
-    width = width < 200 ? 200 : width
-    width = width > 600 ? 600 : width
+    var width = Math.min(Math.max(maxLength * 20 + 80 + 200, 200), 600)
 
     $('#preview-container').css('width', width)
     $('#editor-container').css('right', width)
