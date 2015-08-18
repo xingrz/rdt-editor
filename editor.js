@@ -3,6 +3,12 @@ $(function () {
     , $editor = $('#editor')
 
   var TEMPLATE_ROW = $('#template-row').html()
+    .replace(/\n/g, '')
+    .replace(/\>[ ]+\</g, '><')
+    .replace(/\>[ ]+\{\{/g, '>{{')
+    .replace(/\}\}[ ]+\</g, '}}<')
+    .trim()
+
   Mustache.parse(TEMPLATE_ROW)
 
   function render () {
