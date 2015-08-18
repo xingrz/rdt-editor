@@ -12,7 +12,7 @@ $(function () {
   Mustache.parse(TEMPLATE_ROW)
 
   function render () {
-    var content = $editor.val()
+    var content = $editor.val().trim()
 
     var maxLength = 0
 
