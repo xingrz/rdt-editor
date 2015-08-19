@@ -5,23 +5,54 @@
     <title>BS Map Editor</title>
     <link rel="stylesheet" href="style.css">
     <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-    <script src="http://cdn.staticfile.org/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
     <script src="http://cdn.staticfile.org/crypto-js/3.1.2/rollups/md5.js"></script>
-    <script src="http://cdn.staticfile.org/mustache.js/0.8.1/mustache.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/vue/0.12.10/vue.js"></script>
+
     <script src="editor.js"></script>
-    <script id="template-row" type="x-tmpl-mustache">
-      <div>
-        {{#cols}}
-        <div class="cell" data-row="{{i}}" data-col="{{j}}" title="{{raw}}">
-          {{#layers}}<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/{{a}}/{{b}}/{{name}}/40px-{{name}}.png">{{/layers}}
-        </div>
-        {{/cols}}
-        <div class="text" data-row="{{i}}" title="{{text}}"><span>{{text}}</span></div>
+
+    <script type="text/x-template" id="preview-template">
+      <div class="preview">
+        <template v-repeat="row : rows">
+          <row source="{{row}}" data-row="{{$index}}" />
+        </template>
       </div>
+    </script>
+
+    <script type="text/x-template" id="row-template">
+      <div>
+        <template v-repeat="col : row.cols">
+          <col source="{{col}}" data-col="{{$index}}" />
+        </template>
+        <div class="text" title="{{row.text}}" v-on="click: select">
+          <span>{{row.text}}</span>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/x-template" id="col-template">
+      <div class="cell" title="{{source}}" v-on="click: select">
+        <template v-repeat="icon : col.icons">
+          <icon name="{{icon}}" />
+        </template>
+      </div>
+    </script>
+
+    <script type="text/x-template" id="icon-template">
+      <img v-attr="src: url" />
     </script>
   </head>
   <body>
-    <div id="editor-container"><textarea id="editor"></textarea></div>
-    <div id="preview-container"><div id="preview"></div></div>
+    <div id="bme">
+      <div class="editor-container" v-style="right: width + 'px'">
+        <textarea
+          class="editor"
+          v-model="source"
+          v-selection="start: selectionStart, end: selectionEnd"
+        ></textarea>
+      </div>
+      <div class="preview-container" v-style="width: width + 'px'">
+        <preview source="{{source}}" />
+      </div>
+    </div>
   </body>
 </html>
