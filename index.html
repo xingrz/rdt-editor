@@ -7,8 +7,24 @@
     <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
     <script src="http://cdn.staticfile.org/crypto-js/3.1.2/rollups/md5.js"></script>
     <script src="http://cdn.jsdelivr.net/vue/0.12.10/vue.js"></script>
+  </head>
+  <body>
+    <template id="editor">
+      <editor source="{{source}}" />
+    </template>
 
-    <script src="editor.js"></script>
+    <script type="text/x-template" id="editor-template">
+      <div class="editor-container" v-style="right: width + 'px'">
+        <textarea
+          class="editor"
+          v-model="source"
+          v-selection="start: selectionStart, end: selectionEnd"
+        ></textarea>
+      </div>
+      <div class="preview-container" v-style="width: width + 'px'">
+        <preview source="{{source}}" />
+      </div>
+    </script>
 
     <script type="text/x-template" id="preview-template">
       <div class="preview">
@@ -38,21 +54,9 @@
     </script>
 
     <script type="text/x-template" id="icon-template">
-      <img v-attr="src: url" />
+      <img v-attr="src: url" v-on="error: onError" />
     </script>
-  </head>
-  <body>
-    <div id="bme">
-      <div class="editor-container" v-style="right: width + 'px'">
-        <textarea
-          class="editor"
-          v-model="source"
-          v-selection="start: selectionStart, end: selectionEnd"
-        ></textarea>
-      </div>
-      <div class="preview-container" v-style="width: width + 'px'">
-        <preview source="{{source}}" />
-      </div>
-    </div>
+
+    <script src="editor.js"></script>
   </body>
 </html>
