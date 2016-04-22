@@ -4,57 +4,58 @@
     <meta charset="utf-8">
     <title>BS Map Editor</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery/3.0.0-beta1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/crypto-js/3.1.2/rollups/md5.js"></script>
-    <script src="https://cdn.jsdelivr.net/vue/0.12.16/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
   </head>
   <body>
     <template id="editor">
-      <editor source="{{@source}}" />
+      <editor :source.sync="source" />
     </template>
 
     <script type="text/x-template" id="editor-template">
-      <div class="editor-container" v-style="right: width + 'px'">
+      <div class="editor-container" style="right: {{width}}px">
         <textarea
           class="editor"
           v-model="source"
-          v-selection="start: selectionStart, end: selectionEnd"
+          v-selection:start="selectionStart"
+          v-selection:end="selectionEnd"
         ></textarea>
       </div>
-      <div class="preview-container" v-style="width: width + 'px'">
-        <preview source="{{source}}" />
+      <div class="preview-container" style="width: {{width}}px">
+        <preview :source="source" />
       </div>
     </script>
 
     <script type="text/x-template" id="preview-template">
       <div class="preview">
-        <template v-repeat="row : rows">
-          <row source="{{row}}" data-row="{{$index}}" />
+        <template v-for="row in rows" track-by="$index">
+          <row :source="row" :data-row="$index" />
         </template>
       </div>
     </script>
 
     <script type="text/x-template" id="row-template">
       <div>
-        <template v-repeat="col : row.cols">
-          <col source="{{col}}" data-col="{{$index}}" />
+        <template v-for="col in row.cols" track-by="$index">
+          <col :source="col" :data-col="$index" />
         </template>
-        <div class="text" title="{{row.text}}" v-on="click: select">
+        <div class="text" :title="row.text" @click="select">
           <span>{{row.text}}</span>
         </div>
       </div>
     </script>
 
     <script type="text/x-template" id="col-template">
-      <div class="cell" title="{{source}}" v-on="click: select">
-        <template v-repeat="icon : col.icons">
-          <icon name="{{icon}}" />
+      <div class="cell" :title="source" @click="select">
+        <template v-for="icon in col.icons" track-by="$index">
+          <icon :name="icon" />
         </template>
       </div>
     </script>
 
     <script type="text/x-template" id="icon-template">
-      <img v-attr="src: url" v-on="error: onError" />
+      <img :src="url" />
     </script>
 
     <script src="editor.js"></script>

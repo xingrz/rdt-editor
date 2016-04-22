@@ -201,11 +201,6 @@ Vue.component('icon', {
             + encodeURIComponent(this.file) + '/'
             + '40px-' + encodeURIComponent(this.file) + '.png'
     }
-  },
-  methods: {
-    onError: function (e) {
-      console.log('on error', e)
-    }
   }
 })
 
