@@ -44,15 +44,15 @@
           </template>
         </div>
         <div class="texts">
-          <div class="text" :title="row.text" @click="select">
-            <span>{{row.text}}</span>
-          </div>
+          <template v-for="text in row.texts" track-by="index">
+            <text :text="text.text" :index="text.index" />
+          </template>
         </div>
       </div>
     </script>
 
     <script type="text/x-template" id="col-template">
-      <div class="cell" :title="source" @click="select">
+      <div :title="source" @click="select">
         <template v-for="icon in col.icons" track-by="$index">
           <icon :name="icon" />
         </template>
@@ -61,6 +61,10 @@
 
     <script type="text/x-template" id="icon-template">
       <img :src="url" />
+    </script>
+
+    <script type="text/x-template" id="text-template">
+      <div :title="text" :data-index="index" @click="select">{{text}}</div>
     </script>
 
     <script src="editor.js"></script>

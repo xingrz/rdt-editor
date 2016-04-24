@@ -28,7 +28,7 @@ html, body {
   outline: none;
   font-family: $monospace;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 20px;
   white-space: pre;
   resize: none;
   box-sizing: border-box;
@@ -48,7 +48,7 @@ html, body {
 }
 
 .preview {
-  border: 40px solid transparent;
+  border: 20px solid transparent;
 
   /**
    * 行
@@ -82,7 +82,7 @@ html, body {
       /**
        * 单元格
        */
-      > .cell {
+      > div {
         width: 20px;
 
         /**
@@ -103,20 +103,27 @@ html, body {
     > .texts {
       flex-basis: 200px;
 
-      > .text {
-        width: 200px;
+      display: flex;
 
-        > span {
-          display: block;
-          width: 200px;
-          height: 20px;
-          font-size: 12px;
-          font-family: $monospace;
-          line-height: 20px;
-          text-align: left;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          position: absolute;
+      > div {
+        order: attr('data-index');
+        flex-grow: 1;
+
+        font-size: 12px;
+        font-family: $monospace;
+        line-height: 20px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        &[data-index="1"],
+        &[data-index="2"],
+        &[data-index="3"] {
+          align-self: flex-start;
+        }
+
+        &[data-index="4"] {
+          align-self: flex-end;
+          text-align: right;
         }
       }
     }
