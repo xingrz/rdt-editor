@@ -67,9 +67,9 @@ Vue.component('editor', {
         , leading = cell.length
 
       if ((divider == 0 && leading >= 1) || (divider > 0 && leading > divider)) {
-        $('.preview').find('> div[data-row="' + row + '"] > .text').addClass('focus')
+        $('.preview').find('> div[data-row="' + row + '"] .text').addClass('focus')
       } else {
-        $('.preview').find('> div[data-row="' + row + '"] > .cell[data-col="' + col + '"]').addClass('focus')
+        $('.preview').find('> div[data-row="' + row + '"] .cell[data-col="' + col + '"]').addClass('focus')
       }
     }
   }
@@ -154,10 +154,10 @@ Vue.component('col', {
     select: function () {
       // TODO: 这部分代码十分傻逼，等我学完 Vue 之后再重构
 
-      var row = $(this.$el).parent('[data-row]').data('row')
+      var row = $(this.$el).parents('[data-row]').data('row')
         , col = $(this.$el).data('col')
 
-      var rows = this.$root.$children[0].source.split('\n').slice(0, row + 1)
+      var rows = this.$root.source.split('\n').slice(0, row + 1)
         , cols = rows.pop().split('\\').slice(0, col + 1)
 
       var above = rows.join('\n').length

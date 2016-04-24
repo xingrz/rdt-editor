@@ -38,11 +38,15 @@
 
     <script type="text/x-template" id="row-template">
       <div>
-        <template v-for="col in row.cols" track-by="$index">
-          <col :source="col" :data-col="$index" />
-        </template>
-        <div class="text" :title="row.text" @click="select">
-          <span>{{row.text}}</span>
+        <div class="cells">
+          <template v-for="col in row.cols" track-by="$index">
+            <col :source="col" :data-col="$index" />
+          </template>
+        </div>
+        <div class="texts">
+          <div class="text" :title="row.text" @click="select">
+            <span>{{row.text}}</span>
+          </div>
         </div>
       </div>
     </script>

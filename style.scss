@@ -1,6 +1,10 @@
 ---
 ---
 
+$monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
+            'PingFang SC', '微软雅黑',
+            monospace;
+
 html, body {
   margin: 0;
   padding: 0;
@@ -22,7 +26,7 @@ html, body {
   padding: 20px;
   border: none;
   outline: none;
-  font-family: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro', 'PingFang SC', '微软雅黑', monospace;
+  font-family: $monospace;
   font-size: 16px;
   line-height: 1.5;
   white-space: pre;
@@ -45,36 +49,40 @@ html, body {
 
 .preview {
   border: 40px solid transparent;
-  font-size: 0;
 
   /**
    * 行
    */
   > div {
-    text-align: center;
-    white-space: nowrap;
+    display: flex;
 
-    /**
-     * 单元格
-     */
-    > div {
-      display: inline-block;
-      height: 20px;
-      margin: 0;
-      padding: 0;
-      cursor: pointer;
+    > div > div {
+        height: 20px;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
 
-      transition: background 200ms;
+        transition: background 200ms;
 
-      &:hover {
-        background: #e9e9e9;
-      }
+        &:hover {
+          background: #e9e9e9;
+        }
 
-      &.focus {
-        background: #d9d9d9;
-      }
+        &.focus {
+          background: #d9d9d9;
+        }
+    }
 
-      &.cell {
+    > .cells {
+      flex-grow: 1;
+
+      display: flex;
+      justify-content: center;
+
+      /**
+       * 单元格
+       */
+      > .cell {
         width: 20px;
 
         /**
@@ -90,8 +98,12 @@ html, body {
           position: absolute;
         }
       }
+    }
 
-      &.text {
+    > .texts {
+      flex-basis: 200px;
+
+      > .text {
         width: 200px;
 
         > span {
@@ -99,7 +111,7 @@ html, body {
           width: 200px;
           height: 20px;
           font-size: 12px;
-          font-family: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro', 'PingFang SC', '微软雅黑', monospace;
+          font-family: $monospace;
           line-height: 20px;
           text-align: left;
           text-overflow: ellipsis;
@@ -107,7 +119,6 @@ html, body {
           position: absolute;
         }
       }
-
     }
   }
 
