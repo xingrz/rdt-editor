@@ -204,13 +204,11 @@ Vue.component('text', {
   props: [ 'text', 'index' ],
   template: '#text-template',
   methods: {
-    select: function (e) {
+    select: function () {
       // TODO: 这部分代码十分傻逼，等我学完 Vue 之后再重构
 
       var row = $(this.$el).parents('[data-row]').data('row')
         , index = $(this.$el).data('index')
-
-      console.log(index)
 
       var rows = this.$root.source.split('\n').slice(0, row + 1)
         , texts = rows.pop().split('~~')
