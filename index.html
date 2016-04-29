@@ -2,73 +2,20 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>BS Map Editor</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/jquery/3.0.0-beta1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/crypto-js/3.1.2/rollups/md5.js"></script>
-    <script src="https://cdn.jsdelivr.net/vue/1.0.21/vue.min.js"></script>
+    <title>RDT Editor</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
-    <template id="editor">
-      <editor :source.sync="source" />
-    </template>
-
-    <script type="text/x-template" id="editor-template">
-      <div class="editor-container" style="right: {{width}}px">
-        <textarea
-          class="editor"
-          spellcheck="false"
-          v-model="source"
-          v-selection:start="selectionStart"
-          v-selection:end="selectionEnd"
-        ></textarea>
-      </div>
-      <div class="preview-container" style="width: {{width}}px">
-        <preview :source="source" />
-      </div>
-    </script>
-
-    <script type="text/x-template" id="preview-template">
-      <div class="preview">
-        <template v-for="row in rows" track-by="$index">
-          <row :source="row" :data-row="$index" />
-        </template>
-      </div>
-    </script>
-
-    <script type="text/x-template" id="row-template">
-      <div>
-        <div class="cells">
-          <template v-for="col in row.cols" track-by="$index">
-            <col :source="col" :data-col="$index" />
-          </template>
-        </div>
-        <div class="texts">
-          <template v-for="text in row.texts" track-by="index">
-            <text :text="text.text" :index="text.index" />
-          </template>
-        </div>
-      </div>
-    </script>
-
-    <script type="text/x-template" id="col-template">
-      <div :title="source" @click="select">
-        <template v-for="icon in col.icons" track-by="$index">
-          <icon :name="icon" />
-        </template>
-      </div>
-    </script>
-
-    <script type="text/x-template" id="icon-template">
-      <img :src="url" />
-    </script>
-
-    <script type="text/x-template" id="text-template">
-      <div :title="text" :data-index="index" @click="select">{{text}}</div>
-    </script>
-
-    <script src="editor.js"></script>
-
+    <app></app>
+    <script src="https://cdn.jsdelivr.net/jquery/3.0.0-beta1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/crypto-js/3.1.2/rollups/md5.js"></script>
+    <script src="dist/build.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

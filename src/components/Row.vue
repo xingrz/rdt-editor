@@ -1,0 +1,107 @@
+<template>
+  <div class="row">
+    <div class="cells">
+      <template v-for="cell in row.cells" track-by="$index">
+        <cell :src="cell" :data-cell="$index" />
+      </template>
+    </div>
+    <div class="texts">
+      <template v-for="text in row.texts" track-by="align">
+        <text :text="text.text" :align="text.align" />
+      </template>
+    </div>
+  </div>
+</template>
+
+<script>
+import Cell from './Cell.vue'
+import Text from './Text.vue'
+
+export default {
+  props: [ 'src' ],
+  components: { Cell, Text },
+  computed: {
+    row () {
+      let texts = this.src.split('~~')
+      let cells = texts.shift().split('\\')
+
+      if (texts.length == 1) {
+        texts = texts.map(function (text) {
+          return {
+            text: text.trim(),
+            align: 2
+          }
+        })
+      } else {
+        texts = texts.map(function (text, i) {
+          return {
+            text: text.trim(),
+            align: i + 1
+          }
+        }).filter(function (text) {
+          return !!text.text
+        })
+      }
+
+      return { cells, texts }
+    }
+  }
+}
+</script>
+
+<style lang="sass" scoped>
+.row {
+  display: flex;
+}
+
+.cells > div,
+.texts > div {
+  height: 20px;
+  cursor: pointer;
+
+  transition: background 200ms;
+
+  &:hover {
+    background: #e9e9e9;
+  }
+
+  &.focus {
+    background: #d9d9d9;
+  }
+}
+
+.cells {
+  flex-grow: 1;
+  flex-shrink: 0;
+
+  display: flex;
+  justify-content: center;
+
+  > div {
+    width: 20px;
+  }
+}
+
+.texts {
+  flex-basis: 200px;
+  flex-shrink: 0;
+
+  display: flex;
+
+  > div {
+    order: attr('data-align');
+    flex-grow: 1;
+
+    &[data-align="1"],
+    &[data-align="2"],
+    &[data-align="3"] {
+      align-self: flex-start;
+    }
+
+    &[data-align="4"] {
+      align-self: flex-end;
+      text-align: right;
+    }
+  }
+}
+</style>
