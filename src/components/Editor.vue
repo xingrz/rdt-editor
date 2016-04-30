@@ -1,21 +1,28 @@
 <template>
-  <textarea class="editor" @keyup="syncSource" @mouseup="moveFocus">{{ source }}</textarea>
+  <textarea
+    class="editor"
+    @keyup="syncSource"
+    @mouseup="moveFocus"
+    @scroll="syncScroll"
+  >{{ source }}</textarea>
 </template>
 
 <script>
-import { sync, select } from '../vuex/actions'
+import { sync, scroll, select } from '../vuex/actions'
 
 export default {
   vuex: {
     getters: {
       source: state => state.source,
+      offset: state => state.offset,
       selection: state => state.selection
     },
-    actions: {
-      sync, select
-    }
+    actions: { sync, scroll, select }
   },
   watch: {
+    offset (value) {
+      this.$el.scrollTop = value
+    },
     selection (value) {
       this.$el.selectionStart = value.start
       this.$el.selectionEnd = value.end
@@ -29,6 +36,9 @@ export default {
     },
     moveFocus () {
       this.select(this.$el.selectionStart, this.$el.selectionEnd)
+    },
+    syncScroll () {
+      this.scroll(this.$el.scrollTop)
     }
   }
 }
@@ -47,7 +57,7 @@ $monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
   font-family: $monospace;
   font-size: 16px;
   line-height: 20px;
-  white-space: pre;
+  white-space: nowrap;
   resize: none;
   box-sizing: border-box;
 }

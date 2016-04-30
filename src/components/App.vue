@@ -1,18 +1,32 @@
 <template>
   <div class="app">
     <editor class="editor"></editor>
-    <div class="scroller">
+    <scroller class="scroller" :offset="offset" @scrolly="syncScroll">
       <preview class="preview"></preview>
-    </div>
+    </scroller>
   </div>
 </template>
 
 <script>
 import Editor from './Editor.vue'
+import Scroller from './Scroller.vue'
 import Preview from './Preview.vue'
 
+import { scroll } from '../vuex/actions'
+
 export default {
-  components: { Editor , Preview }
+  components: { Editor , Scroller, Preview },
+  vuex: {
+    getters: {
+      offset: state => state.offset
+    },
+    actions: { scroll }
+  },
+  methods: {
+    syncScroll (offset) {
+      this.scroll(offset)
+    }
+  }
 }
 </script>
 
@@ -28,7 +42,6 @@ export default {
 
 .scroller {
   flex-basis: 600px;
-  overflow: scroll;
   background: #f9f9f9;
   box-shadow: 0 0 5px rgba(0, 0, 0, 1.0);
 }

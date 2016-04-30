@@ -55,6 +55,5 @@ export default {
 <style lang="sass" scoped>
 .preview {
   padding: 20px;
-  min-width: max-content;
 }
 </style>
