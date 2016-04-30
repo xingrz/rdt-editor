@@ -59,14 +59,29 @@ export default {
   height: 20px;
   cursor: pointer;
 
-  transition: background 200ms;
+  &::after {
+    display: block;
+    content: '';
 
-  &:hover {
-    background: #e9e9e9;
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background: #0099FF;
+    opacity: 0.0;
+
+    transition: opacity 200ms;
   }
 
-  &.focus {
-    background: #d9d9d9;
+  &:hover::after {
+    opacity: 0.2;
+  }
+
+  &.focus::after {
+    opacity: 0.3;
   }
 }
 

@@ -1,5 +1,7 @@
 <template>
-  <div class="text" :title="text" :data-align="align" @click="onClick">{{text}}</div>
+  <div class="text" :title="text" :data-align="align" @click="onClick">
+    <span>{{text}}</span>
+  </div>
 </template>
 
 <script>
@@ -59,5 +61,12 @@ $monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
 
   text-overflow: ellipsis;
   overflow: hidden;
+
+  position: relative;
+
+  > span {
+    display: block;
+    position: absolute;
+  }
 }
 </style>
