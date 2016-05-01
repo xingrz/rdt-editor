@@ -4,6 +4,10 @@
     @keyup="syncSource"
     @mouseup="moveFocus"
     @scroll="onScroll"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
   >{{ source.source }}</textarea>
 </template>
 
