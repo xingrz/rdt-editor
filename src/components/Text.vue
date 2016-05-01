@@ -7,37 +7,43 @@
 <script>
 import { select } from '../vuex/actions'
 
+const ROW_SEP = '\n'.length
+const TEXT_SEP = '~~'.length
+
 export default {
   props: [ 'text', 'align' ],
   vuex: {
-    getters: {
-      source: state => state.source.source
-    },
     actions: {
       select
     }
   },
   methods: {
     onClick: function () {
-      let row = $(this.$el).parents('[data-row]').data('row')
+      let $row = this.$parent
+      let $preview = $row.$parent
+
+      let row = $($row.$el).data('row')
         , align = $(this.$el).data('align')
 
-      let rows = this.source.split('\n').slice(0, row + 1)
-        , texts = rows.pop().split('~~')
+      let selectionStart = $row._meta.divider + TEXT_SEP
 
-      if (texts.length > 2) {
-        texts = texts.slice(0, align + 1)
+      for (let i = 0; i < row; i++) {
+        selectionStart += $preview.$children[i].src.length + ROW_SEP
       }
 
-      let above = rows.join('\n').length
-      above = rows.length ? above + 1 : 0
+      let texts = $row._meta.texts
+      let selection
 
-      let selection = texts.pop()
+      if (texts.length == 1) {
+        selection = texts[0]
+      } else {
+        selection = texts[align - 1]
+        for (let i = 0; i < align - 1; i++) {
+          selectionStart += texts[i].length + TEXT_SEP
+        }
+      }
 
-      let start = texts.join('~~').length + 2
-
-      let selectionStart = above + start
-        , selectionEnd = selectionStart + selection.length
+      let selectionEnd = selectionStart + selection.length
 
       this.select('preview', selectionStart, selectionEnd)
     }

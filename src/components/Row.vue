@@ -1,12 +1,12 @@
 <template>
   <div class="row">
     <div class="cells">
-      <template v-for="cell in row.cells" track-by="$index">
+      <template v-for="cell in cells" track-by="$index">
         <cell :src="cell" :data-cell="$index" />
       </template>
     </div>
     <div class="texts">
-      <template v-for="text in row.texts" track-by="align">
+      <template v-for="text in texts" track-by="align">
         <text :text="text.text" :align="text.align" />
       </template>
     </div>
@@ -21,29 +21,33 @@ export default {
   props: [ 'src' ],
   components: { Cell, Text },
   computed: {
-    row () {
+    _meta () {
       let texts = this.src.split('~~')
-      let cells = texts.shift().split('\\')
-
-      if (texts.length == 1) {
-        texts = texts.map(function (text) {
-          return {
-            text: text.trim(),
-            align: 2
-          }
-        })
-      } else {
-        texts = texts.map(function (text, i) {
-          return {
-            text: text.trim(),
-            align: i + 1
-          }
-        }).filter(function (text) {
-          return !!text.text
-        })
+      let cells = texts.shift()
+      return {
+        texts, cells,
+        divider: cells.length
       }
-
-      return { cells, texts }
+    },
+    cells () {
+      return this._meta.cells.split('\\')
+    },
+    texts () {
+      let texts = this._meta.texts
+      if (texts.length == 1) {
+        return texts
+        .map((text) => ({
+          text: text.trim(),
+          align: 2
+        }))
+      } else {
+        return texts
+        .map((text, i) => ({
+          text: text.trim(),
+          align: i + 1
+        }))
+        .filter((text) => !!text.text)
+      }
     }
   }
 }

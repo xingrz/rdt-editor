@@ -11,13 +11,13 @@ import Icon from './Icon.vue'
 
 import { select } from '../vuex/actions'
 
+const ROW_SEP = '\n'.length
+const CELL_SEP = '\\'.length
+
 export default {
   props: [ 'src' ],
   components: { Icon },
   vuex: {
-    getters: {
-      source: state => state.source.source
-    },
     actions: {
       select
     }
@@ -33,27 +33,25 @@ export default {
   },
   methods: {
     onClick: function () {
-      let row = $(this.$el).parents('[data-row]').data('row')
+      let $row = this.$parent
+      let $preview = $row.$parent
+
+      let row = $($row.$el).data('row')
         , cell = $(this.$el).data('cell')
 
-      let rows = this.source.split('\n').slice(0, row + 1)
-        , cells = rows.pop().split('\\').slice(0, cell + 1)
+      let selectionStart = 0
 
-      let above = rows.join('\n').length
-      above = rows.length ? above + 1 : 0
-
-      let selection = cells.pop()
-
-      let divider = selection.indexOf('~~')
-      if (divider >= 0) {
-        selection = selection.substring(0, divider)
+      for (let i = 0; i < row; i++) {
+        selectionStart += $preview.$children[i].src.length + ROW_SEP
       }
 
-      let start = cells.join('\\').length
-      start = cells.length ? start + 1 : 0
+      let cells = $row.cells
 
-      let selectionStart = above + start
-        , selectionEnd = selectionStart + selection.length
+      for (let i = 0; i < cell; i++) {
+        selectionStart += cells[i].length + CELL_SEP
+      }
+
+      let selectionEnd = selectionStart + cells[cell].length
 
       this.select('preview', selectionStart, selectionEnd)
     }
