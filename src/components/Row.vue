@@ -25,12 +25,13 @@ export default {
       let texts = this.src.split('~~')
       let cells = texts.shift()
       return {
-        texts, cells,
+        texts,
+        cells: cells.split('\\'),
         divider: cells.length
       }
     },
     cells () {
-      return this._meta.cells.split('\\')
+      return this._meta.cells
     },
     texts () {
       let texts = this._meta.texts
