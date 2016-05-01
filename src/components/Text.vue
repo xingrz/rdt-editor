@@ -11,7 +11,7 @@ export default {
   props: [ 'text', 'align' ],
   vuex: {
     getters: {
-      source: state => state.source
+      source: state => state.source.source
     },
     actions: {
       select
@@ -39,7 +39,7 @@ export default {
       let selectionStart = above + start
         , selectionEnd = selectionStart + selection.length
 
-      this.select(selectionStart, selectionEnd)
+      this.select('preview', selectionStart, selectionEnd)
     }
   }
 }

@@ -3,42 +3,44 @@
     class="editor"
     @keyup="syncSource"
     @mouseup="moveFocus"
-    @scroll="syncScroll"
-  >{{ source }}</textarea>
+    @scroll="onScroll"
+  >{{ source.source }}</textarea>
 </template>
 
 <script>
-import { sync, scroll, select } from '../vuex/actions'
+import { sync, select } from '../vuex/actions'
 
 export default {
+  props: { scroll: { twoWay: true } },
   vuex: {
     getters: {
       source: state => state.source,
-      offset: state => state.offset,
       selection: state => state.selection
     },
-    actions: { sync, scroll, select }
+    actions: { sync, select }
   },
   watch: {
-    offset (value) {
-      this.$el.scrollTop = value
-    },
     selection (value) {
-      this.$el.selectionStart = value.start
-      this.$el.selectionEnd = value.end
-      this.$el.focus()
+      if (value.from != 'editor') {
+        this.$el.selectionStart = value.start
+        this.$el.selectionEnd = value.end
+        this.$el.focus()
+      }
+    },
+    scroll (value) {
+      this.$el.scrollTop = value
     }
   },
   methods: {
     syncSource () {
-      this.sync(this.$el.value)
+      this.sync('editor', this.$el.value)
       this.moveFocus()
     },
     moveFocus () {
-      this.select(this.$el.selectionStart, this.$el.selectionEnd)
+      this.select('editor', this.$el.selectionStart, this.$el.selectionEnd)
     },
-    syncScroll () {
-      this.scroll(this.$el.scrollTop)
+    onScroll () {
+      this.scroll = this.$el.scrollTop
     }
   }
 }

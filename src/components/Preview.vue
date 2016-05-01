@@ -13,8 +13,8 @@ export default {
   components: { Row },
   vuex: {
     getters: {
-      rows: state => state.source.split('\n'),
-      source: state => state.source,
+      rows: state => state.source.source.split('\n'),
+      source: state => state.source.source,
       selection: state => state.selection
     }
   },

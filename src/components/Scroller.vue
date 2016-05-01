@@ -1,22 +1,23 @@
 <template>
-  <div class="scroller" @scroll="scroll">
+  <div class="scroller" @scroll="onScroll">
     <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
-  props: [ 'offset' ],
+  props: { scroll: { twoWay: true } },
   watch: {
-    offset (value) {
+    scroll (value) {
       this.$el.scrollTop = value
     }
   },
   methods: {
-    scroll () {
-      this.$dispatch('scrolly', this.$el.scrollTop)
+    onScroll () {
+      this.scroll = this.$el.scrollTop
     }
   }
+
 }
 </script>
 

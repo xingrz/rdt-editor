@@ -1,7 +1,7 @@
 <template>
   <div class="app">
-    <editor class="editor"></editor>
-    <scroller class="scroller" :offset="offset" @scrolly="syncScroll">
+    <editor class="editor" :scroll.sync="scroll"></editor>
+    <scroller class="scroller" :scroll.sync="scroll">
       <preview class="preview"></preview>
     </scroller>
   </div>
@@ -12,21 +12,11 @@ import Editor from './Editor.vue'
 import Scroller from './Scroller.vue'
 import Preview from './Preview.vue'
 
-import { scroll } from '../vuex/actions'
-
 export default {
   components: { Editor , Scroller, Preview },
-  vuex: {
-    getters: {
-      offset: state => state.offset
-    },
-    actions: { scroll }
-  },
-  methods: {
-    syncScroll (offset) {
-      this.scroll(offset)
-    }
-  }
+  data: () => ({
+    scroll: 0
+  })
 }
 </script>
 

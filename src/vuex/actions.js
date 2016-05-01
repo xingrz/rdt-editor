@@ -1,11 +1,7 @@
-export const sync = ({ dispatch }, source) => {
-  dispatch('SYNC', source)
+export const sync = ({ dispatch }, from, source) => {
+  dispatch('SYNC', { from, source })
 }
 
-export const scroll = ({ dispatch }, scroll) => {
-  dispatch('SCROLL', scroll)
-}
-
-export const select = ({ dispatch }, start, end) => {
-  dispatch('SELECT' , { start, end })
+export const select = ({ dispatch }, from, start, end) => {
+  dispatch('SELECT' , { from, start, end })
 }
