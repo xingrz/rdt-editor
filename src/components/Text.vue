@@ -58,7 +58,6 @@ $monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
 
 .text {
   margin: 0 5px;
-  padding: 0 5px;
 
   font-size: 12px;
   font-family: $monospace;
@@ -73,6 +72,8 @@ $monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
   > span {
     display: block;
     position: absolute;
+    left: 5px;
+    right: 5px;
   }
 }
 </style>
