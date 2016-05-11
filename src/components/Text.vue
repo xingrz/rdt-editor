@@ -63,17 +63,22 @@ $monospace: 'Consolas', 'Courier', 'Menlo', 'Source Code Pro',
   font-family: $monospace;
 
   line-height: 20px;
-
-  text-overflow: ellipsis;
   overflow: hidden;
 
   position: relative;
 
   > span {
     display: block;
+
     position: absolute;
+
     left: 5px;
     right: 5px;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    white-space: nowrap;
   }
 }
 </style>
