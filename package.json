@@ -1,0 +1,63 @@
+{
+  "name": "webpack-babel-react-startup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "一个 Webpack + Babel + React 的模板",
+  "main": "server.js",
+  "scripts": {
+    "dev": "./node_modules/.bin/babel-node server.js",
+    "build": "./node_modules/.bin/webpack --config webpack.prod.js",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxoooo/webpack-babel-react-startup.git"
+  },
+  "keywords": [
+    "webpack",
+    "babel",
+    "react"
+  ],
+  "author": "XiNGRZ <chenxingyu92@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oxoooo/webpack-babel-react-startup/issues"
+  },
+  "homepage": "https://github.com/oxoooo/webpack-babel-react-startup#readme",
+  "devDependencies": {
+    "autoprefixer": "^7.1.1",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "express": "^4.15.3",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "html-webpack-plugin": "^2.28.0",
+    "normalize.css": "^7.0.0",
+    "postcss-loader": "^2.0.5",
+    "react-hot-loader": "^1.3.1",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-hot-middleware": "^2.18.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "classnames": "^2.2.5",
+    "md5": "^2.2.1",
+    "node-sass": "^4.6.1",
+    "react": "^15.6.0",
+    "react-dom": "^15.6.0",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
+    "whatwg-fetch": "^2.0.3"
+  }
+}
