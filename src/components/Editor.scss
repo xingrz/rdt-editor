@@ -1,0 +1,18 @@
+.ace_editor.ace_autocomplete {
+  color: #666;
+  .ace_completion-highlight {
+    font-weight: bold;
+    text-shadow: none;
+    color: #000;
+  }
+}
+
+.ace_tooltip {
+  background: #F9F9F9;
+  border: none;
+}
+
+:local .preview {
+  height: 120px;
+  display: block;
+}

@@ -1,0 +1,14 @@
+:local .container {
+  display: flex;
+  align-items: stretch;
+}
+
+:local .main {
+  flex: 1;
+}
+
+:local .resizer {
+  width: 8px;
+  cursor: col-resize;
+  background: #CCC;
+}

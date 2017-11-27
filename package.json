@@ -49,10 +49,12 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "brace": "^0.11.0",
     "classnames": "^2.2.5",
     "md5": "^2.2.1",
     "node-sass": "^4.6.1",
     "react": "^15.6.0",
+    "react-ace": "^5.7.0",
     "react-dom": "^15.6.0",
     "react-redux": "^5.0.5",
     "redux": "^3.6.0",
