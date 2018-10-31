@@ -1,0 +1,14 @@
+:local .map {
+  background: #FEFEFE;
+  height: 100vh;
+  overflow: scroll;
+}
+
+:local .row {
+  display: flex;
+}
+
+:local .icon {
+  height: 20px;
+  display: inline-block;
+}

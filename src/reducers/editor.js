@@ -2,9 +2,9 @@ const initialState = {
   text: '',
 };
 
-export default function demo(state = initialState, action) {
+export default function editor(state = initialState, action) {
   switch (action.type) {
-    case 'DEMO_SHOW_TEXT':
+    case 'EDITOR_SAVE':
       return {
         ...state,
         text: action.text,

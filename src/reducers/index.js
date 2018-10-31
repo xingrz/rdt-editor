@@ -1,7 +1,7 @@
-import demo from './demo';
+import editor from './editor';
 import icons from './icons';
 
 export default {
-  demo,
+  editor,
   icons,
 };

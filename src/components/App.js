@@ -5,15 +5,34 @@ import classnames from 'classnames';
 import styles from './App.scss';
 
 import Resizable from './Resizable';
+
 import Editor from './Editor';
+import BSMap from './BSMap';
+
+import * as editorActions from '../actions/editor';
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class App extends Component {
 
   state = {
     width: 400,
-    value: '',
   };
+
+  componentDidMount() {
+    document.addEventListener('mousewheel', this.handleTouchEvent, false);
+    // document.addEventListener('touchmove', this.handleTouchEvent, { passive: false });
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousewheel', this.handleTouchEvent);
+    // document.removeEventListener('touchmove', this.handleTouchEvent);
+  }
+
+  handleTouchEvent = (evt) => {
+    // if (evt.target == '')
+    // evt.preventDefault();
+    console.log('touch', evt);
+  }
 
   getCompletions = (editor, session, pos, prefix, callback) => {
     const { icons } = this.props;
@@ -33,25 +52,27 @@ export default class App extends Component {
   };
 
   onChange = (value) => {
-    this.setState({ value });
+    this.props.save(value);
   }
 
+  onCursorChange = (selection) => {
+  };
+
   render() {
+    const { text } = this.props;
     return (
       <Resizable width={this.state.width} onResize={this.onResize}>
 
         <Editor
-          className={styles.editor}
           ref={ref => this.editor = ref}
-          value={this.state.value}
+          value={text}
           onChange={this.onChange}
           getCompletions={this.getCompletions}
           getDocTooltip={this.getDocTooltip}
-          // onSelectionChange={console.log.bind(console, 'onSelectionChange')}
-          onCursorChange={console.log.bind(console, 'onCursorChange')}
+          onCursorChange={this.onCursorChange}
         />
 
-        <div className={styles.preview} />
+        <BSMap text={text} />
 
       </Resizable>
     );
@@ -62,10 +83,12 @@ export default class App extends Component {
 function mapStateToProps(store, props) {
   return {
     icons: store.icons,
+    text: store.editor.text,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    save: (text) => dispatch(editorActions.save(text)),
   }
 }
