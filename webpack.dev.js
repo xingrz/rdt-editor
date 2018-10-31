@@ -1,15 +1,17 @@
 const webpack = require('webpack');
 const join = require('path').join;
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
+  mode: 'development',
+
   entry: {
     main: [
       'webpack-hot-middleware/client',
-      'babel-polyfill',
+      '@babel/polyfill',
       'whatwg-fetch',
       'normalize.css',
       './src/client.js',
@@ -33,7 +35,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [ 'react-hot-loader', 'babel-loader' ],
+        use: [ 'babel-loader' ],
       },
       {
         test: /\.(scss|css)$/,
@@ -45,7 +47,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
       allChunks: true,
     }),

@@ -1,14 +1,16 @@
 const webpack = require('webpack');
 const join = require('path').join;
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
+  mode: 'production',
+
   entry: {
     main: [
-      'babel-polyfill',
+      '@babel/polyfill',
       'whatwg-fetch',
       'normalize.css',
       './src/client.js',
@@ -63,7 +65,7 @@ module.exports = {
       output: { comments: false },
       sourceMap: true,
     }),
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
       allChunks: true,
     }),

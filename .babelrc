@@ -1,13 +1,10 @@
 {
   "presets": [
-    "env",
-    "react",
-    "stage-0",
+    "@babel/preset-env",
+    "@babel/preset-react",
   ],
   "plugins": [
-    ["transform-builtin-extend", {
-      "globals": ["Error", "Array"],
-    }],
-    "transform-decorators-legacy",
+    ["@babel/plugin-proposal-class-properties"],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
   ],
 }
