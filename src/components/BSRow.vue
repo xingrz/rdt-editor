@@ -10,7 +10,7 @@
     </div>
     <div class="texts" v-bind:style="{ lineHeight: size + 'px' }">
       <div
-        v-for="(text, index) in texts"
+        v-for="{ text, index } in texts"
         v-bind:key="index"
         v-bind:class="'text-' + index"
       >{{text.trim()}}</div>
@@ -39,7 +39,9 @@ export default {
       return this.parts[0].split('\\');
     },
     texts() {
-      return this.parts.slice(1);
+      return this.parts.slice(1)
+        .map((text, i) => ({ text: text.trim(), index: i + 1 }))
+        .filter(({ text }) => !!text);
     },
   },
 }
@@ -62,5 +64,15 @@ export default {
   font-family: monospace;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+}
+
+.bs-row > .texts > * {
+  margin: 0 5px;
+}
+
+.bs-row > .texts > .text-4 {
+  flex-grow: 1;
+  text-align: end;
 }
 </style>
