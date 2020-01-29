@@ -19,7 +19,7 @@ export default {
   },
   actions: {
     async fetch({ commit, state }, name) {
-      if (typeof state[name] != 'undefined') {
+      if (typeof state.data[name] != 'undefined') {
         return;
       }
 

@@ -13,6 +13,11 @@ export default {
     content: String,
     size: Number,
   },
+  watch: {
+    content(content) {
+      this.$store.dispatch('fetch', content);
+    },
+  },
   created() {
     if (this.content) {
       this.$store.dispatch('fetch', this.content);

@@ -1,6 +1,7 @@
 <template>
   <MonacoEditor
     class="editor"
+    ref="editor"
     v-model="content"
     v-bind:options="options"
     v-on:editorWillMount="editorWillMount"
@@ -17,13 +18,11 @@ export default {
     MonacoEditor,
   },
   props: {
-    content: String,
     size: Number,
     scroll: Number,
   },
   data() {
     return {
-      editor: null,
       options: {
         theme: 'vs',
         language: 'rdt',
@@ -33,12 +32,16 @@ export default {
         },
         scrollBeyondLastLine: false,
       },
+      content: this.$store.state.editor.content,
     };
   },
   watch: {
     scroll(scroll) {
-      this.editor.setScrollPosition({ scrollTop: scroll });
+      this.$refs.editor.getEditor().setScrollPosition({ scrollTop: scroll });
     },
+    content(content) {
+      this.$store.commit('save', content);
+    }
   },
   methods: {
     editorWillMount(monaco) {
@@ -54,7 +57,6 @@ export default {
       });
     },
     editorDidMount(monaco) {
-      this.editor = monaco;
       monaco.onDidScrollChange(({ scrollTop }) => {
         this.$store.commit('setScroll', scrollTop);
       });

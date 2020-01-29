@@ -3,7 +3,6 @@
     <Resizable v-bind:width="width" v-on:resize="handleResize">
       <template v-slot:default>
         <Editor
-          v-bind:content="$store.state.editor.content"
           v-bind:size="$store.state.editor.size"
           v-bind:scroll="$store.state.editor.scroll"
         />
