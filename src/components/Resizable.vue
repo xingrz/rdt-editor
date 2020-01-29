@@ -48,7 +48,6 @@ export default {
 .resizable {
   display: flex;
   align-items: stretch;
-  height: 100vh;
 }
 
 .resizable > .main {
