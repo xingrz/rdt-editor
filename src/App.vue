@@ -1,28 +1,43 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Resizable v-bind:width="width" v-on:resize="handleResize">
+      <template v-slot:default>
+        Hello world
+      </template>
+      <template v-slot:fixed>
+        Resizable
+      </template>
+    </Resizable>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Resizable from './components/Resizable.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
-  }
+    Resizable,
+  },
+  computed: {
+    width() {
+      const max = window.innerWidth - 200;
+      const min = 200;
+      const width = this.$store.state.editor.width;
+      return Math.max(Math.min(width, max), min);
+    },
+  },
+  methods: {
+    handleResize(size) {
+      this.$store.commit('resize', size);
+    },
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 </style>
