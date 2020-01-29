@@ -27,5 +27,6 @@ export default {
 .scroller {
   height: 100vh;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 </style>

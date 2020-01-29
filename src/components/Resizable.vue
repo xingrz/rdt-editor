@@ -4,7 +4,7 @@
       <slot></slot>
     </div>
     <div class="resizer" v-on:mousedown="onResizeStart"></div>
-    <div v-bind:style="{ flexBasis: (width || 200) + 'px' }">
+    <div v-bind:style="{ width: (width || 200) + 'px' }">
       <slot name="fixed"></slot>
     </div>
   </div>

@@ -1,16 +1,22 @@
 <template>
-  <MonacoEditor
-    class="editor"
-    ref="editor"
-    v-model="content"
-    v-bind:options="options"
-    v-on:editorWillMount="editorWillMount"
-    v-on:editorDidMount="editorDidMount"
-  />
+  <div class="editor-container" v-bind:style="{ width: editorWidth + 'px' }">
+    <MonacoEditor
+      class="editor"
+      ref="editor"
+      v-model="content"
+      v-bind:options="options"
+      v-on:editorWillMount="editorWillMount"
+      v-on:editorDidMount="editorDidMount"
+    />
+  </div>
 </template>
 
 <script>
 import MonacoEditor from 'vue-monaco';
+
+function getEditor(that) {
+  return that.$refs.editor.getEditor();
+}
 
 export default {
   name: 'Editor',
@@ -20,6 +26,8 @@ export default {
   props: {
     size: Number,
     scroll: Number,
+    width: Number,
+    resizing: Boolean,
   },
   data() {
     return {
@@ -37,11 +45,22 @@ export default {
   },
   watch: {
     scroll(scroll) {
-      this.$refs.editor.getEditor().setScrollPosition({ scrollTop: scroll });
+      getEditor(this).setScrollPosition({ scrollTop: scroll });
+    },
+    width() {
+      this.handleResize();
+    },
+    resizing() {
+      this.handleResize();
     },
     content(content) {
       this.$store.commit('save', content);
     }
+  },
+  computed: {
+    editorWidth() {
+      return window.innerWidth - this.width - 8;
+    },
   },
   methods: {
     editorWillMount(monaco) {
@@ -57,17 +76,25 @@ export default {
       });
     },
     editorDidMount(monaco) {
+      window.addEventListener('resize', this.handleResize);
       monaco.onDidScrollChange(({ scrollTop }) => {
         this.$store.commit('setScroll', scrollTop);
       });
+    },
+    handleResize() {
+      getEditor(this).layout();
     },
   },
 }
 </script>
 
 <style>
+.editor-container {
+  overflow: hidden;
+}
+
 .editor {
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 </style>

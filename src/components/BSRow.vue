@@ -1,6 +1,6 @@
 <template>
   <div class="bs-row" v-bind:style="{ height: size + 'px' }">
-    <div class="cells" v-bind:style="{ width: (size * cols) + 'px' }">
+    <div class="cells" v-bind:style="{ flexBasis: (size * cols) + 'px' }">
       <BSCell
         v-for="(cell, index) in cells"
         v-bind:key="index"
@@ -57,7 +57,10 @@ export default {
 }
 
 .bs-row > .texts {
-  flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1000;
   font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>
