@@ -2,11 +2,17 @@
   <div id="app">
     <Resizable v-bind:width="width" v-on:resize="handleResize">
       <template v-slot:default>
-        Hello world
+        <Editor
+          v-bind:content="$store.state.editor.content"
+          v-bind:size="$store.state.editor.size"
+        />
       </template>
       <template v-slot:fixed>
         <Scroller>
-          <BSMap v-bind:content="$store.state.editor.content" v-bind:size="20" />
+          <BSMap
+            v-bind:content="$store.state.editor.content"
+            v-bind:size="$store.state.editor.size"
+          />
         </Scroller>
       </template>
     </Resizable>
@@ -17,6 +23,7 @@
 import Resizable from './components/Resizable.vue'
 import Scroller from './components/Scroller.vue'
 import BSMap from './components/BSMap.vue';
+import Editor from './components/Editor.vue';
 
 export default {
   name: 'app',
@@ -24,6 +31,7 @@ export default {
     Resizable,
     Scroller,
     BSMap,
+    Editor,
   },
   computed: {
     width() {
@@ -35,7 +43,7 @@ export default {
   },
   methods: {
     handleResize(size) {
-      this.$store.commit('resize', size);
+      this.$store.commit('setWidth', size);
     },
   },
 }
