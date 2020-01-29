@@ -1,3 +1,7 @@
+import throttle from 'lodash/throttle';
+
+const throttledSetItem = throttle(localStorage.setItem, 1000).bind(localStorage);
+
 export default {
   state: {
     width: parseInt(localStorage.getItem('width')) || 200,
@@ -6,11 +10,11 @@ export default {
   mutations: {
     resize(state, width) {
       state.width = width;
-      localStorage.setItem('width', width);
+      throttledSetItem('width', width);
     },
     save(state, content) {
       state.content = content;
-      localStorage.setItem('content', content);
+      throttledSetItem('content', content);
     },
   },
 };
