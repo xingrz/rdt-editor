@@ -31,8 +31,7 @@ export default {
 
         const res = await fetch(`${baseUrl}/${hash.substring(0, 1)}/${hash.substring(0, 2)}/${file}`);
         if (res.status >= 200 && res.status < 300) {
-          const svg = await res.text();
-          const data = `data:image/svg+xml;base64,${btoa(svg)}`;
+          const data = URL.createObjectURL(await res.blob());
           commit('fetched', { name, data });
         } else {
           commit('failed', { name });
