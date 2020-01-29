@@ -4,6 +4,7 @@
     v-model="content"
     v-bind:options="options"
     v-on:editorWillMount="editorWillMount"
+    v-on:editorDidMount="editorDidMount"
   />
 </template>
 
@@ -18,9 +19,11 @@ export default {
   props: {
     content: String,
     size: Number,
+    scroll: Number,
   },
   data() {
     return {
+      editor: null,
       options: {
         theme: 'vs',
         language: 'rdt',
@@ -32,9 +35,13 @@ export default {
       },
     };
   },
+  watch: {
+    scroll(scroll) {
+      this.editor.setScrollPosition({ scrollTop: scroll });
+    },
+  },
   methods: {
     editorWillMount(monaco) {
-      console.log('editorWillMount');
       monaco.languages.register({ id: 'rdt' });
       monaco.languages.setMonarchTokensProvider('rdt', {
         tokenizer: {
@@ -44,6 +51,12 @@ export default {
             [/~~.*$/, 'string'],
           ],
         },
+      });
+    },
+    editorDidMount(monaco) {
+      this.editor = monaco;
+      monaco.onDidScrollChange(({ scrollTop }) => {
+        this.$store.commit('setScroll', scrollTop);
       });
     },
   },

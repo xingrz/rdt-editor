@@ -5,10 +5,11 @@
         <Editor
           v-bind:content="$store.state.editor.content"
           v-bind:size="$store.state.editor.size"
+          v-bind:scroll="$store.state.editor.scroll"
         />
       </template>
       <template v-slot:fixed>
-        <Scroller>
+        <Scroller v-bind:scroll="$store.state.editor.scroll">
           <BSMap
             v-bind:content="$store.state.editor.content"
             v-bind:size="$store.state.editor.size"
