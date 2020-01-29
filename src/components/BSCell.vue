@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-cell" v-bind:style="{ width: size + 'px', height: size + 'px' }">
+  <div class="bs-cell" v-bind:title="content" v-bind:style="{ width: size + 'px', height: size + 'px' }">
     <BSIcon
       v-for="(icon, index) in icons"
       v-bind:key="index"
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     icons() {
-      return this.content.split('!~');
+      return this.content ? this.content.split('!~') : [];
     },
   },
 }
