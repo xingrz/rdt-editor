@@ -5,7 +5,7 @@
         Hello world
       </template>
       <template v-slot:fixed>
-        Resizable
+        <BSMap v-bind:content="content" v-bind:size="20" />
       </template>
     </Resizable>
   </div>
@@ -13,11 +13,13 @@
 
 <script>
 import Resizable from './components/Resizable.vue'
+import BSMap from './components/BSMap.vue';
 
 export default {
   name: 'app',
   components: {
     Resizable,
+    BSMap,
   },
   computed: {
     width() {
@@ -25,6 +27,9 @@ export default {
       const min = 200;
       const width = this.$store.state.editor.width;
       return Math.max(Math.min(width, max), min);
+    },
+    content() {
+      return this.$store.state.editor.content;
     },
   },
   methods: {
