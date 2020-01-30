@@ -1,5 +1,4 @@
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   configureWebpack: {
@@ -11,7 +10,6 @@ module.exports = {
           'smartSelect', 'suggest'
         ],
       }),
-      new BundleAnalyzerPlugin(),
     ],
   },
 };
