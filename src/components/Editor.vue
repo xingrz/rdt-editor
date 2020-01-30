@@ -28,6 +28,7 @@ export default {
     scroll: Number,
     width: Number,
     resizing: Boolean,
+    selection: Object,
   },
   data() {
     return {
@@ -45,7 +46,7 @@ export default {
   },
   watch: {
     scroll(scroll) {
-      getEditor(this).setScrollPosition({ scrollTop: scroll });
+      getEditor(this).setScrollTop(scroll);
     },
     width() {
       this.handleResize();
@@ -55,7 +56,20 @@ export default {
     },
     content(content) {
       this.$store.commit('save', content);
-    }
+    },
+    selection({ row, offset, length, from }) {
+      if (from != 'editor') {
+        const range = {
+          startLineNumber: row + 1,
+          startColumn: offset + 1,
+          endLineNumber: row + 1,
+          endColumn: offset + 1 + length
+        };
+        getEditor(this).setSelection(range);
+        getEditor(this).revealRange(range, 0);
+        getEditor(this).focus();
+      }
+    },
   },
   computed: {
     editorWidth() {
@@ -79,6 +93,14 @@ export default {
       window.addEventListener('resize', this.handleResize);
       monaco.onDidScrollChange(({ scrollTop }) => {
         this.$store.commit('setScroll', scrollTop);
+      });
+      monaco.onDidChangeCursorSelection(({ selection }) => {
+        this.$store.commit('setSelection', {
+          row: selection.startLineNumber - 1,
+          offset: selection.startColumn - 1,
+          length: 0,
+          from: 'editor',
+        });
       });
     },
     handleResize() {

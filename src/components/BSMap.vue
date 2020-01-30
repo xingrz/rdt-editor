@@ -6,6 +6,7 @@
       v-bind:content="row"
       v-bind:cols="cols"
       v-bind:size="size"
+      v-bind:row="index"
     />
   </div>
 </template>

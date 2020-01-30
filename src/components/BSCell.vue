@@ -1,5 +1,10 @@
 <template>
-  <div class="bs-cell" v-bind:title="content" v-bind:style="{ width: size + 'px', height: size + 'px' }">
+  <div
+    class="bs-cell"
+    v-bind:title="content"
+    v-bind:style="{ width: size + 'px', height: size + 'px' }"
+    v-on:click="handleClick"
+  >
     <BSIcon
       v-for="(icon, index) in icons"
       v-bind:key="index"
@@ -20,10 +25,22 @@ export default {
   props: {
     content: String,
     size: Number,
+    row: Number,
+    offset: Number,
   },
   computed: {
     icons() {
       return this.content ? this.content.split('!~') : [];
+    },
+  },
+  methods: {
+    handleClick() {
+      this.$store.commit('setSelection', {
+        row: this.row,
+        offset: this.offset,
+        length: this.content.length,
+        from: 'preview',
+      });
     },
   },
 }

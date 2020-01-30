@@ -12,6 +12,7 @@
           v-bind:scroll="$store.state.editor.scroll"
           v-bind:width="width"
           v-bind:resizing="resizing"
+          v-bind:selection="$store.state.editor.selection"
         />
       </template>
       <template v-slot:fixed>

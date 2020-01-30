@@ -8,6 +8,7 @@ export default {
     width: parseInt(localStorage.getItem('width')) || 200,
     content: localStorage.getItem('content') || '',
     scroll: 0,
+    selection: null,  // { row, offset, length, from }
   },
   mutations: {
     setSize(state, size) {
@@ -20,6 +21,9 @@ export default {
     },
     setScroll(state, scroll) {
       state.scroll = scroll;
+    },
+    setSelection(state, selection) {
+      state.selection = selection;
     },
     save(state, content) {
       state.content = content;
