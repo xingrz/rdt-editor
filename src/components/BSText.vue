@@ -36,6 +36,7 @@ export default {
   font-family: monospace;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bs-text.text-4 {

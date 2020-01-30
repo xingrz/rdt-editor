@@ -1,6 +1,6 @@
 <template>
   <div class="bs-row" v-bind:style="{ height: size + 'px' }">
-    <div class="cells" v-bind:style="{ flexBasis: (size * cols) + 'px' }">
+    <div class="cells" v-bind:style="{ flexBasis: iconWidth + 'px' }">
       <BSCell
         class="selection"
         v-for="({ cell, offset }, index) in cells"
@@ -12,7 +12,7 @@
         v-bind:offset="offset"
       />
     </div>
-    <div class="texts" v-bind:style="{ lineHeight: size + 'px' }">
+    <div class="texts" v-bind:style="{ lineHeight: size + 'px', maxWidth: textMaxWidth + 'px' }">
       <BSText
         class="selection"
         v-for="({ text, offset, align }, index) in texts"
@@ -41,6 +41,7 @@ export default {
     content: String,
     cols: Number,
     size: Number,
+    width: Number,
     row: Number,
   },
   computed: {
@@ -64,6 +65,12 @@ export default {
       return this.parts.slice(1)
         .map(({ part, offset }, i) => ({ text: part.trim(), offset, align: i + 1 }))
         .filter(({ text }) => !!text);
+    },
+    iconWidth() {
+      return this.size * this.cols;
+    },
+    textMaxWidth() {
+      return this.width - this.iconWidth;
     },
   },
   methods: {

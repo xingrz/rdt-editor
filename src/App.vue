@@ -20,6 +20,7 @@
           <BSMap
             v-bind:content="$store.state.editor.content"
             v-bind:size="$store.state.editor.size"
+            v-bind:width="width"
           />
         </Scroller>
       </template>

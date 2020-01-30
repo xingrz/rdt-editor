@@ -6,6 +6,7 @@
       v-bind:content="row"
       v-bind:cols="cols"
       v-bind:size="size"
+      v-bind:width="width"
       v-bind:row="index"
     />
   </div>
@@ -22,6 +23,7 @@ export default {
   props: {
     content: String,
     size: Number,
+    width: Number,
   },
   computed: {
     rows() {
