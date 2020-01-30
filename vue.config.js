@@ -1,4 +1,5 @@
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   configureWebpack: {
@@ -6,6 +7,7 @@ module.exports = {
       new MonacoEditorPlugin({
         languages: [],
       }),
+      new BundleAnalyzerPlugin(),
     ],
   },
 };
