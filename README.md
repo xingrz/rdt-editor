@@ -1,24 +1,29 @@
-# rdt-editor-4
+RDT Editor
+==========
 
-## Project setup
-```
+An rich editor for Wikipedia [Route Diagram Template](https://en.wikipedia.org/wiki/WP:RDT).
+
+Built with [Vue.js](https://vuejs.org/) and [Vuex](https://vuex.vuejs.org/).
+
+![](screenshot.png)
+
+## Development
+
+> _NodeJS 12 required_
+
+```sh
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+## Build
+
+> _NodeJS 12 required_
+
+```sh
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+## License
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[MIT License](LICENSE)
