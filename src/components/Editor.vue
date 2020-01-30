@@ -42,6 +42,7 @@ export default {
         scrollBeyondLastLine: false,
       },
       content: this.$store.state.editor.content,
+      windowWidth: 0,
     };
   },
   watch: {
@@ -73,7 +74,7 @@ export default {
   },
   computed: {
     editorWidth() {
-      return window.innerWidth - this.width - 8;
+      return this.windowWidth - this.width - 8;
     },
   },
   methods: {
@@ -104,7 +105,10 @@ export default {
       });
     },
     handleResize() {
-      getEditor(this).layout();
+      this.windowWidth = window.innerWidth;
+      setTimeout(() => {
+        getEditor(this).layout();
+      }, 200);
     },
   },
 }
