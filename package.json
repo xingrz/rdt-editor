@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.4.4",
-    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.15",
     "md5": "^2.2.1",
     "monaco-editor": "^0.19.3",
     "vue": "^2.6.10",

@@ -1,4 +1,4 @@
-import throttle from 'lodash/throttle';
+import throttle from 'lodash-es/throttle';
 
 const throttledSetItem = throttle(localStorage.setItem, 1000).bind(localStorage);
 
