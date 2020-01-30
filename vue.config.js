@@ -6,6 +6,10 @@ module.exports = {
     plugins: [
       new MonacoEditorPlugin({
         languages: [],
+        features: [
+          'clipboard', 'contextmenu', 'cursorUndo', 'hover',
+          'smartSelect', 'suggest'
+        ],
       }),
       new BundleAnalyzerPlugin(),
     ],
