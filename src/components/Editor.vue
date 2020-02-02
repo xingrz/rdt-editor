@@ -1,27 +1,38 @@
 <template>
   <div class="editor-container" v-bind:style="{ width: editorWidth + 'px' }">
-    <MonacoEditor
+    <AceEditor
       class="editor"
-      ref="editor"
-      v-model="content"
-      v-bind:options="options"
-      v-on:editorWillMount="editorWillMount"
-      v-on:editorDidMount="editorDidMount"
+      v-bind:value="content"
+      v-bind:width="String(editorWidth)"
+      height="100vh"
+      mode="rdt"
+      theme="tomorrow"
+      v-bind:name="name"
+      v-bind:onBeforeLoad="onBeforeLoad"
+      v-bind:onChange="onChange"
+      v-bind:onScroll="onScroll"
+      v-bind:onSelectionChange="onSelectionChange"
+      v-bind:style="{
+        lineHeight: size + 'px',
+      }"
+      v-bind:editorProps="{
+        $blockScrolling: Infinity,
+      }"
     />
   </div>
 </template>
 
 <script>
-import MonacoEditor from 'vue-monaco';
+import brace from 'brace';
+import 'brace/theme/tomorrow';
+import '../editor/rdt';
 
-function getEditor(that) {
-  return that.$refs.editor.getEditor();
-}
+import { Ace as AceEditor } from 'vue2-brace-editor';
 
 export default {
   name: 'Editor',
   components: {
-    MonacoEditor,
+    AceEditor,
   },
   props: {
     size: Number,
@@ -41,34 +52,31 @@ export default {
         },
         scrollBeyondLastLine: false,
       },
+      name: 'rdt-editor',
       content: this.$store.state.editor.content,
       windowWidth: 0,
     };
   },
   watch: {
     scroll(scroll) {
-      getEditor(this).setScrollTop(scroll);
-    },
-    width() {
-      this.handleResize();
-    },
-    resizing() {
-      this.handleResize();
-    },
-    content(content) {
-      this.$store.commit('save', content);
+      this.renderer.scrollToY(scroll);
     },
     selection({ row, offset, length, from }) {
       if (from != 'editor') {
-        const range = {
-          startLineNumber: row + 1,
-          startColumn: offset + 1,
-          endLineNumber: row + 1,
-          endColumn: offset + 1 + length
-        };
-        getEditor(this).setSelection(range);
-        getEditor(this).revealRange(range, 0);
-        getEditor(this).focus();
+        const { selection } = this.editor.getSession();
+        selection.setRange({
+          start: {
+            row: row,
+            column: offset,
+          },
+          end: {
+            row: row,
+            column: offset + length,
+          },
+        });
+        this.renderer.scrollToX(0);
+        this.renderer.scrollSelectionIntoView();
+        this.editor.focus();
       }
     },
   },
@@ -78,37 +86,24 @@ export default {
     },
   },
   methods: {
-    editorWillMount(monaco) {
-      monaco.languages.register({ id: 'rdt' });
-      monaco.languages.setMonarchTokensProvider('rdt', {
-        tokenizer: {
-          root: [
-            [/(\\|!~|{|})/, 'operator'],
-            [/[^\\!~]+/, 'type.identifier'],
-            [/~~.*$/, 'string'],
-          ],
-        },
-      });
+    onBeforeLoad() {
+      this.editor = brace.edit(this.name);
+      this.renderer = this.editor.renderer;
     },
-    editorDidMount(monaco) {
-      window.addEventListener('resize', this.handleResize);
-      monaco.onDidScrollChange(({ scrollTop }) => {
-        this.$store.commit('setScroll', scrollTop);
-      });
-      monaco.onDidChangeCursorSelection(({ selection }) => {
-        this.$store.commit('setSelection', {
-          row: selection.startLineNumber - 1,
-          offset: selection.startColumn - 1,
-          length: 0,
-          from: 'editor',
-        });
-      });
+    onChange(content) {
+      this.$store.commit('save', content);
     },
-    handleResize() {
-      this.windowWidth = window.innerWidth;
-      setTimeout(() => {
-        getEditor(this).layout();
-      }, 200);
+    onScroll() {
+      this.$store.commit('setScroll', this.renderer.scrollTop);
+    },
+    onSelectionChange(selection) {
+      const { start } = selection.getRange();
+      this.$store.commit('setSelection', {
+        row: start.row,
+        offset: start.column,
+        length: 0,
+        from: 'editor',
+      });
     },
   },
 }
