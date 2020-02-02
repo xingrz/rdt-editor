@@ -63,8 +63,8 @@ export default {
     },
     texts() {
       return this.parts.slice(1)
-        .map(({ part, offset }, i) => ({ text: part.trim(), offset, align: i + 1 }))
-        .filter(({ text }) => !!text);
+        .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
+        .filter(({ text }) => text && text.trim());
     },
     iconWidth() {
       return this.size * this.cols;

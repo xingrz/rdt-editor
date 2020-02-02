@@ -30,7 +30,10 @@ export default {
   },
   computed: {
     icons() {
-      return this.content ? this.content.split('!~') : [];
+      if (!this.content) return [];
+      return this.content.split('!~')
+        .map(icon => icon.trim())
+        .filter(icon => !!icon);
     },
   },
   methods: {
