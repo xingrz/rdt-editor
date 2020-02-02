@@ -3,7 +3,7 @@ RDT Editor
 
 An rich editor for Wikipedia [Route Diagram Template](https://en.wikipedia.org/wiki/WP:RDT).
 
-Built with [Vue.js](https://vuejs.org/) and [Vuex](https://vuex.vuejs.org/).
+Built with [Vue.js](https://vuejs.org/), [Vuex](https://vuex.vuejs.org/) and [brace](https://thlorenz.com/brace/).
 
 ![](screenshot.png)
 
