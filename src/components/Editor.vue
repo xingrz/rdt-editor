@@ -57,8 +57,7 @@ export default {
     },
     selection({ row, offset, length, from }) {
       if (from != 'editor') {
-        const { selection } = this.editor.getSession();
-        selection.setRange({
+        this.session.selection.setRange({
           start: {
             row: row,
             column: offset,
@@ -78,9 +77,19 @@ export default {
     onBeforeLoad() {
       this.editor = brace.edit(this.name);
       this.renderer = this.editor.renderer;
+      this.session = this.editor.getSession();
     },
     onChange(content) {
       this.$store.commit('save', content);
+
+      this.session.setAnnotations([
+        {
+          row: 1,
+          column: 3,
+          text: 'hahahah',
+          type: 'info',
+        },
+      ]);
     },
     onScroll() {
       this.$store.commit('setScroll', this.renderer.scrollTop);
