@@ -17,6 +17,11 @@
     v-bind:editorProps="{
       $blockScrolling: Infinity,
     }"
+    v-bind:setOptions="{
+      enableLiveAutocompletion: [
+        { getCompletions, getDocTooltip },
+      ],
+    }"
   />
 </template>
 
@@ -92,6 +97,16 @@ export default {
     handleResize() {
       this.editor.resize();
     },
+    getCompletions(editor, session, pos, prefix, callback) {
+      const icons = this.$store.state.icon.data;
+      callback(null, Object.keys(icons)
+        .filter(icon => !!icons[icon])
+        .map(icon => ({ value: icon })));
+    },
+    getDocTooltip(item) {
+      const icons = this.$store.state.icon.data;
+      item.docHTML = `<img src="${icons[item.value]}" class="preview" />`;
+    },
   },
   mounted() {
     window.addEventListener('resize', this.handleResize);
@@ -101,3 +116,10 @@ export default {
   },
 }
 </script>
+
+<style>
+.preview {
+  height: 120px;
+  display: block;
+}
+</style>
