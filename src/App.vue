@@ -1,17 +1,11 @@
 <template>
   <div id="app">
-    <Resizable
-      v-bind:width="width"
-      v-on:resize="handleResize"
-      v-on:resizeStart="handleResizeStart"
-      v-on:resizeEnd="handleResizeEnd"
-    >
+    <Resizable v-bind:width="width" v-on:resize="handleResize">
       <template v-slot:default>
         <Editor
           v-bind:size="$store.state.editor.size"
           v-bind:scroll="$store.state.editor.scroll"
           v-bind:width="width"
-          v-bind:resizing="resizing"
           v-bind:selection="$store.state.editor.selection"
         />
       </template>
@@ -42,11 +36,6 @@ export default {
     BSMap,
     Editor,
   },
-  data() {
-    return {
-      resizing: false,
-    }
-  },
   computed: {
     width() {
       const max = window.innerWidth - 400;
@@ -58,12 +47,6 @@ export default {
   methods: {
     handleResize(size) {
       this.$store.commit('setWidth', size);
-    },
-    handleResizeStart() {
-      this.resizing = true;
-    },
-    handleResizeEnd() {
-      this.resizing = false;
     },
   },
 }

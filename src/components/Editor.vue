@@ -1,25 +1,23 @@
 <template>
-  <div class="editor-container" v-bind:style="{ width: editorWidth + 'px' }">
-    <AceEditor
-      class="editor"
-      v-bind:value="content"
-      v-bind:width="String(editorWidth)"
-      height="100vh"
-      mode="rdt"
-      theme="tomorrow"
-      v-bind:name="name"
-      v-bind:onBeforeLoad="onBeforeLoad"
-      v-bind:onChange="onChange"
-      v-bind:onScroll="onScroll"
-      v-bind:onSelectionChange="onSelectionChange"
-      v-bind:style="{
-        lineHeight: size + 'px',
-      }"
-      v-bind:editorProps="{
-        $blockScrolling: Infinity,
-      }"
-    />
-  </div>
+  <AceEditor
+    class="editor"
+    mode="rdt"
+    theme="tomorrow"
+    width="100%"
+    height="100vh"
+    v-bind:name="name"
+    v-bind:value="$store.state.editor.content"
+    v-bind:onBeforeLoad="onBeforeLoad"
+    v-bind:onChange="onChange"
+    v-bind:onScroll="onScroll"
+    v-bind:onSelectionChange="onSelectionChange"
+    v-bind:style="{
+      lineHeight: size + 'px',
+    }"
+    v-bind:editorProps="{
+      $blockScrolling: Infinity,
+    }"
+  />
 </template>
 
 <script>
@@ -38,26 +36,17 @@ export default {
     size: Number,
     scroll: Number,
     width: Number,
-    resizing: Boolean,
     selection: Object,
   },
   data() {
     return {
-      options: {
-        theme: 'vs',
-        language: 'rdt',
-        lineHeight: this.size,
-        minimap: {
-          enabled: false,
-        },
-        scrollBeyondLastLine: false,
-      },
       name: 'rdt-editor',
-      content: this.$store.state.editor.content,
-      windowWidth: 0,
     };
   },
   watch: {
+    width() {
+      this.handleResize();
+    },
     scroll(scroll) {
       this.renderer.scrollToY(scroll);
     },
@@ -80,11 +69,6 @@ export default {
       }
     },
   },
-  computed: {
-    editorWidth() {
-      return this.windowWidth - this.width - 8;
-    },
-  },
   methods: {
     onBeforeLoad() {
       this.editor = brace.edit(this.name);
@@ -105,17 +89,15 @@ export default {
         from: 'editor',
       });
     },
+    handleResize() {
+      this.editor.resize();
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
   },
 }
 </script>
-
-<style>
-.editor-container {
-  overflow: hidden;
-}
-
-.editor {
-  width: 100%;
-  height: 100vh;
-}
-</style>
