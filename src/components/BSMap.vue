@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-map">
+  <div class="bs-map" v-bind:style="{ lineHeight: size + 'px'}">
     <BSRow
       v-for="(row, index) in rows"
       v-bind:key="index"

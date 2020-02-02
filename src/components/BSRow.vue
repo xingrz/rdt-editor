@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-row" v-bind:style="{ height: size + 'px' }">
+  <div class="bs-row">
     <div class="cells" v-bind:style="{ flexBasis: iconWidth + 'px' }">
       <BSCell
         class="selection"
@@ -12,7 +12,7 @@
         v-bind:offset="offset"
       />
     </div>
-    <div class="texts" v-bind:style="{ lineHeight: size + 'px', maxWidth: textMaxWidth + 'px' }">
+    <div class="texts" v-bind:style="{ maxWidth: textMaxWidth + 'px' }">
       <BSText
         class="selection"
         v-for="({ text, offset, align }, index) in texts"

@@ -2,7 +2,12 @@
   <div
     class="bs-label"
     v-if="label"
-    v-bind:style="{ ...sizeStyle, textAlign: label.align, lineHeight: size + 'px' }"
+    v-bind:style="{
+      ...sizeStyle,
+      textAlign: label.align,
+      lineHeight: size + 'px',
+      fontSize: (size - 8) + 'px',
+    }"
   >{{label.text}}</div>
   <img
     class="bs-icon"
@@ -66,6 +71,5 @@ export default {
   position: absolute;
   user-select: none;
   font-family: monospace;
-  font-size: 12px;
 }
 </style>

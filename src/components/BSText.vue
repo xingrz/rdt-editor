@@ -31,6 +31,7 @@ export default {
 
 <style>
 .bs-text {
+  user-select: none;
   cursor: pointer;
   margin: 0 5px;
   font-family: monospace;

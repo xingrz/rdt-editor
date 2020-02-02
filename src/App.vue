@@ -38,8 +38,8 @@ export default {
   },
   computed: {
     width() {
-      const max = window.innerWidth - 400;
-      const min = 400;
+      const max = window.innerWidth - 200;
+      const min = 200;
       const width = this.$store.state.editor.width;
       return Math.max(Math.min(width, max), min);
     },
