@@ -2,14 +2,13 @@
   <div
     class="bs-label"
     v-if="label"
+    v-bind:data-align="(label.align || '').toUpperCase()"
     v-bind:style="{
       width: size + 'px',
       height: size + 'px',
-      textAlign: label.align,
-      lineHeight: size + 'px',
       fontSize: (size - 8) + 'px',
     }"
-  >{{label.text}}</div>
+  ><span>{{label.text}}</span></div>
   <img
     class="bs-icon"
     v-else
@@ -39,17 +38,9 @@ export default {
       return this.size * ratio;
     },
     label() {
-      if (this.content && this.content.match(/^\*([^_]+)(__align=(l|m|r|L|M|R)$)?/)) {
+      if (this.content && this.content.match(/^\*([^_]+)(__align=([^,]+)$)?/)) {
         const text = RegExp.$1;
-        const align = ((align) => {
-          switch (align) {
-            case 'l':
-            case 'L': return 'left';
-            case 'r':
-            case 'R': return 'right';
-             default: return 'center';
-          }
-        })(RegExp.$3);
+        const align = RegExp.$3;
         return { text, align };
       } else {
         return null;
@@ -74,5 +65,26 @@ export default {
   position: absolute;
   user-select: none;
   font-family: monospace;
+  text-align: center;
+}
+
+.bs-label span {
+  line-height: 0.75;
+}
+
+.bs-label[data-align="L"] {
+  text-align: left;
+}
+
+.bs-label[data-align="R"] {
+  text-align: right;
+}
+
+.bs-label[data-align="A"] span {
+  vertical-align: top;
+}
+
+.bs-label[data-align="E"] span {
+  vertical-align: bottom;
 }
 </style>
