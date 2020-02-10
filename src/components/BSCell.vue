@@ -2,7 +2,7 @@
   <div
     class="bs-cell"
     v-bind:title="content"
-    v-bind:style="{ width: width + 'px', height: size + 'px' }"
+    v-bind:style="{ width: (size * ratio) + 'px', height: size + 'px' }"
     v-on:click="handleClick"
   >
     <BSIcon
@@ -10,6 +10,7 @@
       v-bind:key="index"
       v-bind:content="icon"
       v-bind:size="size"
+      v-on:ratio="(ratio) => updateRatio(index, ratio)"
     />
   </div>
 </template>
@@ -28,18 +29,17 @@ export default {
     row: Number,
     offset: Number,
   },
+  data() {
+    return {
+      ratio: 1,
+    };
+  },
   computed: {
     icons() {
       if (!this.content) return [];
       return this.content.split('!~')
         .map(icon => icon.trim())
         .filter(icon => !!icon);
-    },
-    width() {
-      if (this.icons.length == 0) return this.size;
-      const first = this.icons[0];
-      const ratio = this.$store.state.icon.ratio[first] || 1;
-      return this.size * ratio;
     },
   },
   methods: {
@@ -50,6 +50,10 @@ export default {
         length: this.content.length,
         from: 'preview',
       });
+    },
+    updateRatio(index, ratio) {
+      if (index != 0) return;
+      this.ratio = ratio;
     },
   },
 }

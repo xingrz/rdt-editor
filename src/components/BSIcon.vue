@@ -5,7 +5,7 @@
     v-bind:data-bold="label.params.b || label.params.bold"
     v-bind:data-align="(label.params.align || '').toUpperCase()"
     v-bind:style="{
-      width: size + 'px',
+      width: (size * ratio) + 'px',
       height: size + 'px',
       fontSize: (size - 8) + 'px',
     }"
@@ -13,13 +13,27 @@
   <img
     class="bs-icon"
     v-else
-    v-bind:style="{ width: width + 'px', height: size + 'px' }"
+    v-bind:style="{
+      width: (size * ratio) + 'px',
+      height: size + 'px',
+    }"
     v-bind:src="content ? $store.state.icon.data[content] : null"
   />
 </template>
 
 <script>
 import qs from 'querystring';
+
+function selectTextWidth(flag) {
+  switch (flag) {
+    case 'o': return 0.125;
+    case 'c': return 0.25;
+    case 'd': return 0.5;
+    case 'b': return 2;
+    case 's': return 4;
+    case 'w': return 8;
+  }
+}
 
 function parseTextParams(str) {
   return qs.parse(str, ',', '=', {
@@ -39,20 +53,27 @@ export default {
         this.$store.dispatch('fetch', content);
       }
     },
+    ratio(ratio) {
+      this.$emit('ratio', ratio);
+    },
   },
   computed: {
-    width() {
-      if (!this.content) return this.size;
-      const ratio = this.$store.state.icon.ratio[this.content] || 1;
-      return this.size * ratio;
-    },
     label() {
-      if (this.content && this.content.match(/^\*([^_]+)(__(.+)$)?/)) {
-        const text = RegExp.$1;
-        const params = parseTextParams(RegExp.$3 || '');
-        return { text, params };
+      if (this.content && this.content.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
+        const ratio = selectTextWidth(RegExp.$1);
+        const text = RegExp.$2;
+        const params = parseTextParams(RegExp.$4 || '');
+        return { text, ratio, params };
       } else {
         return null;
+      }
+    },
+    ratio() {
+      if (!this.content) return 1;
+      if (this.label) {
+        return this.label.ratio || 1;
+      } else {
+        return this.$store.state.icon.ratio[this.content] || 1;
       }
     },
   },
@@ -60,6 +81,7 @@ export default {
     if (this.content && !this.label) {
       this.$store.dispatch('fetch', this.content);
     }
+    this.$emit('ratio', this.ratio);
   },
 }
 </script>
