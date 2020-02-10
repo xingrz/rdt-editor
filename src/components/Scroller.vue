@@ -28,5 +28,6 @@ export default {
   height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
+  background: #F9F9F9;
 }
 </style>
