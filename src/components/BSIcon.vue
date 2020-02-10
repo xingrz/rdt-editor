@@ -2,7 +2,8 @@
   <div
     class="bs-label"
     v-if="label"
-    v-bind:data-align="(label.align || '').toUpperCase()"
+    v-bind:data-bold="label.params.b || label.params.bold"
+    v-bind:data-align="(label.params.align || '').toUpperCase()"
     v-bind:style="{
       width: size + 'px',
       height: size + 'px',
@@ -18,6 +19,14 @@
 </template>
 
 <script>
+import qs from 'querystring';
+
+function parseTextParams(str) {
+  return qs.parse(str, ',', '=', {
+    decodeURIComponent: (s) => s,
+  });
+}
+
 export default {
   name: 'BSIcon',
   props: {
@@ -38,10 +47,10 @@ export default {
       return this.size * ratio;
     },
     label() {
-      if (this.content && this.content.match(/^\*([^_]+)(__align=([^,]+)$)?/)) {
+      if (this.content && this.content.match(/^\*([^_]+)(__(.+)$)?/)) {
         const text = RegExp.$1;
-        const align = RegExp.$3;
-        return { text, align };
+        const params = parseTextParams(RegExp.$3 || '');
+        return { text, params };
       } else {
         return null;
       }
@@ -86,5 +95,9 @@ export default {
 
 .bs-label[data-align="E"] span {
   vertical-align: bottom;
+}
+
+.bs-label[data-bold="1"] {
+  font-weight: bold;
 }
 </style>
