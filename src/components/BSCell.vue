@@ -2,7 +2,7 @@
   <div
     class="bs-cell"
     v-bind:title="content"
-    v-bind:style="{ width: size + 'px', height: size + 'px' }"
+    v-bind:style="{ width: width + 'px', height: size + 'px' }"
     v-on:click="handleClick"
   >
     <BSIcon
@@ -34,6 +34,12 @@ export default {
       return this.content.split('!~')
         .map(icon => icon.trim())
         .filter(icon => !!icon);
+    },
+    width() {
+      if (this.icons.length == 0) return this.size;
+      const first = this.icons[0];
+      const ratio = this.$store.state.icon.ratio[first] || 1;
+      return this.size * ratio;
     },
   },
   methods: {

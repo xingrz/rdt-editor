@@ -3,7 +3,8 @@
     class="bs-label"
     v-if="label"
     v-bind:style="{
-      ...sizeStyle,
+      width: size + 'px',
+      height: size + 'px',
       textAlign: label.align,
       lineHeight: size + 'px',
       fontSize: (size - 8) + 'px',
@@ -12,7 +13,7 @@
   <img
     class="bs-icon"
     v-else
-    v-bind:style="{ ...sizeStyle }"
+    v-bind:style="{ width: width + 'px', height: size + 'px' }"
     v-bind:src="content ? $store.state.icon.data[content] : null"
   />
 </template>
@@ -32,8 +33,10 @@ export default {
     },
   },
   computed: {
-    sizeStyle() {
-      return { width: this.size + 'px', height: this.size + 'px' };
+    width() {
+      if (!this.content) return this.size;
+      const ratio = this.$store.state.icon.ratio[this.content] || 1;
+      return this.size * ratio;
     },
     label() {
       if (this.content && this.content.match(/^\*([^_]+)(__align=(l|m|r|L|M|R)$)?/)) {

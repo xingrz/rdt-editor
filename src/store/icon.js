@@ -2,9 +2,19 @@ import md5 from 'md5';
 
 const baseUrl = 'https://upload.wikimedia.org/wikipedia/commons';
 
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = url;
+  });
+}
+
 export default {
   state: {
     data: {},
+    ratio: {},
   },
   mutations: {
     fetching(state, { name }) {
@@ -15,6 +25,9 @@ export default {
     },
     failed(state, { name }) {
       state.data = { ...state.data, [name]: null };
+    },
+    resolved(state, { name, ratio }) {
+      state.ratio = { ...state.ratio, [name]: ratio };
     },
   },
   actions: {
@@ -33,6 +46,10 @@ export default {
         if (res.status >= 200 && res.status < 300) {
           const data = URL.createObjectURL(await res.blob());
           commit('fetched', { name, data });
+
+          const img = await loadImage(data);
+          const ratio = img.width / img.height;
+          commit('resolved', { name, ratio });
         } else {
           commit('failed', { name });
         }
