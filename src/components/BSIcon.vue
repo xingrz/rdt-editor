@@ -2,6 +2,7 @@
   <div
     class="bs-label"
     v-if="label"
+    v-bind:data-overlay="index > 0"
     v-bind:data-bold="label.params.b || label.params.bold"
     v-bind:data-align="(label.params.align || '').toUpperCase()"
     v-bind:style="{
@@ -13,6 +14,7 @@
   <img
     class="bs-icon"
     v-else
+    v-bind:data-overlay="index > 0"
     v-bind:style="{
       width: (size * ratio) + 'px',
       height: size + 'px',
@@ -46,6 +48,7 @@ export default {
   props: {
     content: String,
     size: Number,
+    index: Number,
   },
   watch: {
     content(content) {
@@ -87,16 +90,19 @@ export default {
 </script>
 
 <style>
-.bs-icon {
+.bs-icon, .bs-label {
   position: absolute;
   user-select: none;
 }
 
 .bs-label {
-  position: absolute;
-  user-select: none;
   font-family: monospace;
   text-align: center;
+}
+
+.bs-icon[data-overlay],
+.bs-label[data-overlay] {
+  z-index: 1;
 }
 
 .bs-label span {

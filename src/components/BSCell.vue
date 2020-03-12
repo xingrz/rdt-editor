@@ -10,6 +10,7 @@
       v-bind:key="index"
       v-bind:content="icon"
       v-bind:size="size"
+      v-bind:index="index"
       v-on:ratio="(ratio) => updateRatio(index, ratio)"
     />
   </div>
