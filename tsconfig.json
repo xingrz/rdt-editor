@@ -1,4 +1,10 @@
 {
+  "ts-node": {
+    "files": true
+  },
+  "files": [
+    "src/*.d.ts"
+  ],
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",

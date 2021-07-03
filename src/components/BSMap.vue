@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-map" v-bind:style="{ lineHeight: size + 'px'}">
+  <div class="bs-map" v-bind:style="{ lineHeight: `${size}px` }">
     <BSRow
       v-for="(row, index) in rows"
       v-bind:key="index"
@@ -12,32 +12,33 @@
   </div>
 </template>
 
-<script>
-import BSRow from './BSRow.vue'
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 
-export default {
-  name: 'BSMap',
+import BSRow from "./BSRow.vue";
+
+@Component({
   components: {
     BSRow,
   },
-  props: {
-    content: String,
-    size: Number,
-    width: Number,
-  },
-  computed: {
-    rows() {
-      return this.content.split('\n');
-    },
-    cols() {
-      let cols = 0;
-      for (let row of this.rows) {
-        const c = Math.max(cols, row.split('\\').length);
-        if (c > cols) cols = c;
-      }
-      return cols;
-    },
-  },
+})
+export default class BSMap extends Vue {
+  @Prop(String) content!: string;
+  @Prop(Number) size!: number;
+  @Prop(Number) width!: number;
+
+  get rows(): string[] {
+    return this.content.split("\n");
+  }
+
+  get cols(): number {
+    let cols = 0;
+    for (let row of this.rows) {
+      const c = Math.max(cols, row.split("\\").length);
+      if (c > cols) cols = c;
+    }
+    return cols;
+  }
 }
 </script>
 

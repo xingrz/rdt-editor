@@ -4,22 +4,24 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Scroller',
-  props: {
-    scroll: Number,
-  },
-  watch: {
-    scroll(value) {
-      this.$el.scrollTop = value;
-    },
-  },
-  methods: {
-    onScroll () {
-      this.$store.commit('setScroll', this.$el.scrollTop);
-    },
-  },
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Mutation } from "vuex-class";
+
+@Component
+export default class Scroller extends Vue {
+  @Prop(Number) scroll!: number;
+
+  @Mutation("setScroll") setScroll!: (scroll: number) => void;
+
+  @Watch("scroll")
+  onScrollChanged(scroll: number): void {
+    this.$el.scrollTop = scroll;
+  }
+
+  onScroll(): void {
+    this.setScroll(this.$el.scrollTop);
+  }
 }
 </script>
 
@@ -28,6 +30,6 @@ export default {
   height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
-  background: #F9F9F9;
+  background: #f9f9f9;
 }
 </style>

@@ -6,91 +6,118 @@
     v-bind:data-bold="label.params.b || label.params.bold"
     v-bind:data-align="(label.params.align || '').toUpperCase()"
     v-bind:style="{
-      width: (size * ratio) + 'px',
-      height: size + 'px',
-      fontSize: (size - 8) + 'px',
+      width: `${size * ratio}px`,
+      height: `${size}px`,
+      fontSize: `${size - 8}px`,
     }"
-  ><span>{{label.text}}</span></div>
+  >
+    <span>{{ label.text }}</span>
+  </div>
   <img
     class="bs-icon"
     v-else
     v-bind:data-overlay="index > 0"
     v-bind:style="{
-      width: (size * ratio) + 'px',
-      height: size + 'px',
+      width: `${size * ratio}px`,
+      height: `${size}px`,
     }"
-    v-bind:src="content ? $store.state.icon.data[content] : null"
+    v-bind:src="icon ? icon.data : null"
   />
 </template>
 
-<script>
-import qs from 'querystring';
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Action, State } from "vuex-class";
 
-function selectTextWidth(flag) {
+import qs from "querystring";
+
+import { RootState } from "@/store/types";
+import IIcon from "@/types/icon";
+
+function selectTextWidth(flag: string): number | undefined {
   switch (flag) {
-    case 'o': return 0.125;
-    case 'c': return 0.25;
-    case 'd': return 0.5;
-    case 'b': return 2;
-    case 's': return 4;
-    case 'w': return 8;
+    case "o":
+      return 0.125;
+    case "c":
+      return 0.25;
+    case "d":
+      return 0.5;
+    case "b":
+      return 2;
+    case "s":
+      return 4;
+    case "w":
+      return 8;
   }
 }
 
-function parseTextParams(str) {
-  return qs.parse(str, ',', '=', {
+function parseTextParams(str: string): Record<string, string> {
+  return qs.parse(str, ",", "=", {
     decodeURIComponent: (s) => s,
-  });
+  }) as Record<string, string>;
 }
 
-export default {
-  name: 'BSIcon',
-  props: {
-    content: String,
-    size: Number,
-    index: Number,
-  },
-  watch: {
-    content(content) {
-      if (!this.label) {
-        this.$store.dispatch('fetch', content);
-      }
-    },
-    ratio(ratio) {
-      this.$emit('ratio', ratio);
-    },
-  },
-  computed: {
-    label() {
-      if (this.content && this.content.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
-        const ratio = selectTextWidth(RegExp.$1);
-        const text = RegExp.$2;
-        const params = parseTextParams(RegExp.$4 || '');
-        return { text, ratio, params };
-      } else {
-        return null;
-      }
-    },
-    ratio() {
-      if (!this.content) return 1;
-      if (this.label) {
-        return this.label.ratio || 1;
-      } else {
-        return this.$store.state.icon.ratio[this.content] || 1;
-      }
-    },
-  },
-  created() {
-    if (this.content && !this.label) {
-      this.$store.dispatch('fetch', this.content);
+@Component
+export default class BSIcon extends Vue {
+  @Prop(String) content!: string;
+  @Prop(Number) size!: number;
+  @Prop(Number) index!: number;
+
+  @State(({ icon }: RootState) => icon.icons)
+  icons!: Record<string, IIcon | null>;
+
+  @Action("fetch") fetch!: (name: string) => Promise<void>;
+
+  @Watch("content") onContentChanged(content: string): void {
+    if (!this.label) {
+      this.fetch(content);
     }
-    this.$emit('ratio', this.ratio);
-  },
+  }
+
+  @Watch("ratio") onRatioChanged(ratio: number): void {
+    this.$emit("ratio", ratio);
+  }
+
+  get icon(): IIcon | null {
+    return this.icons[this.content];
+  }
+
+  get label(): {
+    text: string;
+    ratio: number;
+    params: Record<string, string>;
+  } | null {
+    if (this.content && this.content.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
+      const ratio = selectTextWidth(RegExp.$1) as number;
+      const text = RegExp.$2;
+      const params = parseTextParams(RegExp.$4 || "");
+      return { text, ratio, params };
+    } else {
+      return null;
+    }
+  }
+
+  get ratio(): number {
+    if (!this.content) return 1;
+    if (this.label) {
+      return this.label.ratio || 1;
+    } else {
+      return this.icon?.ratio || 1;
+    }
+  }
+
+  created(): void {
+    if (this.content && !this.label) {
+      this.fetch(this.content);
+    }
+    this.$emit("ratio", this.ratio);
+  }
 }
 </script>
 
 <style>
-.bs-icon, .bs-label {
+.bs-icon,
+.bs-label {
   position: absolute;
   user-select: none;
 }

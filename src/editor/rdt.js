@@ -10,7 +10,7 @@ ace.define('ace/mode/rdt_highlight_rules',
       static metaData = {
         name: 'RDT File',
         scopeName: 'source.rdt',
-        fileTypes: [ 'rdt' ],
+        fileTypes: ['rdt'],
       };
 
       $rules = {

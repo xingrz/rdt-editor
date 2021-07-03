@@ -1,6 +1,6 @@
 <template>
   <div class="bs-row">
-    <div class="cells" v-bind:style="{ flexBasis: iconWidth + 'px' }">
+    <div class="cells" v-bind:style="{ flexBasis: `${iconWidth}px` }">
       <BSCell
         class="selection"
         v-for="({ cell, offset }, index) in cells"
@@ -12,7 +12,7 @@
         v-bind:offset="offset"
       />
     </div>
-    <div class="texts" v-bind:style="{ maxWidth: textMaxWidth + 'px' }">
+    <div class="texts" v-bind:style="{ maxWidth: `${textMaxWidth}px` }">
       <BSText
         class="selection"
         v-for="({ text, offset, align }, index) in texts"
@@ -27,61 +27,73 @@
   </div>
 </template>
 
-<script>
-import BSCell from './BSCell.vue'
-import BSText from './BSText.vue'
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State } from "vuex-class";
 
-export default {
-  name: 'BSRow',
+import { RootState } from "@/store/types";
+import ISelection from "@/types/selection";
+
+import BSCell from "./BSCell.vue";
+import BSText from "./BSText.vue";
+
+@Component({
   components: {
     BSCell,
     BSText,
   },
-  props: {
-    content: String,
-    cols: Number,
-    size: Number,
-    width: Number,
-    row: Number,
-  },
-  computed: {
-    parts() {
-      let offset = 0;
-      return this.content.split('~~').map((part) => {
-        const o = offset;
-        offset += part.length + 2;
-        return { part, offset: o };
-      });
-    },
-    cells() {
-      let offset = 0;
-      return this.parts[0].part.split('\\').map((cell) => {
-        const o = offset;
-        offset += cell.length + 1;
-        return { cell, offset: o };
-      });
-    },
-    texts() {
-      return this.parts.slice(1)
-        .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
-        .filter(({ text }) => text && text.trim());
-    },
-    iconWidth() {
-      return this.size * this.cols;
-    },
-    textMaxWidth() {
-      return this.width - this.iconWidth;
-    },
-  },
-  methods: {
-    isFocused(row, offset, length) {
-      const { selection } = this.$store.state.editor;
-      return selection != null &&
-        selection.row == row &&
-        selection.offset >= offset &&
-        selection.offset <= offset + length;
-    },
-  },
+})
+export default class BSRow extends Vue {
+  @Prop(String) content!: string;
+  @Prop(Number) cols!: number;
+  @Prop(Number) size!: number;
+  @Prop(Number) width!: number;
+  @Prop(Number) row!: number;
+
+  @State(({ editor }: RootState) => editor.selection)
+  selection!: ISelection | null;
+
+  get parts(): { part: string; offset: number }[] {
+    let offset = 0;
+    return this.content.split("~~").map((part) => {
+      const o = offset;
+      offset += part.length + 2;
+      return { part, offset: o };
+    });
+  }
+
+  get cells(): { cell: string; offset: number }[] {
+    let offset = 0;
+    return this.parts[0].part.split("\\").map((cell) => {
+      const o = offset;
+      offset += cell.length + 1;
+      return { cell, offset: o };
+    });
+  }
+
+  get texts(): { text: string; offset: number; align: number }[] {
+    return this.parts
+      .slice(1)
+      .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
+      .filter(({ text }) => text && text.trim());
+  }
+
+  get iconWidth(): number {
+    return this.size * this.cols;
+  }
+
+  get textMaxWidth(): number {
+    return this.width - this.iconWidth;
+  }
+
+  isFocused(row: number, offset: number, length: number): boolean {
+    return (
+      this.selection != null &&
+      this.selection.row == row &&
+      this.selection.offset >= offset &&
+      this.selection.offset <= offset + length
+    );
+  }
 }
 </script>
 
@@ -108,7 +120,7 @@ export default {
 
 .bs-row .selection::after {
   display: block;
-  content: '';
+  content: "";
 
   position: absolute;
 
@@ -117,8 +129,8 @@ export default {
   bottom: 0;
   left: 0;
 
-  background: #0099FF;
-  opacity: 0.0;
+  background: #0099ff;
+  opacity: 0;
 
   transition: opacity 200ms;
 }

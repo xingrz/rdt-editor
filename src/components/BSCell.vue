@@ -2,7 +2,7 @@
   <div
     class="bs-cell"
     v-bind:title="content"
-    v-bind:style="{ width: (size * ratio) + 'px', height: size + 'px' }"
+    v-bind:style="{ width: `${size * ratio}px`, height: `${size}px` }"
     v-on:click="handleClick"
   >
     <BSIcon
@@ -16,47 +16,52 @@
   </div>
 </template>
 
-<script>
-import BSIcon from './BSIcon.vue'
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Mutation } from "vuex-class";
 
-export default {
-  name: 'BSCell',
+import ISelection from "@/types/selection";
+
+import BSIcon from "./BSIcon.vue";
+
+@Component({
   components: {
     BSIcon,
   },
-  props: {
-    content: String,
-    size: Number,
-    row: Number,
-    offset: Number,
-  },
-  data() {
-    return {
-      ratio: 1,
-    };
-  },
-  computed: {
-    icons() {
-      if (!this.content) return [];
-      return this.content.split('!~')
-        .map(icon => icon.trim())
-        .filter(icon => !!icon);
-    },
-  },
-  methods: {
-    handleClick() {
-      this.$store.commit('setSelection', {
-        row: this.row,
-        offset: this.offset,
-        length: this.content.length,
-        from: 'preview',
-      });
-    },
-    updateRatio(index, ratio) {
-      if (index != 0) return;
-      this.ratio = ratio;
-    },
-  },
+})
+export default class BSCell extends Vue {
+  @Prop(String) content!: string;
+  @Prop(Number) size!: number;
+  @Prop(Number) row!: number;
+  @Prop(Number) offset!: number;
+
+  @Mutation("setSelection") setSelection!: (
+    selection: ISelection | null
+  ) => void;
+
+  ratio = 1;
+
+  get icons(): string[] {
+    if (!this.content) return [];
+    return this.content
+      .split("!~")
+      .map((icon) => icon.trim())
+      .filter((icon) => !!icon);
+  }
+
+  handleClick(): void {
+    this.setSelection({
+      row: this.row,
+      offset: this.offset,
+      length: this.content.length,
+      from: "preview",
+    });
+  }
+
+  updateRatio(index: number, ratio: number): void {
+    if (index != 0) return;
+    this.ratio = ratio;
+  }
 }
 </script>
 
