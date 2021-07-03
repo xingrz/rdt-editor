@@ -1,4 +1,4 @@
-[RDT Editor](https://rdt.xingrz.me)
+[RDT Editor](https://rdt.xingrz.me) [![Auto deploy](https://github.com/xingrz/rdt-editor/actions/workflows/deploy.yml/badge.svg)](https://github.com/xingrz/rdt-editor/actions/workflows/deploy.yml)
 ==========
 
 [![license][license-img]][license-url] [![issues][issues-img]][issues-url] [![commits][commits-img]][commits-url]
