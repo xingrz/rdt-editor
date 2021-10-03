@@ -1,99 +1,87 @@
 <template>
   <div class="bs-row">
-    <div class="cells" v-bind:style="{ flexBasis: `${iconWidth}px` }">
+    <div class="cells" :style="{ flexBasis: `${iconWidth}px` }">
       <BSCell
         class="selection"
         v-for="({ cell, offset }, index) in cells"
-        v-bind:key="index"
-        v-bind:class="{ focused: isFocused(row, offset, cell.length) }"
-        v-bind:content="cell"
-        v-bind:size="size"
-        v-bind:row="row"
-        v-bind:offset="offset"
+        :key="index"
+        :class="{ focused: isFocused(row, offset, cell.length) }"
+        :content="cell"
+        :size="size"
+        :row="row"
+        :offset="offset"
       />
     </div>
-    <div class="texts" v-bind:style="{ maxWidth: `${textMaxWidth}px` }">
+    <div class="texts" :style="{ maxWidth: `${textMaxWidth}px` }">
       <BSText
         class="selection"
         v-for="({ text, offset, align }, index) in texts"
-        v-bind:key="index"
-        v-bind:class="{ focused: isFocused(row, offset, text.length) }"
-        v-bind:content="text"
-        v-bind:align="align"
-        v-bind:row="row"
-        v-bind:offset="offset"
+        :key="index"
+        :class="{ focused: isFocused(row, offset, text.length) }"
+        :content="text"
+        :align="align"
+        :row="row"
+        :offset="offset"
       />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { State } from "vuex-class";
+<script lang="ts" setup>
+import { computed, defineProps } from "vue";
 
-import { RootState } from "@/store/types";
-import ISelection from "@/types/selection";
+import { useStore } from "@/store";
 
 import BSCell from "./BSCell.vue";
 import BSText from "./BSText.vue";
 
-@Component({
-  components: {
-    BSCell,
-    BSText,
-  },
-})
-export default class BSRow extends Vue {
-  @Prop(String) content!: string;
-  @Prop(Number) cols!: number;
-  @Prop(Number) size!: number;
-  @Prop(Number) width!: number;
-  @Prop(Number) row!: number;
+const props = defineProps<{
+  content: string;
+  cols: number;
+  size: number;
+  width: number;
+  row: number;
+}>();
 
-  @State(({ editor }: RootState) => editor.selection)
-  selection!: ISelection | null;
+const store = useStore();
+const selection = computed(() => store.state.editor.selection);
 
-  get parts(): { part: string; offset: number }[] {
-    let offset = 0;
-    return this.content.split("~~").map((part) => {
-      const o = offset;
-      offset += part.length + 2;
-      return { part, offset: o };
-    });
-  }
+const parts = computed(() => {
+  let offset = 0;
+  return props.content.split("~~").map((part) => {
+    const o = offset;
+    offset += part.length + 2;
+    return { part, offset: o };
+  });
+});
 
-  get cells(): { cell: string; offset: number }[] {
-    let offset = 0;
-    return this.parts[0].part.split("\\").map((cell) => {
-      const o = offset;
-      offset += cell.length + 1;
-      return { cell, offset: o };
-    });
-  }
+const cells = computed(() => {
+  let offset = 0;
+  return parts.value[0].part.split("\\").map((cell) => {
+    const o = offset;
+    offset += cell.length + 1;
+    return { cell, offset: o };
+  });
+});
 
-  get texts(): { text: string; offset: number; align: number }[] {
-    return this.parts
-      .slice(1)
-      .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
-      .filter(({ text }) => text && text.trim());
-  }
+const texts = computed(() => {
+  return parts.value
+    .slice(1)
+    .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
+    .filter(({ text }) => text && text.trim());
+});
 
-  get iconWidth(): number {
-    return this.size * this.cols;
-  }
+const iconWidth = computed(() => props.size * props.cols);
 
-  get textMaxWidth(): number {
-    return this.width - this.iconWidth;
-  }
+const textMaxWidth = computed(() => props.width - iconWidth.value);
 
-  isFocused(row: number, offset: number, length: number): boolean {
-    return (
-      this.selection != null &&
-      this.selection.row == row &&
-      this.selection.offset >= offset &&
-      this.selection.offset <= offset + length
-    );
-  }
+function isFocused(row: number, offset: number, length: number): boolean {
+  return (
+    selection.value != null &&
+    selection.value.row == row &&
+    selection.value.offset >= offset &&
+    selection.value.offset <= offset + length
+  );
 }
 </script>
 

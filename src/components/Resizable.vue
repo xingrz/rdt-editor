@@ -1,48 +1,53 @@
 <template>
   <div
     class="resizable"
-    v-bind:class="{ resizing: resizing }"
-    v-on:mousemove="onResizeMove"
-    v-on:mouseup="onResizeEnd"
+    :class="{ resizing: resizing }"
+    @mousemove="onResizeMove"
+    @mouseup="onResizeEnd"
   >
     <div class="main">
       <slot></slot>
     </div>
     <div class="resizer" v-on:mousedown="onResizeStart"></div>
-    <div v-bind:style="{ width: `${width || 200}px` }">
+    <div :style="{ width: `${width || 200}px` }">
       <slot name="fixed"></slot>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+<script lang="ts" setup>
+import { defineEmits, defineProps, ref } from "vue";
 
-@Component
-export default class Resizable extends Vue {
-  @Prop(Number) width!: number;
+const props = defineProps<{
+  width: number;
+}>();
 
-  resizing = false;
-  clientX = 0;
+const emit = defineEmits<{
+  (e: "resizeStart"): void;
+  (e: "resize", width: number): void;
+  (e: "resizeEnd"): void;
+}>();
 
-  onResizeStart(evt: MouseEvent): void {
-    this.resizing = true;
-    this.clientX = evt.clientX;
-    this.$emit("resizeStart");
+const resizing = ref(false);
+const clientX = ref(0);
+
+function onResizeStart(evt: MouseEvent): void {
+  resizing.value = true;
+  clientX.value = evt.clientX;
+  emit("resizeStart");
+}
+
+function onResizeMove(evt: MouseEvent): void {
+  if (resizing.value) {
+    emit("resize", props.width - (evt.clientX - clientX.value));
+    clientX.value = evt.clientX;
   }
+}
 
-  onResizeMove(evt: MouseEvent): void {
-    if (this.resizing) {
-      this.$emit("resize", this.width - (evt.clientX - this.clientX));
-      this.clientX = evt.clientX;
-    }
-  }
-
-  onResizeEnd(): void {
-    if (this.resizing) {
-      this.resizing = false;
-      this.$emit("resizeEnd");
-    }
+function onResizeEnd(): void {
+  if (resizing.value) {
+    resizing.value = false;
+    emit("resizeEnd");
   }
 }
 </script>

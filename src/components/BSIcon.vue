@@ -2,10 +2,10 @@
   <div
     class="bs-label"
     v-if="label"
-    v-bind:data-overlay="index > 0"
-    v-bind:data-bold="label.params.b || label.params.bold"
-    v-bind:data-align="(label.params.align || '').toUpperCase()"
-    v-bind:style="{
+    :data-overlay="index > 0"
+    :data-bold="label.params.b || label.params.bold"
+    :data-align="(label.params.align || '').toUpperCase()"
+    :style="{
       width: `${size * ratio}px`,
       height: `${size}px`,
       fontSize: `${size - 8}px`,
@@ -16,23 +16,62 @@
   <img
     class="bs-icon"
     v-else
-    v-bind:data-overlay="index > 0"
-    v-bind:style="{
+    :data-overlay="index > 0"
+    :style="{
       width: `${size * ratio}px`,
       height: `${size}px`,
     }"
-    v-bind:src="icon ? icon.data : null"
+    :src="icon?.data"
   />
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { Action, State } from "vuex-class";
-
+<script lang="ts" setup>
+import { computed, defineEmits, defineProps, onMounted, toRef, watch } from "vue";
 import qs from "querystring";
 
-import { RootState } from "@/store/types";
-import IIcon from "@/types/icon";
+import { useStore } from "@/store";
+
+const props = defineProps<{
+  content: string;
+  size: number;
+  index: number;
+}>();
+
+const emit = defineEmits<{
+  (e: "ratio", ratio: number): void;
+}>();
+
+const store = useStore();
+const fetch = (name: string) => store.dispatch("fetch", name);
+
+const content = toRef(props, 'content');
+watch(content, (content) => fetch(content));
+onMounted(() => content.value && fetch(content.value));
+
+const icon = computed(() => store.state.icon.icons[content.value]);
+
+const label = computed(() => {
+  if (content.value && content.value.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
+    const ratio = selectTextWidth(RegExp.$1) as number;
+    const text = RegExp.$2;
+    const params = parseTextParams(RegExp.$4 || "");
+    return { text, ratio, params };
+  } else {
+    return null;
+  }
+});
+
+const ratio = computed(() => {
+  if (!content.value) return 1;
+  if (label.value) {
+    return label.value.ratio || 1;
+  } else {
+    return icon.value?.ratio || 1;
+  }
+});
+
+watch(ratio, (ratio) => emit("ratio", ratio));
+onMounted(() => emit("ratio", ratio.value));
 
 function selectTextWidth(flag: string): number | undefined {
   switch (flag) {
@@ -55,63 +94,6 @@ function parseTextParams(str: string): Record<string, string> {
   return qs.parse(str, ",", "=", {
     decodeURIComponent: (s) => s,
   }) as Record<string, string>;
-}
-
-@Component
-export default class BSIcon extends Vue {
-  @Prop(String) content!: string;
-  @Prop(Number) size!: number;
-  @Prop(Number) index!: number;
-
-  @State(({ icon }: RootState) => icon.icons)
-  icons!: Record<string, IIcon | null>;
-
-  @Action("fetch") fetch!: (name: string) => Promise<void>;
-
-  @Watch("content") onContentChanged(content: string): void {
-    if (!this.label) {
-      this.fetch(content);
-    }
-  }
-
-  @Watch("ratio") onRatioChanged(ratio: number): void {
-    this.$emit("ratio", ratio);
-  }
-
-  get icon(): IIcon | null {
-    return this.icons[this.content];
-  }
-
-  get label(): {
-    text: string;
-    ratio: number;
-    params: Record<string, string>;
-  } | null {
-    if (this.content && this.content.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
-      const ratio = selectTextWidth(RegExp.$1) as number;
-      const text = RegExp.$2;
-      const params = parseTextParams(RegExp.$4 || "");
-      return { text, ratio, params };
-    } else {
-      return null;
-    }
-  }
-
-  get ratio(): number {
-    if (!this.content) return 1;
-    if (this.label) {
-      return this.label.ratio || 1;
-    } else {
-      return this.icon?.ratio || 1;
-    }
-  }
-
-  created(): void {
-    if (this.content && !this.label) {
-      this.fetch(this.content);
-    }
-    this.$emit("ratio", this.ratio);
-  }
 }
 </script>
 

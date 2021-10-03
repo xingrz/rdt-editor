@@ -1,39 +1,35 @@
 <template>
   <div
     class="bs-text"
-    v-bind:class="`text-${align}`"
-    v-bind:title="content"
-    v-on:click="handleClick"
-  >
-    {{ content }}
-  </div>
+    :class="`text-${align}`"
+    :title="content"
+    @click="handleClick"
+  >{{ content }}</div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
+<script lang="ts" setup>
+import { defineProps } from "vue";
 
+import { useStore } from "@/store";
 import ISelection from "@/types/selection";
 
-@Component
-export default class BSText extends Vue {
-  @Prop(String) content!: string;
-  @Prop(Number) align!: number;
-  @Prop(Number) row!: number;
-  @Prop(Number) offset!: number;
+const props = defineProps<{
+  content: string;
+  align: number;
+  row: number;
+  offset: number;
+}>();
 
-  @Mutation("setSelection") setSelection!: (
-    selection: ISelection | null
-  ) => void;
+const store = useStore();
+const setSelection = (selection: ISelection | null) => store.commit("setSelection", selection);
 
-  handleClick(): void {
-    this.setSelection({
-      row: this.row,
-      offset: this.offset,
-      length: this.content.length,
-      from: "preview",
-    });
-  }
+function handleClick(): void {
+  setSelection({
+    row: props.row,
+    offset: props.offset,
+    length: props.content.length,
+    from: "preview",
+  });
 }
 </script>
 

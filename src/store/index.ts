@@ -1,18 +1,20 @@
-import Vue from 'vue';
-import Vuex, { Store, StoreOptions } from 'vuex';
-
-Vue.use(Vuex);
+import { InjectionKey } from 'vue';
+import { createStore, useStore as baseUseStore, Store } from 'vuex';
 
 import { RootState } from './types';
 
 import editor from './editor';
 import icon from './icon';
 
-const store: StoreOptions<RootState> = {
+export const key: InjectionKey<Store<RootState>> = Symbol();
+
+export const store = createStore<RootState>({
   modules: {
     editor,
     icon,
   },
-};
+});
 
-export default new Store<RootState>(store);
+export function useStore(): Store<RootState> {
+  return baseUseStore(key);
+}

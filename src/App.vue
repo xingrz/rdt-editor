@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Resizable v-bind:width="width" v-on:resize="handleResize">
+    <Resizable v-bind:width="width" v-on:resize="setWidth">
       <template v-slot:default>
         <Editor
           v-bind:size="editor.size"
@@ -22,41 +22,26 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { Mutation, State } from "vuex-class";
+<script lang="ts" setup>
+import { computed } from "vue";
 
-import { EditorState } from "@/store/types";
+import { useStore } from "@/store";
 
 import Resizable from "./components/Resizable.vue";
 import Scroller from "./components/Scroller.vue";
 import BSMap from "./components/BSMap.vue";
 import Editor from "./components/Editor.vue";
 
-@Component({
-  components: {
-    Resizable,
-    Scroller,
-    BSMap,
-    Editor,
-  },
-})
-export default class App extends Vue {
-  @State("editor") editor!: EditorState;
+const store = useStore();
+const editor = computed(() => store.state.editor);
+const setWidth = (width: number) => store.commit("setWidth", width);
 
-  @Mutation("setWidth") setWidth!: (scroll: number) => void;
-
-  get width(): number {
-    const max = window.innerWidth - 200;
-    const min = 200;
-    const width = this.editor.width;
-    return Math.max(Math.min(width, max), min);
-  }
-
-  handleResize(size: number): void {
-    this.setWidth(size);
-  }
-}
+const width = computed(() => {
+  const max = window.innerWidth - 200;
+  const min = 200;
+  const width = editor.value.width;
+  return Math.max(Math.min(width, max), min);
+});
 </script>
 
 <style>

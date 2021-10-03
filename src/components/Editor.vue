@@ -1,34 +1,18 @@
 <template>
-  <AceEditor
-    class="editor"
-    mode="rdt"
-    theme="tomorrow"
-    width="100%"
-    height="100vh"
-    v-bind:name="name"
-    v-bind:value="content"
-    v-bind:onBeforeLoad="onBeforeLoad"
-    v-bind:onChange="onChange"
-    v-bind:onScroll="onScroll"
-    v-bind:onSelectionChange="onSelectionChange"
-    v-bind:style="{
+  <div
+    ref="holder"
+    :style="{
+      width: '100%',
+      height: '100vh',
       lineHeight: `${size}px`,
-    }"
-    v-bind:editorProps="{
-      $blockScrolling: Infinity,
-    }"
-    v-bind:setOptions="{
-      enableLiveAutocompletion: [{ getCompletions, getDocTooltip }],
     }"
   />
 </template>
 
-<script lang="ts">
-import { Vue, Component, Watch, Prop } from "vue-property-decorator";
-import { Mutation, State } from "vuex-class";
+<script lang="ts" setup>
+import { computed, defineProps, onMounted, toRefs, watch, ref } from "vue";
 
 import brace, {
-  Selection,
   Range,
   Position,
   IEditSession,
@@ -36,129 +20,115 @@ import brace, {
   VirtualRenderer,
 } from "brace";
 import "brace/theme/tomorrow";
+import "brace/ext/language_tools";
 import "@/editor/rdt";
 
-import { RootState } from "@/store/types";
-import IIcon from "@/types/icon";
+import { useStore } from "@/store";
 import ISelection from "@/types/selection";
 
-import { Ace as AceEditor } from "vue2-brace-editor";
+import useOnWindowResize from '@/composables/useOnWindowResize';
 
 interface IRenderer extends VirtualRenderer {
   scrollTop: number;
   scrollSelectionIntoView(): void;
 }
 
-@Component({
-  components: {
-    AceEditor,
-  },
-})
-export default class Editor extends Vue {
-  @Prop(Number) size!: number;
-  @Prop(Number) scroll!: number;
-  @Prop(Number) width!: number;
-  @Prop(Object) selection!: ISelection | null;
+const props = defineProps<{
+  size: number;
+  scroll: number;
+  width: number;
+  selection: ISelection | null;
+}>();
 
-  @State(({ icon }: RootState) => icon.icons)
-  icons!: Record<string, IIcon | null>;
+const { width, scroll, selection } = toRefs(props);
 
-  @State(({ editor }: RootState) => editor.content)
-  content!: string;
+const store = useStore();
+const icons = computed(() => store.state.icon.icons);
+const content = computed(() => store.state.editor.content);
+const save = (content: string) => store.commit("save", content);
+const setScroll = (scroll: number) => store.commit("setScroll", scroll);
+const setSelection = (selection: ISelection | null) => store.commit("setSelection", selection);
 
-  name = "rdt-editor";
+let editor: IEditor | undefined;
+let renderer: IRenderer | undefined;
 
-  editor!: IEditor;
-  renderer!: IRenderer;
+useOnWindowResize(() => editor?.resize());
+watch(width, () => editor?.resize());
 
-  @Mutation("save") save!: (content: string) => void;
-  @Mutation("setScroll") setScroll!: (scroll: number) => void;
-  @Mutation("setSelection") setSelection!: (
-    selection: ISelection | null
-  ) => void;
+watch(scroll, (scroll) => renderer?.scrollToY(scroll));
 
-  mounted(): void {
-    window.addEventListener("resize", this.handleResize);
+function applySelection(row: number, offset: number, length: number) {
+  if (renderer && editor) {
+    const { selection } = editor.getSession();
+    selection.setRange({
+      start: { row: row, column: offset },
+      end: { row: row, column: offset + length },
+    } as Range, false);
+    renderer.scrollToX(0);
+    renderer.scrollSelectionIntoView();
+    editor.focus();
   }
+}
 
-  beforeDestroy(): void {
-    window.removeEventListener("resize", this.handleResize);
+watch(selection, (selection) => {
+  if (selection && selection.from != "editor") {
+    applySelection(selection.row, selection.offset, selection.length);
   }
+});
 
-  @Watch("width")
-  onWidthChanged(): void {
-    this.handleResize();
-  }
+const holder = ref<HTMLElement | null>(null);
+onMounted(() => {
+  if (holder.value) {
+    editor = brace.edit(holder.value);
+    editor.$blockScrolling = Infinity;
 
-  @Watch("scroll")
-  onScrollChanged(scroll: number): void {
-    this.renderer.scrollToY(scroll);
-  }
+    renderer = editor.renderer as IRenderer;
 
-  @Watch("selection")
-  onSelectionChanged({ row, offset, length, from }: ISelection): void {
-    if (from != "editor") {
-      const { selection } = this.editor.getSession();
-      selection.setRange(
-        {
-          start: { row: row, column: offset },
-          end: { row: row, column: offset + length },
-        } as Range,
-        false
-      );
-      this.renderer.scrollToX(0);
-      this.renderer.scrollSelectionIntoView();
-      this.editor.focus();
-    }
-  }
-
-  onBeforeLoad(): void {
-    this.editor = brace.edit(this.name);
-    this.renderer = this.editor.renderer as IRenderer;
-  }
-
-  onChange(content: string): void {
-    this.save(content);
-  }
-
-  onScroll(): void {
-    this.setScroll(this.renderer.scrollTop);
-  }
-
-  onSelectionChange(selection: Selection): void {
-    const { start } = selection.getRange();
-    this.setSelection({
-      row: start.row,
-      offset: start.column,
-      length: 0,
-      from: "editor",
+    const session = editor.getSession();
+    session.setMode("ace/mode/rdt");
+    session.on('changeScrollTop', () => {
+      if (renderer) setScroll(renderer.scrollTop);
     });
-  }
 
-  handleResize(): void {
-    this.editor.resize();
-  }
+    editor.setTheme("ace/theme/tomorrow");
+    editor.setValue(content.value);
+    editor.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
 
-  getCompletions(
-    editor: IEditor,
-    session: IEditSession,
-    pos: Position,
-    prefix: string,
-    callback: (err: Error | null, completions?: { value: string }[]) => void
-  ): void {
-    callback(
-      null,
-      Object.keys(this.icons)
-        .filter((icon) => !!this.icons[icon])
-        .map((icon) => ({ value: icon }))
-    );
-  }
+    editor.on('change', () => {
+      if (editor) save(editor.getValue());
+    });
 
-  getDocTooltip(item: { value: string; docHTML: string }): void {
-    item.docHTML = `<img src="${
-      this.icons[item.value]?.data
+    editor.selection.on('changeSelection', () => {
+      if (editor) {
+        const { start } = editor.getSelection().getRange();
+        setSelection({
+          row: start.row,
+          offset: start.column,
+          length: 0,
+          from: "editor",
+        });
+      }
+    });
+
+    applySelection(0, 0, 0);
+  }
+});
+
+function getCompletions(
+  editor: IEditor,
+  session: IEditSession,
+  pos: Position,
+  prefix: string,
+  callback: (err: Error | null, completions?: { value: string }[]) => void
+): void {
+  callback(null, Object.keys(icons.value)
+    .filter((icon) => !!icons.value[icon])
+    .map((icon) => ({ value: icon })));
+}
+
+function getDocTooltip(item: { value: string; docHTML: string }): void {
+  item.docHTML = `<img src="${icons.value[item.value]?.data
     }" class="preview" />`;
-  }
 }
 </script>
 

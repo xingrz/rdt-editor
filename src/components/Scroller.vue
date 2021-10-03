@@ -1,26 +1,33 @@
 <template>
-  <div class="scroller" v-on:scroll="onScroll">
+  <div ref="scroller" class="scroller" @scroll="onScroll">
     <slot></slot>
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { Mutation } from "vuex-class";
+<script lang="ts" setup>
+import { defineProps, toRef, ref, watch } from "vue";
 
-@Component
-export default class Scroller extends Vue {
-  @Prop(Number) scroll!: number;
+import { useStore } from "@/store";
 
-  @Mutation("setScroll") setScroll!: (scroll: number) => void;
+const props = defineProps<{
+  scroll: number;
+}>();
 
-  @Watch("scroll")
-  onScrollChanged(scroll: number): void {
-    this.$el.scrollTop = scroll;
+const store = useStore();
+const setScroll = (scroll: number) => store.commit("setScroll", scroll);
+
+const scroller = ref<HTMLElement | null>(null);
+
+const scroll = toRef(props, 'scroll');
+watch(scroll, (scroll) => {
+  if (scroller.value) {
+    scroller.value.scrollTop = scroll;
   }
+});
 
-  onScroll(): void {
-    this.setScroll(this.$el.scrollTop);
+function onScroll(): void {
+  if (scroller.value != null) {
+    setScroll(scroller.value.scrollTop);
   }
 }
 </script>

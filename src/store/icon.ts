@@ -72,7 +72,7 @@ const actions: ActionTree<IconState, RootState> = {
       const ratio = img.width / img.height;
       commit('resolved', { name, ratio });
     } catch (e) {
-      console.error(e.stack);
+      console.error(e);
       commit('failed', { name });
     }
   },
