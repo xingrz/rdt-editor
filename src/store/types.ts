@@ -1,5 +1,5 @@
-import ISelection from '@/types/selection';
-import IIcon from '@/types/icon';
+import ISelection from "@/types/selection";
+import IIcon from "@/types/icon";
 
 export interface EditorState {
   size: number;

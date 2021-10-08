@@ -1,9 +1,9 @@
-import { Module, MutationTree, ActionTree } from 'vuex';
-import md5 from 'md5';
+import { Module, MutationTree, ActionTree } from "vuex";
+import md5 from "md5";
 
-import { RootState, IconState } from './types';
+import { RootState, IconState } from "./types";
 
-const baseUrl = 'https://upload.wikimedia.org/wikipedia/commons';
+const baseUrl = "https://upload.wikimedia.org/wikipedia/commons";
 
 function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -49,11 +49,11 @@ const mutations: MutationTree<IconState> = {
 
 const actions: ActionTree<IconState, RootState> = {
   async fetch({ commit, state }, name: string): Promise<void> {
-    if (typeof state.icons[name] != 'undefined') {
+    if (typeof state.icons[name] != "undefined") {
       return;
     }
 
-    commit('fetching', { name });
+    commit("fetching", { name });
 
     try {
       const file = `BSicon_${name}.svg`;
@@ -61,19 +61,19 @@ const actions: ActionTree<IconState, RootState> = {
 
       const res = await fetch(`${baseUrl}/${hash.substring(0, 1)}/${hash.substring(0, 2)}/${file}`);
       if (res.status < 200 || res.status >= 300) {
-        commit('failed', { name });
+        commit("failed", { name });
         return;
       }
 
       const data = URL.createObjectURL(await res.blob());
-      commit('fetched', { name, data });
+      commit("fetched", { name, data });
 
       const img = await loadImage(data);
       const ratio = img.width / img.height;
-      commit('resolved', { name, ratio });
+      commit("resolved", { name, ratio });
     } catch (e) {
       console.error(e);
-      commit('failed', { name });
+      commit("failed", { name });
     }
   },
 };

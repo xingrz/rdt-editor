@@ -22,7 +22,7 @@ import { computed, defineProps, ref } from "vue";
 import { useStore } from "@/store";
 import ISelection from "@/types/selection";
 
-import BSIcon from './BSIcon.vue';
+import BSIcon from "./BSIcon.vue";
 
 const props = defineProps<{
   content: string;

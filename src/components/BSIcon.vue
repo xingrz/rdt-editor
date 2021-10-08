@@ -4,7 +4,7 @@
     v-if="label"
     :data-overlay="index > 0"
     :data-bold="label.params.b || label.params.bold"
-    :data-align="(label.params.align || '').toUpperCase()"
+    :data-align="(label.params.align || ``).toUpperCase()"
     :style="{
       width: `${size * ratio}px`,
       height: `${size}px`,
@@ -44,7 +44,7 @@ const emit = defineEmits<{
 const store = useStore();
 const fetch = (name: string) => store.dispatch("fetch", name);
 
-const content = toRef(props, 'content');
+const content = toRef(props, "content");
 watch(content, (content) => fetch(content));
 onMounted(() => content.value && fetch(content.value));
 

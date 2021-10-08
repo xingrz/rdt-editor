@@ -2,8 +2,8 @@
   <div
     ref="holder"
     :style="{
-      width: '100%',
-      height: '100vh',
+      width: `100%`,
+      height: `100vh`,
       lineHeight: `${size}px`,
     }"
   />
@@ -27,7 +27,7 @@ import "@/editor/rdt";
 import { useStore } from "@/store";
 import ISelection from "@/types/selection";
 
-import useOnWindowResize from '@/composables/useOnWindowResize';
+import useOnWindowResize from "@/composables/useOnWindowResize";
 
 interface IRenderer extends VirtualRenderer {
   scrollTop: number;
@@ -86,7 +86,7 @@ onMounted(() => {
 
     const session = editor.getSession();
     session.setMode("ace/mode/rdt");
-    session.on('changeScrollTop', () => {
+    session.on("changeScrollTop", () => {
       if (renderer) {
         if (scroll.value != renderer.scrollTop) {
           setScroll(renderer.scrollTop);
@@ -96,13 +96,13 @@ onMounted(() => {
 
     editor.setTheme("ace/theme/tomorrow");
     editor.setValue(content.value);
-    editor.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
+    editor.setOption("enableLiveAutocompletion", [{ getCompletions, getDocTooltip }]);
 
-    editor.on('change', () => {
+    editor.on("change", () => {
       if (editor) save(editor.getValue());
     });
 
-    editor.selection.on('changeCursor', () => {
+    editor.selection.on("changeCursor", () => {
       if (editor) {
         const newSelection = toSelection(editor.selection.getRange());
         if (!isEqual(selection.value, newSelection)) {

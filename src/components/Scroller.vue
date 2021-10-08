@@ -18,7 +18,7 @@ const setScroll = (scroll: number) => store.commit("setScroll", scroll);
 
 const scroller = ref<HTMLElement | null>(null);
 
-const scroll = toRef(props, 'scroll');
+const scroll = toRef(props, "scroll");
 watch(scroll, (scroll) => {
   if (scroller.value) {
     scroller.value.scrollTop = scroll;

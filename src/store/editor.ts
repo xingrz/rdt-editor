@@ -1,15 +1,15 @@
-import { Module, MutationTree } from 'vuex';
-import throttle from 'lodash-es/throttle';
+import { Module, MutationTree } from "vuex";
+import throttle from "lodash-es/throttle";
 
-import { RootState, EditorState } from './types';
-import ISelection from '@/types/selection';
+import { RootState, EditorState } from "./types";
+import ISelection from "@/types/selection";
 
 const throttledSetItem = throttle(localStorage.setItem, 1000).bind(localStorage);
 
 const state: EditorState = {
-  size: parseInt(localStorage.getItem('size') || '') || 20,
-  width: parseInt(localStorage.getItem('width') || '') || 200,
-  content: localStorage.getItem('content') || '',
+  size: parseInt(localStorage.getItem("size") || "") || 20,
+  width: parseInt(localStorage.getItem("width") || "") || 200,
+  content: localStorage.getItem("content") || "",
   scroll: 0,
   selection: { row: 0, offset: 0, length: 0 },
 };
@@ -17,11 +17,11 @@ const state: EditorState = {
 const mutations: MutationTree<EditorState> = {
   setSize(state: EditorState, size: number): void {
     state.size = size;
-    throttledSetItem('size', `${size}`);
+    throttledSetItem("size", `${size}`);
   },
   setWidth(state: EditorState, width: number): void {
     state.width = width;
-    throttledSetItem('width', `${width}`);
+    throttledSetItem("width", `${width}`);
   },
   setScroll(state: EditorState, scroll: number): void {
     state.scroll = scroll;
@@ -31,7 +31,7 @@ const mutations: MutationTree<EditorState> = {
   },
   save(state: EditorState, content: string): void {
     state.content = content;
-    throttledSetItem('content', content);
+    throttledSetItem("content", content);
   },
 };
 
