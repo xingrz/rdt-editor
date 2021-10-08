@@ -28,7 +28,6 @@ function handleClick(): void {
     row: props.row,
     offset: props.offset,
     length: props.content.length,
-    from: "preview",
   });
 }
 </script>
