@@ -11,7 +11,6 @@
 
 <script lang="ts" setup>
 import { computed, defineProps, onMounted, toRefs, watch, ref } from "vue";
-import { isEqual } from "lodash-es";
 
 import brace, {
   Range,
@@ -38,7 +37,7 @@ const props = defineProps<{
   size: number;
   scroll: number;
   width: number;
-  selection: ISelection;
+  selection: ISelection | null;
 }>();
 
 const { width, scroll, selection } = toRefs(props);
@@ -56,15 +55,12 @@ let renderer: IRenderer | undefined;
 useOnWindowResize(() => editor?.resize());
 watch(width, () => editor?.resize());
 
-watch(scroll, (scroll) => {
-  if (renderer) {
-    renderer.scrollToY(scroll);
-  }
-});
+watch(scroll, (scroll) => renderer?.scrollToY(scroll));
 
-function applySelection({ row, offset, length }: ISelection) {
+function applySelection(row: number, offset: number, length: number) {
   if (renderer && editor) {
-    editor.selection.setRange({
+    const { selection } = editor.getSession();
+    selection.setRange({
       start: { row: row, column: offset },
       end: { row: row, column: offset + length },
     } as Range, false);
@@ -74,7 +70,11 @@ function applySelection({ row, offset, length }: ISelection) {
   }
 }
 
-watch(selection, applySelection);
+watch(selection, (selection) => {
+  if (selection && selection.from != "editor") {
+    applySelection(selection.row, selection.offset, selection.length);
+  }
+});
 
 const holder = ref<HTMLElement | null>(null);
 onMounted(() => {
@@ -87,11 +87,7 @@ onMounted(() => {
     const session = editor.getSession();
     session.setMode("ace/mode/rdt");
     session.on("changeScrollTop", () => {
-      if (renderer) {
-        if (scroll.value != renderer.scrollTop) {
-          setScroll(renderer.scrollTop);
-        }
-      }
+      if (renderer) setScroll(renderer.scrollTop);
     });
 
     editor.setTheme("ace/theme/tomorrow");
@@ -104,14 +100,17 @@ onMounted(() => {
 
     editor.selection.on("changeCursor", () => {
       if (editor) {
-        const newSelection = toSelection(editor.selection.getRange());
-        if (!isEqual(selection.value, newSelection)) {
-          setSelection(newSelection);
-        }
+        const { start } = editor.getSelection().getRange();
+        setSelection({
+          row: start.row,
+          offset: start.column,
+          length: 0,
+          from: "editor",
+        });
       }
     });
 
-    applySelection(store.state.editor.selection);
+    applySelection(0, 0, 0);
   }
 });
 
@@ -130,15 +129,6 @@ function getCompletions(
 function getDocTooltip(item: { value: string; docHTML: string }): void {
   item.docHTML = `<img src="${icons.value[item.value]?.data
     }" class="preview" />`;
-}
-
-function toSelection(range: Range): ISelection {
-  const { start, end } = range;
-  return {
-    row: start.row,
-    offset: start.column,
-    length: end.column - start.column,
-  };
 }
 </script>
 

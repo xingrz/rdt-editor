@@ -6,7 +6,7 @@ export interface EditorState {
   width: number;
   content: string;
   scroll: number;
-  selection: ISelection;
+  selection: ISelection | null;
 }
 
 export interface IconState {

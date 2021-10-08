@@ -11,7 +11,7 @@ const state: EditorState = {
   width: parseInt(localStorage.getItem("width") || "") || 200,
   content: localStorage.getItem("content") || "",
   scroll: 0,
-  selection: { row: 0, offset: 0, length: 0 },
+  selection: null,
 };
 
 const mutations: MutationTree<EditorState> = {
@@ -26,7 +26,7 @@ const mutations: MutationTree<EditorState> = {
   setScroll(state: EditorState, scroll: number): void {
     state.scroll = scroll;
   },
-  setSelection(state: EditorState, selection: ISelection): void {
+  setSelection(state: EditorState, selection: ISelection | null): void {
     state.selection = selection;
   },
   save(state: EditorState, content: string): void {
