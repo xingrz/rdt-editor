@@ -98,7 +98,7 @@ onMounted(() => {
       if (editor) save(editor.getValue());
     });
 
-    editor.selection.on('changeSelection', () => {
+    editor.selection.on('changeCursor', () => {
       if (editor) {
         const { start } = editor.getSelection().getRange();
         setSelection({
