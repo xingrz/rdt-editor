@@ -6,9 +6,9 @@
           v-bind:selection="editor.selection" />
       </template>
       <template v-slot:fixed>
-        <Scroller v-bind:scroll="editor.scroll">
+        <scroller v-model:scroll="scroll">
           <BSMap v-bind:content="editor.content" v-bind:size="editor.size" v-bind:width="width" />
-        </Scroller>
+        </scroller>
       </template>
     </Resizable>
   </div>
@@ -36,6 +36,15 @@ const width = computed({
   },
   set(v: number) {
     store.commit('setWidth', v);
+  }
+});
+
+const scroll = computed({
+  get(): number {
+    return store.state.editor.scroll;
+  },
+  set(v: number) {
+    store.commit('setScroll', v);
   }
 });
 </script>

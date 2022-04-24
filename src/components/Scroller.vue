@@ -7,14 +7,13 @@
 <script lang="ts" setup>
 import { defineProps, toRef, ref, watch } from 'vue';
 
-import { useStore } from '@/store';
-
 const props = defineProps<{
   scroll: number;
 }>();
 
-const store = useStore();
-const setScroll = (scroll: number) => store.commit('setScroll', scroll);
+const emit = defineEmits<{
+  (e: 'update:scroll', scroll: number): void;
+}>();
 
 const scroller = ref<HTMLElement | null>(null);
 
@@ -27,12 +26,12 @@ watch(scroll, (scroll) => {
 
 function onScroll(): void {
   if (scroller.value != null) {
-    setScroll(scroller.value.scrollTop);
+    emit('update:scroll', scroller.value.scrollTop);
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .scroller {
   height: 100vh;
   overflow-y: scroll;
