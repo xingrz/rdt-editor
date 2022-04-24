@@ -2,12 +2,12 @@
   <div id="app">
     <resizable v-model:width="width">
       <template v-slot:default>
-        <Editor v-bind:size="editor.size" v-bind:scroll="editor.scroll" v-bind:width="width"
-          v-bind:selection="editor.selection" />
+        <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="icons"
+          :size="editor.size" :width="width" />
       </template>
       <template v-slot:fixed>
         <scroller v-model:scroll="scroll">
-          <BSMap v-bind:content="editor.content" v-bind:size="editor.size" v-bind:width="width" />
+          <BSMap v-bind:content="content" v-bind:size="editor.size" v-bind:width="width" />
         </scroller>
       </template>
     </Resizable>
@@ -18,6 +18,7 @@
 import { computed } from 'vue';
 
 import { useStore } from '@/store';
+import ISelection from '@/types/selection';
 
 import Resizable from './components/Resizable.vue';
 import Scroller from './components/Scroller.vue';
@@ -26,6 +27,7 @@ import Editor from './components/Editor.vue';
 
 const store = useStore();
 const editor = computed(() => store.state.editor);
+const icons = computed(() => store.state.icon.icons);
 
 const width = computed({
   get(): number {
@@ -45,6 +47,24 @@ const scroll = computed({
   },
   set(v: number) {
     store.commit('setScroll', v);
+  }
+});
+
+const selection = computed({
+  get(): ISelection | null {
+    return store.state.editor.selection;
+  },
+  set(v: ISelection | null) {
+    store.commit('setSelection', v);
+  }
+});
+
+const content = computed({
+  get(): string {
+    return store.state.editor.content;
+  },
+  set(v: string) {
+    store.commit('save', v);
   }
 });
 </script>
