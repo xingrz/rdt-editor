@@ -13,7 +13,7 @@ Built with [Vue.js](https://vuejs.org/), [Vuex](https://vuex.vuejs.org/) and [br
 
 ```sh
 npm install
-npm run serve
+npm run dev
 ```
 
 ## Build
