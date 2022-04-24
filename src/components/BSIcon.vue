@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps, onMounted, toRef, watch } from 'vue';
-import qs from 'querystring';
+import qs from 'querystring-es3';
 
 import { useStore } from '@/store';
 
