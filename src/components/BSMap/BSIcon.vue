@@ -17,7 +17,7 @@
 import { computed, defineEmits, defineProps, onMounted, toRef, watch } from 'vue';
 import qs from 'querystring-es3';
 
-import { useStore } from '@/store';
+import { useIconStore } from '@/stores/icon';
 
 const props = defineProps<{
   content: string;
@@ -29,14 +29,9 @@ const emit = defineEmits<{
   (e: 'ratio', ratio: number): void;
 }>();
 
-const store = useStore();
-const fetch = (name: string) => store.dispatch('fetch', name);
+const iconStore = useIconStore();
 
 const content = toRef(props, 'content');
-watch(content, (content) => fetch(content));
-onMounted(() => content.value && fetch(content.value));
-
-const icon = computed(() => store.state.icon.icons[content.value]);
 
 const label = computed(() => {
   if (content.value && content.value.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
@@ -48,6 +43,11 @@ const label = computed(() => {
     return null;
   }
 });
+
+const icon = computed(() => label.value ? undefined : iconStore.icons[content.value]);
+
+watch(content, (content) => !label.value && iconStore.resolve(content));
+onMounted(() => content.value && !label.value && iconStore.resolve(content.value));
 
 const ratio = computed(() => {
   if (!content.value) return 1;

@@ -9,8 +9,7 @@
 <script lang="ts" setup>
 import { computed, defineProps, ref } from 'vue';
 
-import { useStore } from '@/store';
-import ISelection from '@/types/selection';
+import { useEditorStore } from '@/stores/editor';
 
 import BSIcon from './BSIcon.vue';
 
@@ -21,8 +20,7 @@ const props = defineProps<{
   offset: number;
 }>();
 
-const store = useStore();
-const setSelection = (selection: ISelection | null) => store.commit('setSelection', selection);
+const editorStore = useEditorStore();
 
 const ratio = ref(1);
 
@@ -35,7 +33,7 @@ const icons = computed(() => {
 });
 
 function handleClick(): void {
-  setSelection({
+  editorStore.setSelection({
     row: props.row,
     offset: props.offset,
     length: props.content.length,

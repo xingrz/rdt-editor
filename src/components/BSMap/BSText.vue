@@ -5,8 +5,7 @@
 <script lang="ts" setup>
 import { defineProps } from 'vue';
 
-import { useStore } from '@/store';
-import ISelection from '@/types/selection';
+import { useEditorStore } from '@/stores/editor';
 
 const props = defineProps<{
   content: string;
@@ -15,11 +14,10 @@ const props = defineProps<{
   offset: number;
 }>();
 
-const store = useStore();
-const setSelection = (selection: ISelection | null) => store.commit('setSelection', selection);
+const editorStore = useEditorStore();
 
 function handleClick(): void {
-  setSelection({
+  editorStore.setSelection({
     row: props.row,
     offset: props.offset,
     length: props.content.length,

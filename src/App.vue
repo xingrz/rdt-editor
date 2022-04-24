@@ -1,12 +1,12 @@
 <template>
   <resizable v-model:width="width">
     <template v-slot:default>
-      <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="icons"
-        :size="editor.size" :width="width" />
+      <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="iconStore.icons"
+        :size="editorStore.size" :width="width" />
     </template>
     <template v-slot:fixed>
       <scroller v-model:scroll="scroll">
-        <BSMap v-bind:content="content" v-bind:size="editor.size" v-bind:width="width" />
+        <BSMap v-bind:content="content" v-bind:size="editorStore.size" v-bind:width="width" />
       </scroller>
     </template>
   </resizable>
@@ -15,7 +15,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-import { useStore } from '@/store';
+import { useEditorStore } from '@/stores/editor';
+import { useIconStore } from '@/stores/icon';
 import ISelection from '@/types/selection';
 
 import Resizable from './components/Resizable.vue';
@@ -23,46 +24,45 @@ import Scroller from './components/Scroller.vue';
 import BSMap from './components/BSMap.vue';
 import Editor from './components/Editor.vue';
 
-const store = useStore();
-const editor = computed(() => store.state.editor);
-const icons = computed(() => store.state.icon.icons);
+const editorStore = useEditorStore();
+const iconStore = useIconStore();
 
 const width = computed({
   get(): number {
     const max = window.innerWidth - 200;
     const min = 200;
-    const width = store.state.editor.width;
+    const width = editorStore.width;
     return Math.max(Math.min(width, max), min);
   },
   set(v: number) {
-    store.commit('setWidth', v);
+    editorStore.setWidth(v);
   }
 });
 
 const scroll = computed({
   get(): number {
-    return store.state.editor.scroll;
+    return editorStore.scroll;
   },
   set(v: number) {
-    store.commit('setScroll', v);
+    editorStore.setScroll(v);
   }
 });
 
 const selection = computed({
   get(): ISelection | null {
-    return store.state.editor.selection;
+    return editorStore.selection;
   },
   set(v: ISelection | null) {
-    store.commit('setSelection', v);
+    editorStore.setSelection(v);
   }
 });
 
 const content = computed({
   get(): string {
-    return store.state.editor.content;
+    return editorStore.content;
   },
   set(v: string) {
-    store.commit('save', v);
+    editorStore.save(v);
   }
 });
 </script>

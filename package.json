@@ -11,9 +11,9 @@
     "core-js": "^3.22.2",
     "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
+    "pinia": "^2.0.13",
     "querystring-es3": "^0.2.1",
-    "vue": "^3.2.33",
-    "vuex": "^4.0.2"
+    "vue": "^3.2.33"
   },
   "devDependencies": {
     "@nabla/vite-plugin-eslint": "^1.4.0",

@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { computed, defineProps } from 'vue';
 
-import { useStore } from '@/store';
+import { useEditorStore } from '@/stores/editor';
 
 import BSCell from './BSCell.vue';
 import BSText from './BSText.vue';
@@ -29,8 +29,7 @@ const props = defineProps<{
   row: number;
 }>();
 
-const store = useStore();
-const selection = computed(() => store.state.editor.selection);
+const editorStore = useEditorStore();
 
 const parts = computed(() => {
   let offset = 0;
@@ -62,11 +61,12 @@ const iconWidth = computed(() => props.size * props.cols);
 const textMaxWidth = computed(() => props.width - iconWidth.value);
 
 function isFocused(row: number, offset: number, length: number): boolean {
+  const { selection } = editorStore;
   return (
-    selection.value != null &&
-    selection.value.row == row &&
-    selection.value.offset >= offset &&
-    selection.value.offset <= offset + length
+    selection != null &&
+    selection.row == row &&
+    selection.offset >= offset &&
+    selection.offset <= offset + length
   );
 }
 </script>

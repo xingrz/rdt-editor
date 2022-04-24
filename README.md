@@ -5,7 +5,7 @@
 
 An rich editor for Wikipedia [Route Diagram Template](https://en.wikipedia.org/wiki/WP:RDT).
 
-Built with [Vue.js](https://vuejs.org/), [Vuex](https://vuex.vuejs.org/) and [brace](https://thlorenz.com/brace/).
+Built with [Vue.js](https://vuejs.org/), [Pinia](https://pinia.vuejs.org/) and [brace](https://thlorenz.com/brace/).
 
 ![](screenshot.png)
 
