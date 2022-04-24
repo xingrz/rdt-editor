@@ -1,5 +1,5 @@
 <template>
-  <div ref="scroller" class="scroller" @scroll="onScroll">
+  <div ref="scroller" :class="$style.scroller" @scroll="onScroll">
     <slot></slot>
   </div>
 </template>
@@ -31,7 +31,7 @@ function onScroll(): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .scroller {
   height: 100vh;
   overflow-y: scroll;

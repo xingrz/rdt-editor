@@ -1,17 +1,15 @@
 <template>
-  <div id="app">
-    <resizable v-model:width="width">
-      <template v-slot:default>
-        <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="icons"
-          :size="editor.size" :width="width" />
-      </template>
-      <template v-slot:fixed>
-        <scroller v-model:scroll="scroll">
-          <BSMap v-bind:content="content" v-bind:size="editor.size" v-bind:width="width" />
-        </scroller>
-      </template>
-    </Resizable>
-  </div>
+  <resizable v-model:width="width">
+    <template v-slot:default>
+      <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="icons"
+        :size="editor.size" :width="width" />
+    </template>
+    <template v-slot:fixed>
+      <scroller v-model:scroll="scroll">
+        <BSMap v-bind:content="content" v-bind:size="editor.size" v-bind:width="width" />
+      </scroller>
+    </template>
+  </resizable>
 </template>
 
 <script lang="ts" setup>
@@ -69,9 +67,9 @@ const content = computed({
 });
 </script>
 
-<style>
-html,
-body {
+<style lang="scss" module>
+:global(html),
+:global(body) {
   margin: 0;
   padding: 0;
   overscroll-behavior-x: none;

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, toRefs, watch, ref } from 'vue';
+import { defineProps, onMounted, toRefs, watch, ref, useCssModule } from 'vue';
 
 import brace, {
   Range,
@@ -124,13 +124,14 @@ function getCompletions(
     .map((icon) => ({ value: icon })));
 }
 
+const style = useCssModule();
 function getDocTooltip(item: { value: string; docHTML: string }): void {
-  item.docHTML = `<img src="${props.icons[item.value]?.data}" class="preview" />`;
+  item.docHTML = `<img src="${props.icons[item.value]?.data}" class="${style.preview}" />`;
 }
 </script>
 
-<style lang="scss" scoped>
-:global(.preview) {
+<style lang="scss" module>
+.preview {
   height: 120px;
   display: block;
 }

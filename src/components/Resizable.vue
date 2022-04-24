@@ -1,9 +1,10 @@
 <template>
-  <div class="resizable" :class="{ resizing: resizing }" @mousemove="onResizeMove" @mouseup="onResizeEnd">
-    <div class="main">
+  <div :class="{ [$style.resizable]: true, [$style.resizing]: resizing }" @mousemove="onResizeMove"
+    @mouseup="onResizeEnd">
+    <div :class="$style.main">
       <slot></slot>
     </div>
-    <div class="resizer" v-on:mousedown="onResizeStart"></div>
+    <div :class="$style.resizer" v-on:mousedown="onResizeStart"></div>
     <div :style="{ width: `${width || 200}px` }">
       <slot name="fixed"></slot>
     </div>
@@ -43,7 +44,7 @@ function onResizeEnd(): void {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .resizable {
   display: flex;
   align-items: stretch;
