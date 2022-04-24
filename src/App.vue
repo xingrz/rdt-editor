@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Resizable v-bind:width="width" v-on:resize="setWidth">
+    <resizable v-model:width="width">
       <template v-slot:default>
         <Editor v-bind:size="editor.size" v-bind:scroll="editor.scroll" v-bind:width="width"
           v-bind:selection="editor.selection" />
@@ -26,13 +26,17 @@ import Editor from './components/Editor.vue';
 
 const store = useStore();
 const editor = computed(() => store.state.editor);
-const setWidth = (width: number) => store.commit('setWidth', width);
 
-const width = computed(() => {
-  const max = window.innerWidth - 200;
-  const min = 200;
-  const width = editor.value.width;
-  return Math.max(Math.min(width, max), min);
+const width = computed({
+  get(): number {
+    const max = window.innerWidth - 200;
+    const min = 200;
+    const width = store.state.editor.width;
+    return Math.max(Math.min(width, max), min);
+  },
+  set(v: number) {
+    store.commit('setWidth', v);
+  }
 });
 </script>
 

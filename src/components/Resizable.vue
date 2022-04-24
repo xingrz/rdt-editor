@@ -18,9 +18,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'resizeStart'): void;
-  (e: 'resize', width: number): void;
-  (e: 'resizeEnd'): void;
+  (e: 'update:width', width: number): void;
 }>();
 
 const resizing = ref(false);
@@ -29,12 +27,11 @@ const clientX = ref(0);
 function onResizeStart(evt: MouseEvent): void {
   resizing.value = true;
   clientX.value = evt.clientX;
-  emit('resizeStart');
 }
 
 function onResizeMove(evt: MouseEvent): void {
   if (resizing.value) {
-    emit('resize', props.width - (evt.clientX - clientX.value));
+    emit('update:width', props.width - (evt.clientX - clientX.value));
     clientX.value = evt.clientX;
   }
 }
@@ -42,28 +39,27 @@ function onResizeMove(evt: MouseEvent): void {
 function onResizeEnd(): void {
   if (resizing.value) {
     resizing.value = false;
-    emit('resizeEnd');
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .resizable {
   display: flex;
   align-items: stretch;
-}
 
-.resizable>.main {
-  flex: 1;
-}
+  >.main {
+    flex: 1;
+  }
 
-.resizable>.resizer {
-  width: 8px;
-  cursor: col-resize;
-  background: #ccc;
-}
+  >.resizer {
+    width: 8px;
+    cursor: col-resize;
+    background: #ccc;
+  }
 
-.resizable.resizing>.resizer {
-  background: #bbb;
+  &.resizing>.resizer {
+    background: #bbb;
+  }
 }
 </style>
