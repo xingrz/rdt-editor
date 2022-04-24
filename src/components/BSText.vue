@@ -1,17 +1,12 @@
 <template>
-  <div
-    class="bs-text"
-    :class="`text-${align}`"
-    :title="content"
-    @click="handleClick"
-  >{{ content }}</div>
+  <div class="bs-text" :class="`text-${align}`" :title="content" @click="handleClick">{{ content }}</div>
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineProps } from 'vue';
 
-import { useStore } from "@/store";
-import ISelection from "@/types/selection";
+import { useStore } from '@/store';
+import ISelection from '@/types/selection';
 
 const props = defineProps<{
   content: string;
@@ -21,14 +16,14 @@ const props = defineProps<{
 }>();
 
 const store = useStore();
-const setSelection = (selection: ISelection | null) => store.commit("setSelection", selection);
+const setSelection = (selection: ISelection | null) => store.commit('setSelection', selection);
 
 function handleClick(): void {
   setSelection({
     row: props.row,
     offset: props.offset,
     length: props.content.length,
-    from: "preview",
+    from: 'preview',
   });
 }
 </script>

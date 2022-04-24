@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="resizable"
-    :class="{ resizing: resizing }"
-    @mousemove="onResizeMove"
-    @mouseup="onResizeEnd"
-  >
+  <div class="resizable" :class="{ resizing: resizing }" @mousemove="onResizeMove" @mouseup="onResizeEnd">
     <div class="main">
       <slot></slot>
     </div>
@@ -16,16 +11,16 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref } from "vue";
+import { defineEmits, defineProps, ref } from 'vue';
 
 const props = defineProps<{
   width: number;
 }>();
 
 const emit = defineEmits<{
-  (e: "resizeStart"): void;
-  (e: "resize", width: number): void;
-  (e: "resizeEnd"): void;
+  (e: 'resizeStart'): void;
+  (e: 'resize', width: number): void;
+  (e: 'resizeEnd'): void;
 }>();
 
 const resizing = ref(false);
@@ -34,12 +29,12 @@ const clientX = ref(0);
 function onResizeStart(evt: MouseEvent): void {
   resizing.value = true;
   clientX.value = evt.clientX;
-  emit("resizeStart");
+  emit('resizeStart');
 }
 
 function onResizeMove(evt: MouseEvent): void {
   if (resizing.value) {
-    emit("resize", props.width - (evt.clientX - clientX.value));
+    emit('resize', props.width - (evt.clientX - clientX.value));
     clientX.value = evt.clientX;
   }
 }
@@ -47,7 +42,7 @@ function onResizeMove(evt: MouseEvent): void {
 function onResizeEnd(): void {
   if (resizing.value) {
     resizing.value = false;
-    emit("resizeEnd");
+    emit('resizeEnd');
   }
 }
 </script>
@@ -58,17 +53,17 @@ function onResizeEnd(): void {
   align-items: stretch;
 }
 
-.resizable > .main {
+.resizable>.main {
   flex: 1;
 }
 
-.resizable > .resizer {
+.resizable>.resizer {
   width: 8px;
   cursor: col-resize;
   background: #ccc;
 }
 
-.resizable.resizing > .resizer {
+.resizable.resizing>.resizer {
   background: #bbb;
 }
 </style>

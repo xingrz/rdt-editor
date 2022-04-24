@@ -2,20 +2,12 @@
   <div id="app">
     <Resizable v-bind:width="width" v-on:resize="setWidth">
       <template v-slot:default>
-        <Editor
-          v-bind:size="editor.size"
-          v-bind:scroll="editor.scroll"
-          v-bind:width="width"
-          v-bind:selection="editor.selection"
-        />
+        <Editor v-bind:size="editor.size" v-bind:scroll="editor.scroll" v-bind:width="width"
+          v-bind:selection="editor.selection" />
       </template>
       <template v-slot:fixed>
         <Scroller v-bind:scroll="editor.scroll">
-          <BSMap
-            v-bind:content="editor.content"
-            v-bind:size="editor.size"
-            v-bind:width="width"
-          />
+          <BSMap v-bind:content="editor.content" v-bind:size="editor.size" v-bind:width="width" />
         </Scroller>
       </template>
     </Resizable>
@@ -23,18 +15,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed } from 'vue';
 
-import { useStore } from "@/store";
+import { useStore } from '@/store';
 
-import Resizable from "./components/Resizable.vue";
-import Scroller from "./components/Scroller.vue";
-import BSMap from "./components/BSMap.vue";
-import Editor from "./components/Editor.vue";
+import Resizable from './components/Resizable.vue';
+import Scroller from './components/Scroller.vue';
+import BSMap from './components/BSMap.vue';
+import Editor from './components/Editor.vue';
 
 const store = useStore();
 const editor = computed(() => store.state.editor);
-const setWidth = (width: number) => store.commit("setWidth", width);
+const setWidth = (width: number) => store.commit('setWidth', width);
 
 const width = computed(() => {
   const max = window.innerWidth - 200;

@@ -5,20 +5,20 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, toRef, ref, watch } from "vue";
+import { defineProps, toRef, ref, watch } from 'vue';
 
-import { useStore } from "@/store";
+import { useStore } from '@/store';
 
 const props = defineProps<{
   scroll: number;
 }>();
 
 const store = useStore();
-const setScroll = (scroll: number) => store.commit("setScroll", scroll);
+const setScroll = (scroll: number) => store.commit('setScroll', scroll);
 
 const scroller = ref<HTMLElement | null>(null);
 
-const scroll = toRef(props, "scroll");
+const scroll = toRef(props, 'scroll');
 watch(scroll, (scroll) => {
   if (scroller.value) {
     scroller.value.scrollTop = scroll;

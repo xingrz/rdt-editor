@@ -1,16 +1,13 @@
 <template>
-  <div
-    ref="holder"
-    :style="{
-      width: `100%`,
-      height: `100vh`,
-      lineHeight: `${size}px`,
-    }"
-  />
+  <div ref="holder" :style="{
+    width: `100%`,
+    height: `100vh`,
+    lineHeight: `${size}px`,
+  }" />
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, onMounted, toRefs, watch, ref } from "vue";
+import { computed, defineProps, onMounted, toRefs, watch, ref } from 'vue';
 
 import brace, {
   Range,
@@ -18,15 +15,15 @@ import brace, {
   IEditSession,
   Editor as IEditor,
   VirtualRenderer,
-} from "brace";
-import "brace/theme/tomorrow";
-import "brace/ext/language_tools";
-import "@/editor/rdt";
+} from 'brace';
+import 'brace/theme/tomorrow';
+import 'brace/ext/language_tools';
+import '@/editor/rdt';
 
-import { useStore } from "@/store";
-import ISelection from "@/types/selection";
+import { useStore } from '@/store';
+import ISelection from '@/types/selection';
 
-import useOnWindowResize from "@/composables/useOnWindowResize";
+import useOnWindowResize from '@/composables/useOnWindowResize';
 
 interface IRenderer extends VirtualRenderer {
   scrollTop: number;
@@ -45,9 +42,9 @@ const { width, scroll, selection } = toRefs(props);
 const store = useStore();
 const icons = computed(() => store.state.icon.icons);
 const content = computed(() => store.state.editor.content);
-const save = (content: string) => store.commit("save", content);
-const setScroll = (scroll: number) => store.commit("setScroll", scroll);
-const setSelection = (selection: ISelection | null) => store.commit("setSelection", selection);
+const save = (content: string) => store.commit('save', content);
+const setScroll = (scroll: number) => store.commit('setScroll', scroll);
+const setSelection = (selection: ISelection | null) => store.commit('setSelection', selection);
 
 let editor: IEditor | undefined;
 let renderer: IRenderer | undefined;
@@ -71,7 +68,7 @@ function applySelection(row: number, offset: number, length: number) {
 }
 
 watch(selection, (selection) => {
-  if (selection && selection.from != "editor") {
+  if (selection && selection.from != 'editor') {
     applySelection(selection.row, selection.offset, selection.length);
   }
 });
@@ -85,27 +82,27 @@ onMounted(() => {
     renderer = editor.renderer as IRenderer;
 
     const session = editor.getSession();
-    session.setMode("ace/mode/rdt");
-    session.on("changeScrollTop", () => {
+    session.setMode('ace/mode/rdt');
+    session.on('changeScrollTop', () => {
       if (renderer) setScroll(renderer.scrollTop);
     });
 
-    editor.setTheme("ace/theme/tomorrow");
+    editor.setTheme('ace/theme/tomorrow');
     editor.setValue(content.value);
-    editor.setOption("enableLiveAutocompletion", [{ getCompletions, getDocTooltip }]);
+    editor.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
 
-    editor.on("change", () => {
+    editor.on('change', () => {
       if (editor) save(editor.getValue());
     });
 
-    editor.selection.on("changeCursor", () => {
+    editor.selection.on('changeCursor', () => {
       if (editor) {
         const { start } = editor.getSelection().getRange();
         setSelection({
           row: start.row,
           offset: start.column,
           length: 0,
-          from: "editor",
+          from: 'editor',
         });
       }
     });
@@ -127,8 +124,8 @@ function getCompletions(
 }
 
 function getDocTooltip(item: { value: string; docHTML: string }): void {
-  item.docHTML = `<img src="${icons.value[item.value]?.data
-    }" class="preview" />`;
+  item.docHTML = `<img src='${icons.value[item.value]?.data
+    }' class='preview' />`;
 }
 </script>
 

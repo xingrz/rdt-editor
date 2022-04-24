@@ -1,39 +1,25 @@
 <template>
   <div class="bs-row">
     <div class="cells" :style="{ flexBasis: `${iconWidth}px` }">
-      <BSCell
-        class="selection"
-        v-for="({ cell, offset }, index) in cells"
-        :key="index"
-        :class="{ focused: isFocused(row, offset, cell.length) }"
-        :content="cell"
-        :size="size"
-        :row="row"
-        :offset="offset"
-      />
+      <BSCell class="selection" v-for="({ cell, offset }, index) in cells" :key="index"
+        :class="{ focused: isFocused(row, offset, cell.length) }" :content="cell" :size="size" :row="row"
+        :offset="offset" />
     </div>
     <div class="texts" :style="{ maxWidth: `${textMaxWidth}px` }">
-      <BSText
-        class="selection"
-        v-for="({ text, offset, align }, index) in texts"
-        :key="index"
-        :class="{ focused: isFocused(row, offset, text.length) }"
-        :content="text"
-        :align="align"
-        :row="row"
-        :offset="offset"
-      />
+      <BSText class="selection" v-for="({ text, offset, align }, index) in texts" :key="index"
+        :class="{ focused: isFocused(row, offset, text.length) }" :content="text" :align="align" :row="row"
+        :offset="offset" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps } from "vue";
+import { computed, defineProps } from 'vue';
 
-import { useStore } from "@/store";
+import { useStore } from '@/store';
 
-import BSCell from "./BSCell.vue";
-import BSText from "./BSText.vue";
+import BSCell from './BSCell.vue';
+import BSText from './BSText.vue';
 
 const props = defineProps<{
   content: string;
@@ -48,7 +34,7 @@ const selection = computed(() => store.state.editor.selection);
 
 const parts = computed(() => {
   let offset = 0;
-  return props.content.split("~~").map((part) => {
+  return props.content.split('~~').map((part) => {
     const o = offset;
     offset += part.length + 2;
     return { part, offset: o };
@@ -57,7 +43,7 @@ const parts = computed(() => {
 
 const cells = computed(() => {
   let offset = 0;
-  return parts.value[0].part.split("\\").map((cell) => {
+  return parts.value[0].part.split('\\').map((cell) => {
     const o = offset;
     offset += cell.length + 1;
     return { cell, offset: o };
@@ -91,12 +77,12 @@ function isFocused(row: number, offset: number, length: number): boolean {
   align-items: stretch;
 }
 
-.bs-row > .cells {
+.bs-row>.cells {
   display: flex;
   justify-content: center;
 }
 
-.bs-row > .texts {
+.bs-row>.texts {
   flex-grow: 1;
   flex-shrink: 1000;
   display: flex;

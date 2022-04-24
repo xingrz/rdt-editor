@@ -1,8 +1,8 @@
-import { createApp } from "vue";
+import { createApp } from 'vue';
 
-import App from "./App.vue";
-import { store, key } from "./store";
+import App from './App.vue';
+import { store, key } from './store';
 
 const app = createApp(App);
 app.use(store, key);
-app.mount("#app");
+app.mount('#app');
