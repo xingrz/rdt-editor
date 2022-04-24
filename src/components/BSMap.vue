@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-map" :style="{ lineHeight: `${size}px` }">
+  <div :style="{ lineHeight: `${size}px` }">
     <BSRow v-for="(row, index) in rows" :key="index" :content="row" :cols="cols" :size="size" :width="width"
       :row="index" />
   </div>
@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import { computed, defineProps } from 'vue';
 
-import BSRow from './BSRow.vue';
+import BSRow from './BSMap/BSRow.vue';
 
 const props = defineProps<{
   content: string;
@@ -27,6 +27,3 @@ const cols = computed(() => {
   return cols;
 });
 </script>
-
-<style>
-</style>

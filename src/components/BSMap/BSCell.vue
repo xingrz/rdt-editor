@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-cell" :title="content" :style="{ width: `${size * ratio}px`, height: `${size}px` }"
+  <div :class="$style.cell" :title="content" :style="{ width: `${size * ratio}px`, height: `${size}px` }"
     @click="handleClick">
     <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon" :size="size" :index="index"
       @ratio="(ratio: number) => updateRatio(index, ratio)" />
@@ -49,8 +49,8 @@ function updateRatio(index: number, newRatio: number): void {
 }
 </script>
 
-<style>
-.bs-cell {
+<style lang="scss" module>
+.cell {
   position: relative;
   cursor: pointer;
 }

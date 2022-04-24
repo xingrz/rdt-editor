@@ -1,13 +1,13 @@
 <template>
-  <div class="bs-label" v-if="label" :data-overlay="index > 0" :data-bold="label.params.b || label.params.bold"
-    :data-align="(label.params.align || ``).toUpperCase()" :style="{
+  <div v-if="label" :class="{ [$style.label]: true, [$style.overlay]: index > 0 }"
+    :data-bold="label.params.b || label.params.bold" :data-align="(label.params.align || ``).toUpperCase()" :style="{
       width: `${size * ratio}px`,
       height: `${size}px`,
       fontSize: `${size - 8}px`,
     }">
     <span>{{ label.text }}</span>
   </div>
-  <img class="bs-icon" v-else :data-overlay="index > 0" :style="{
+  <img v-else :class="{ [$style.icon]: true, [$style.overlay]: index > 0 }" :style="{
     width: `${size * ratio}px`,
     height: `${size}px`,
   }" :src="icon?.data" />
@@ -85,44 +85,43 @@ function parseTextParams(str: string): Record<string, string> {
 }
 </script>
 
-<style>
-.bs-icon,
-.bs-label {
+<style lang="scss" module>
+.icon,
+.label {
   position: absolute;
   user-select: none;
+
+  .overlay {
+    z-index: 1;
+  }
 }
 
-.bs-label {
+.label {
   font-family: monospace;
   text-align: center;
-}
 
-.bs-icon[data-overlay],
-.bs-label[data-overlay] {
-  z-index: 1;
-}
+  span {
+    line-height: 0.75;
+  }
 
-.bs-label span {
-  line-height: 0.75;
-}
+  &[data-align="L"] {
+    text-align: left;
+  }
 
-.bs-label[data-align="L"] {
-  text-align: left;
-}
+  &[data-align="R"] {
+    text-align: right;
+  }
 
-.bs-label[data-align="R"] {
-  text-align: right;
-}
+  &[data-align="A"] span {
+    vertical-align: top;
+  }
 
-.bs-label[data-align="A"] span {
-  vertical-align: top;
-}
+  &[data-align="E"] span {
+    vertical-align: bottom;
+  }
 
-.bs-label[data-align="E"] span {
-  vertical-align: bottom;
-}
-
-.bs-label[data-bold="1"] {
-  font-weight: bold;
+  &[data-bold="1"] {
+    font-weight: bold;
+  }
 }
 </style>

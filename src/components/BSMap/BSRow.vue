@@ -1,14 +1,14 @@
 <template>
-  <div class="bs-row">
-    <div class="cells" :style="{ flexBasis: `${iconWidth}px` }">
-      <BSCell class="selection" v-for="({ cell, offset }, index) in cells" :key="index"
-        :class="{ focused: isFocused(row, offset, cell.length) }" :content="cell" :size="size" :row="row"
-        :offset="offset" />
+  <div :class="$style.row">
+    <div :class="$style.cells" :style="{ flexBasis: `${iconWidth}px` }">
+      <BSCell v-for="({ cell, offset }, index) in cells" :key="index"
+        :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
+        :size="size" :row="row" :offset="offset" />
     </div>
-    <div class="texts" :style="{ maxWidth: `${textMaxWidth}px` }">
-      <BSText class="selection" v-for="({ text, offset, align }, index) in texts" :key="index"
-        :class="{ focused: isFocused(row, offset, text.length) }" :content="text" :align="align" :row="row"
-        :offset="offset" />
+    <div :class="$style.texts" :style="{ maxWidth: `${textMaxWidth}px` }">
+      <BSText v-for="({ text, offset, align }, index) in texts" :key="index"
+        :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, text.length) }" :content="text"
+        :align="align" :row="row" :offset="offset" />
     </div>
   </div>
 </template>
@@ -71,49 +71,49 @@ function isFocused(row: number, offset: number, length: number): boolean {
 }
 </script>
 
-<style>
-.bs-row {
+<style lang="scss" module>
+.row {
   display: flex;
   align-items: stretch;
-}
 
-.bs-row>.cells {
-  display: flex;
-  justify-content: center;
-}
+  >.cells {
+    display: flex;
+    justify-content: center;
+  }
 
-.bs-row>.texts {
-  flex-grow: 1;
-  flex-shrink: 1000;
-  display: flex;
-}
+  >.texts {
+    flex-grow: 1;
+    flex-shrink: 1000;
+    display: flex;
+  }
 
-.bs-row .selection {
-  position: relative;
-}
+  .selection {
+    position: relative;
 
-.bs-row .selection::after {
-  display: block;
-  content: "";
+    &::after {
+      display: block;
+      content: "";
 
-  position: absolute;
+      position: absolute;
 
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
 
-  background: #0099ff;
-  opacity: 0;
+      background: #0099ff;
+      opacity: 0;
 
-  transition: opacity 200ms;
-}
+      transition: opacity 200ms;
+    }
 
-.bs-row .selection:hover::after {
-  opacity: 0.2;
-}
+    &:hover::after {
+      opacity: 0.2;
+    }
 
-.bs-row .selection.focused::after {
-  opacity: 0.3;
+    &.focused::after {
+      opacity: 0.3;
+    }
+  }
 }
 </style>

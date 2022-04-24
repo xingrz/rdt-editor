@@ -1,5 +1,5 @@
 <template>
-  <div class="bs-text" :class="`text-${align}`" :title="content" @click="handleClick">{{ content }}</div>
+  <div :class="$style.text" :data-align="align" :title="content" @click="handleClick">{{ content }}</div>
 </template>
 
 <script lang="ts" setup>
@@ -28,8 +28,8 @@ function handleClick(): void {
 }
 </script>
 
-<style>
-.bs-text {
+<style lang="scss" module>
+.text {
   user-select: none;
   cursor: pointer;
   margin: 0 5px;
@@ -37,10 +37,10 @@ function handleClick(): void {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
 
-.bs-text.text-4 {
-  flex-grow: 1;
-  text-align: end;
+  &[data-align="4"] {
+    flex-grow: 1;
+    text-align: end;
+  }
 }
 </style>
