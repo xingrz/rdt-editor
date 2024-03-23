@@ -11,12 +11,13 @@
     "brace": "^0.11.1",
     "md5": "^2.3.0",
     "pinia": "^2.1.7",
-    "querystring-es3": "^0.2.1",
+    "qs": "^6.12.0",
     "radash": "^12.1.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
     "@types/md5": "^2.3.2",
+    "@types/qs": "^6.9.14",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/eslint-config-typescript": "^13.0.0",

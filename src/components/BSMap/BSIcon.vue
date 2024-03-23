@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps, onMounted, toRef, watch } from 'vue';
-import qs from 'querystring-es3';
+import { parse } from 'qs';
 
 import { useIconStore } from '@/stores/icon';
 
@@ -79,8 +79,8 @@ function selectTextWidth(flag: string): number | undefined {
 }
 
 function parseTextParams(str: string): Record<string, string> {
-  return qs.parse(str, ',', '=', {
-    decodeURIComponent: (s) => s,
+  return parse(str, {
+    delimiter: ','
   }) as Record<string, string>;
 }
 </script>
