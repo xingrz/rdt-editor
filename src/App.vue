@@ -1,19 +1,22 @@
 <template>
-  <resizable v-model:width="width">
-    <template v-slot:default>
-      <editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
-        v-model:scroll="editorStore.scroll" :icons="iconStore.icons" :size="editorStore.size" />
-    </template>
-    <template v-slot:fixed>
-      <scroller v-model:scroll="editorStore.scroll">
-        <BSMap :map="ast" :size="editorStore.size" />
-      </scroller>
-    </template>
-  </resizable>
+  <n-config-provider>
+    <resizable v-model:width="width">
+      <template v-slot:default>
+        <editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
+          v-model:scroll="editorStore.scroll" :icons="iconStore.icons" :size="editorStore.size" />
+      </template>
+      <template v-slot:fixed>
+        <scroller v-model:scroll="editorStore.scroll">
+          <BSMap :map="ast" :size="editorStore.size" />
+        </scroller>
+      </template>
+    </resizable>
+  </n-config-provider>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { NConfigProvider } from 'naive-ui';
 
 import { parseMap } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
