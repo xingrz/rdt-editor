@@ -1,28 +1,35 @@
 <template>
   <n-config-provider>
-    <resizable v-model:width="width">
-      <template v-slot:default>
+    <n-split direction="horizontal" :resize-trigger-size="8" v-model:size="width">
+      <template #1>
         <editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
           v-model:scroll="editorStore.scroll" :icons="iconStore.icons" :size="editorStore.size" />
       </template>
-      <template v-slot:fixed>
+      <template #2>
         <scroller v-model:scroll="editorStore.scroll">
           <BSMap :map="ast" :size="editorStore.size" />
         </scroller>
       </template>
-    </resizable>
+      <template #resize-trigger>
+        <div :class="$style.resizer">
+        </div>
+      </template>
+    </n-split>
   </n-config-provider>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { NConfigProvider } from 'naive-ui';
+import { useWindowSize } from '@vueuse/core';
+import {
+  NConfigProvider,
+  NSplit,
+} from 'naive-ui';
 
 import { parseMap } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
 import { useIconStore } from '@/stores/icon';
 
-import Resizable from './components/Resizable.vue';
 import Scroller from './components/Scroller.vue';
 import BSMap from './components/BSMap.vue';
 import Editor from './components/Editor.vue';
@@ -30,15 +37,18 @@ import Editor from './components/Editor.vue';
 const editorStore = useEditorStore();
 const iconStore = useIconStore();
 
+const { width: windowWidth } = useWindowSize();
+function clampWithWindowSize(value: number): number {
+  const max = windowWidth.value - 200;
+  const min = 200;
+  return Math.max(Math.min(value, max), min);
+}
 const width = computed({
-  get(): number {
-    const max = window.innerWidth - 200;
-    const min = 200;
-    const width = editorStore.width;
-    return Math.max(Math.min(width, max), min);
+  get(): string {
+    return `${clampWithWindowSize(windowWidth.value - editorStore.width)}px`;
   },
-  set(v: number) {
-    editorStore.width = v;
+  set(v: string) {
+    editorStore.width = clampWithWindowSize(windowWidth.value - parseInt(v));
   }
 });
 
@@ -51,5 +61,20 @@ const ast = computed(() => parseMap(editorStore.content));
   margin: 0;
   padding: 0;
   overscroll-behavior: none;
+}
+
+.resizer {
+  height: 100%;
+  background: #cccccc;
+
+  transition: background-color 200ms;
+
+  &:hover {
+    background: #d5d5d5;
+  }
+
+  &:active {
+    background: #c0c0c0;
+  }
 }
 </style>
