@@ -112,10 +112,10 @@ const holderSize = useClientSize(holder);
 watch(holderSize, () => editor?.resize());
 
 function getCompletions(
-  editor: IEditor,
-  session: IEditSession,
-  pos: Position,
-  prefix: string,
+  _editor: IEditor,
+  _session: IEditSession,
+  _pos: Position,
+  _prefix: string,
   callback: (err: Error | null, completions?: { value: string }[]) => void
 ): void {
   callback(null, Object.keys(props.icons)
