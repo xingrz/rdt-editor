@@ -1,8 +1,6 @@
-name: Auto deploy
-
 on:
   push:
-    branches: [ master ]
+  pull_request:
 
 concurrency:
   group: pages
@@ -24,8 +22,14 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
       - name: Build
-        run: npm ci && npm run build
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -34,6 +38,7 @@ jobs:
 
   deploy:
     needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
 
     permissions:
       pages: write
