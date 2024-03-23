@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, toRefs, watch, ref, useCssModule } from 'vue';
+import { defineEmits, defineProps, onMounted, toRefs, watch, ref, useCssModule } from 'vue';
 
 import brace, {
   Range,
