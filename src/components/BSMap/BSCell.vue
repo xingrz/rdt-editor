@@ -1,13 +1,17 @@
 <template>
-  <div :class="$style.cell" :title="content" :style="{ width: `${size * ratio}px`, height: `${size}px` }"
-    @click="handleClick">
-    <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon" :size="size" :index="index"
+  <div :class="$style.cell" :title="content" @click="handleClick" :style="style">
+    <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon" :index="index"
       @ratio="(ratio: number) => updateRatio(index, ratio)" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref } from 'vue';
+import {
+  type CSSProperties,
+  computed,
+  defineProps,
+  ref,
+} from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
 
@@ -15,7 +19,6 @@ import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
   content: string;
-  size: number;
   row: number;
   offset: number;
 }>();
@@ -32,6 +35,10 @@ const icons = computed(() => {
     .filter((icon) => !!icon);
 });
 
+const style = computed(() => ({
+  '--bs-map-cell-ratio': (ratio.value == 1 ? undefined : ratio.value),
+}) as CSSProperties);
+
 function handleClick(): void {
   editorStore.selection = {
     row: props.row,
@@ -41,9 +48,11 @@ function handleClick(): void {
   };
 }
 
-function updateRatio(index: number, newRatio: number): void {
-  if (index != 0) return;
-  ratio.value = newRatio;
+function updateRatio(layer: number, newRatio: number): void {
+  if (layer == 0) {
+    // Only ratio of the first icon affects the cell
+    ratio.value = newRatio;
+  }
 }
 </script>
 
@@ -51,5 +60,7 @@ function updateRatio(index: number, newRatio: number): void {
 .cell {
   position: relative;
   cursor: pointer;
+  width: calc(var(--bs-map-size) * var(--bs-map-cell-ratio, 1) * 1px);
+  height: calc(var(--bs-map-size) * 1px);
 }
 </style>

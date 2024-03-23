@@ -1,11 +1,15 @@
 <template>
-  <div :style="{ lineHeight: `${size}px` }">
-    <BSRow v-for="(row, index) in rows" :key="index" :content="row" :cols="cols" :size="size" :row="index" />
+  <div :class="$style.map" :style="style">
+    <BSRow v-for="(row, index) in rows" :key="index" :content="row" :row="index" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps } from 'vue';
+import {
+  type CSSProperties,
+  computed,
+  defineProps,
+} from 'vue';
 
 import BSRow from './BSMap/BSRow.vue';
 
@@ -24,4 +28,15 @@ const cols = computed(() => {
   }
   return cols;
 });
+
+const style = computed(() => ({
+  '--bs-map-size': props.size,
+  '--bs-map-cols': cols.value,
+}) as CSSProperties);
 </script>
+
+<style lang="scss" module>
+.map {
+  line-height: calc(var(--bs-map-size)* 1px);
+}
+</style>

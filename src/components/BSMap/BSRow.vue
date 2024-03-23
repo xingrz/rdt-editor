@@ -1,9 +1,9 @@
 <template>
   <div :class="$style.row">
-    <div :class="$style.cells" :style="{ flexBasis: `${iconWidth}px` }">
+    <div :class="$style.cells">
       <BSCell v-for="({ cell, offset }, index) in cells" :key="index"
         :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
-        :size="size" :row="row" :offset="offset" />
+        :row="row" :offset="offset" />
     </div>
     <div :class="$style.texts">
       <BSText v-for="({ text, offset, align }, index) in texts" :key="index"
@@ -23,8 +23,6 @@ import BSText from './BSText.vue';
 
 const props = defineProps<{
   content: string;
-  cols: number;
-  size: number;
   row: number;
 }>();
 
@@ -55,8 +53,6 @@ const texts = computed(() => {
     .filter(({ text }) => text && text.trim());
 });
 
-const iconWidth = computed(() => props.size * props.cols);
-
 function isFocused(row: number, offset: number, length: number): boolean {
   const { selection } = editorStore;
   return (
@@ -74,7 +70,7 @@ function isFocused(row: number, offset: number, length: number): boolean {
   align-items: stretch;
 
   >.cells {
-    flex: 0 0 auto;
+    flex: 0 0 calc(var(--bs-map-size) * var(--bs-map-cols) * 1px);
     display: flex;
     justify-content: center;
   }

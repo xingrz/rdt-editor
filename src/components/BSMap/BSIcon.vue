@@ -1,27 +1,27 @@
 <template>
-  <div v-if="label" :class="{ [$style.label]: true, [$style.overlay]: index > 0 }"
-    :data-bold="label.params.b || label.params.bold" :data-align="(label.params.align || ``).toUpperCase()" :style="{
-      width: `${size * ratio}px`,
-      height: `${size}px`,
-      fontSize: `${size - 8}px`,
-    }">
+  <div v-if="label" :class="{ [$style.label]: true, [$style.overlay]: index > 0 }" :style="style"
+    :data-bold="label.params.b || label.params.bold" :data-align="(label.params.align || ``).toUpperCase()">
     <span>{{ label.text }}</span>
   </div>
-  <img v-else :class="{ [$style.icon]: true, [$style.overlay]: index > 0 }" :style="{
-    width: `${size * ratio}px`,
-    height: `${size}px`,
-  }" :src="icon?.data" />
+  <img v-else :class="{ [$style.icon]: true, [$style.overlay]: index > 0 }" :style="style" :src="icon?.data" />
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, onMounted, toRef, watch } from 'vue';
+import {
+  type CSSProperties,
+  computed,
+  defineEmits,
+  defineProps,
+  onMounted,
+  toRef,
+  watch,
+} from 'vue';
 import { parse } from 'qs';
 
 import { useIconStore } from '@/stores/icon';
 
 const props = defineProps<{
   content: string;
-  size: number;
   index: number;
 }>();
 
@@ -61,6 +61,10 @@ const ratio = computed(() => {
 watch(ratio, (ratio) => emit('ratio', ratio));
 onMounted(() => emit('ratio', ratio.value));
 
+const style = computed(() => ({
+  '--bs-map-icon-ratio': (ratio.value == 1 ? undefined : ratio.value),
+}) as CSSProperties);
+
 function selectTextWidth(flag: string): number | undefined {
   switch (flag) {
     case 'o':
@@ -91,6 +95,9 @@ function parseTextParams(str: string): Record<string, string> {
   position: absolute;
   user-select: none;
 
+  width: calc(var(--bs-map-size) * var(--bs-map-icon-ratio, 1) * 1px);
+  height: calc(var(--bs-map-size) * 1px);
+
   .overlay {
     z-index: 1;
   }
@@ -98,6 +105,7 @@ function parseTextParams(str: string): Record<string, string> {
 
 .label {
   font-family: monospace;
+  font-size: calc(var(--bs-map-size) * 1px - 8px);
   text-align: center;
 
   span {
