@@ -15,12 +15,12 @@ export const useEditorStore = defineStore('editor', () => {
 
   function setSize(value: number): void {
     size.value = value;
-    throttledSetItem('size', `${size}`);
+    throttledSetItem('size', `${size.value}`);
   }
 
   function setWidth(value: number): void {
     width.value = value;
-    throttledSetItem('width', `${width}`);
+    throttledSetItem('width', `${width.value}`);
   }
 
   function setScroll(value: number): void {

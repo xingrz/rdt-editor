@@ -20,7 +20,7 @@ const rows = computed(() => props.content.split('\n'));
 
 const cols = computed(() => {
   let cols = 0;
-  for (let row of rows.value) {
+  for (const row of rows.value) {
     const c = Math.max(cols, row.split('\\').length);
     if (c > cols) cols = c;
   }

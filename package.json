@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 8080",
-    "build": "vite build"
+    "build": "vite build",
+    "lint": "eslint --ext .ts,.vue src"
   },
   "dependencies": {
     "brace": "^0.11.1",
@@ -31,14 +32,16 @@
       "browser": true
     },
     "extends": [
-      "plugin:vue/vue3-essential",
       "eslint:recommended",
+      "plugin:vue/vue3-essential",
       "@vue/typescript/recommended"
     ],
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "warn"
+    }
   },
   "browserslist": [
     "> 1%",
