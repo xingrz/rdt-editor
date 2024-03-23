@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { throttle } from 'radash';
+import { debounce } from 'radash';
 
 import ISelection from '@/types/selection';
 
-const throttledSetItem = throttle({ interval: 1000 }, localStorage.setItem.bind(localStorage));
+const debouncedSetItem = debounce({ delay: 200 }, localStorage.setItem.bind(localStorage));
 
 export const useEditorStore = defineStore('editor', () => {
   const size = ref(parseInt(localStorage.getItem('size') || '') || 20);
@@ -15,12 +15,12 @@ export const useEditorStore = defineStore('editor', () => {
 
   function setSize(value: number): void {
     size.value = value;
-    throttledSetItem('size', `${size.value}`);
+    debouncedSetItem('size', `${size.value}`);
   }
 
   function setWidth(value: number): void {
     width.value = value;
-    throttledSetItem('width', `${width.value}`);
+    debouncedSetItem('width', `${width.value}`);
   }
 
   function setScroll(value: number): void {
@@ -33,7 +33,7 @@ export const useEditorStore = defineStore('editor', () => {
 
   function save(value: string): void {
     content.value = value;
-    throttledSetItem('content', value);
+    debouncedSetItem('content', value);
   }
 
   return {
