@@ -8,14 +8,13 @@
   },
   "dependencies": {
     "brace": "^0.11.1",
-    "lodash-es": "^4.17.21",
     "md5": "^2.3.0",
     "pinia": "^2.1.7",
     "querystring-es3": "^0.2.1",
+    "radash": "^12.1.0",
     "vue": "^3.4.21"
   },
   "devDependencies": {
-    "@types/lodash-es": "^4.17.6",
     "@types/md5": "^2.3.2",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@vitejs/plugin-vue": "^5.0.4",

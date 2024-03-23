@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import throttle from 'lodash-es/throttle';
+import { throttle } from 'radash';
 
 import ISelection from '@/types/selection';
 
-const throttledSetItem = throttle(localStorage.setItem, 1000).bind(localStorage);
+const throttledSetItem = throttle({ interval: 1000 }, localStorage.setItem.bind(localStorage));
 
 export const useEditorStore = defineStore('editor', () => {
   const size = ref(parseInt(localStorage.getItem('size') || '') || 20);
