@@ -1,12 +1,12 @@
 <template>
   <resizable v-model:width="width">
     <template v-slot:default>
-      <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="iconStore.icons"
-        :size="editorStore.size" />
+      <editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
+        v-model:scroll="editorStore.scroll" :icons="iconStore.icons" :size="editorStore.size" />
     </template>
     <template v-slot:fixed>
-      <scroller v-model:scroll="scroll">
-        <BSMap v-bind:content="content" v-bind:size="editorStore.size" />
+      <scroller v-model:scroll="editorStore.scroll">
+        <BSMap :content="editorStore.content" :size="editorStore.size" />
       </scroller>
     </template>
   </resizable>
@@ -17,7 +17,6 @@ import { computed } from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
 import { useIconStore } from '@/stores/icon';
-import ISelection from '@/types/selection';
 
 import Resizable from './components/Resizable.vue';
 import Scroller from './components/Scroller.vue';
@@ -35,34 +34,7 @@ const width = computed({
     return Math.max(Math.min(width, max), min);
   },
   set(v: number) {
-    editorStore.setWidth(v);
-  }
-});
-
-const scroll = computed({
-  get(): number {
-    return editorStore.scroll;
-  },
-  set(v: number) {
-    editorStore.setScroll(v);
-  }
-});
-
-const selection = computed({
-  get(): ISelection | null {
-    return editorStore.selection;
-  },
-  set(v: ISelection | null) {
-    editorStore.setSelection(v);
-  }
-});
-
-const content = computed({
-  get(): string {
-    return editorStore.content;
-  },
-  set(v: string) {
-    editorStore.save(v);
+    editorStore.width = v;
   }
 });
 </script>

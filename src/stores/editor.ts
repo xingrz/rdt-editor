@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { debounce } from 'radash';
 
 import ISelection from '@/types/selection';
@@ -13,31 +13,23 @@ export const useEditorStore = defineStore('editor', () => {
   const scroll = ref(0);
   const selection = ref<ISelection | null>(null);
 
-  function setSize(value: number): void {
-    size.value = value;
-    debouncedSetItem('size', `${size.value}`);
-  }
+  watch(size, (value) => {
+    debouncedSetItem('size', String(value));
+  });
 
-  function setWidth(value: number): void {
-    width.value = value;
-    debouncedSetItem('width', `${width.value}`);
-  }
+  watch(width, (value) => {
+    debouncedSetItem('width', String(value));
+  });
 
-  function setScroll(value: number): void {
-    scroll.value = value;
-  }
-
-  function setSelection(value: ISelection | null): void {
-    selection.value = value;
-  }
-
-  function save(value: string): void {
-    content.value = value;
+  watch(content, (value) => {
     debouncedSetItem('content', value);
-  }
+  });
 
   return {
-    size, width, content, scroll, selection,
-    setSize, setWidth, setScroll, setSelection, save
+    size,
+    width,
+    content,
+    scroll,
+    selection,
   };
 });

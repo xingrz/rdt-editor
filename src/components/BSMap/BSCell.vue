@@ -33,12 +33,12 @@ const icons = computed(() => {
 });
 
 function handleClick(): void {
-  editorStore.setSelection({
+  editorStore.selection = {
     row: props.row,
     offset: props.offset,
     length: props.content.length,
     from: 'preview',
-  });
+  };
 }
 
 function updateRatio(index: number, newRatio: number): void {
