@@ -23,7 +23,7 @@ import '@/editor/rdt';
 import ISelection from '@/types/selection';
 import IIcon from '@/types/icon';
 
-import useOnWindowResize from '@/composables/useOnWindowResize';
+import useClientSize from '@/composables/useClientSize';
 
 interface IRenderer extends VirtualRenderer {
   scrollTop: number;
@@ -36,7 +36,6 @@ const props = defineProps<{
   scroll: number;
   icons: Record<string, IIcon | null>;
   size: number;
-  width: number;
 }>();
 
 const emit = defineEmits<{
@@ -45,13 +44,10 @@ const emit = defineEmits<{
   (e: 'update:scroll', scroll: number): void;
 }>();
 
-const { width, scroll, selection } = toRefs(props);
+const { scroll, selection } = toRefs(props);
 
 let editor: IEditor | undefined;
 let renderer: IRenderer | undefined;
-
-useOnWindowResize(() => editor?.resize());
-watch(width, () => editor?.resize());
 
 watch(scroll, (scroll) => renderer?.scrollToY(scroll));
 
@@ -74,7 +70,7 @@ watch(selection, (selection) => {
   }
 });
 
-const holder = ref<HTMLElement | null>(null);
+const holder = ref<HTMLElement | undefined>();
 onMounted(() => {
   if (holder.value) {
     editor = brace.edit(holder.value);
@@ -111,6 +107,9 @@ onMounted(() => {
     applySelection(0, 0, 0);
   }
 });
+
+const holderSize = useClientSize(holder);
+watch(holderSize, () => editor?.resize());
 
 function getCompletions(
   editor: IEditor,

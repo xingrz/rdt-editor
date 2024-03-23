@@ -5,7 +5,7 @@
         :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
         :size="size" :row="row" :offset="offset" />
     </div>
-    <div :class="$style.texts" :style="{ maxWidth: `${textMaxWidth}px` }">
+    <div :class="$style.texts">
       <BSText v-for="({ text, offset, align }, index) in texts" :key="index"
         :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, text.length) }" :content="text"
         :align="align" :row="row" :offset="offset" />
@@ -25,7 +25,6 @@ const props = defineProps<{
   content: string;
   cols: number;
   size: number;
-  width: number;
   row: number;
 }>();
 
@@ -58,8 +57,6 @@ const texts = computed(() => {
 
 const iconWidth = computed(() => props.size * props.cols);
 
-const textMaxWidth = computed(() => props.width - iconWidth.value);
-
 function isFocused(row: number, offset: number, length: number): boolean {
   const { selection } = editorStore;
   return (
@@ -77,13 +74,13 @@ function isFocused(row: number, offset: number, length: number): boolean {
   align-items: stretch;
 
   >.cells {
+    flex: 0 0 auto;
     display: flex;
     justify-content: center;
   }
 
   >.texts {
-    flex-grow: 1;
-    flex-shrink: 1000;
+    flex: 1 1 auto;
     display: flex;
   }
 

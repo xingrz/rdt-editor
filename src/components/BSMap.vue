@@ -1,7 +1,6 @@
 <template>
   <div :style="{ lineHeight: `${size}px` }">
-    <BSRow v-for="(row, index) in rows" :key="index" :content="row" :cols="cols" :size="size" :width="width"
-      :row="index" />
+    <BSRow v-for="(row, index) in rows" :key="index" :content="row" :cols="cols" :size="size" :row="index" />
   </div>
 </template>
 
@@ -13,7 +12,6 @@ import BSRow from './BSMap/BSRow.vue';
 const props = defineProps<{
   content: string;
   size: number;
-  width: number;
 }>();
 
 const rows = computed(() => props.content.split('\n'));

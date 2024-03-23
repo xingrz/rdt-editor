@@ -2,11 +2,11 @@
   <resizable v-model:width="width">
     <template v-slot:default>
       <editor v-model:content="content" v-model:selection="selection" v-model:scroll="scroll" :icons="iconStore.icons"
-        :size="editorStore.size" :width="width" />
+        :size="editorStore.size" />
     </template>
     <template v-slot:fixed>
       <scroller v-model:scroll="scroll">
-        <BSMap v-bind:content="content" v-bind:size="editorStore.size" v-bind:width="width" />
+        <BSMap v-bind:content="content" v-bind:size="editorStore.size" />
       </scroller>
     </template>
   </resizable>
