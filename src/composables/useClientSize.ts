@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 
 interface Size {
   width: number;
@@ -17,22 +17,12 @@ export default function useClientSize(elementRef: Ref<HTMLElement | undefined>):
     size.value = getSize(elementRef.value);
   });
 
-  watch(elementRef, () => {
-    if (elementRef.value) {
-      observer.observe(elementRef.value);
-    }
-  });
-
   onMounted(() => {
-    if (elementRef.value) {
-      observer.observe(elementRef.value);
-    }
+    observer.observe(elementRef.value!);
   });
 
   onBeforeUnmount(() => {
-    if (elementRef.value) {
-      observer.unobserve(elementRef.value);
-    }
+    observer.unobserve(elementRef.value!);
   });
 
   return size;
