@@ -44,6 +44,6 @@ const width = computed({
 :global(body) {
   margin: 0;
   padding: 0;
-  overscroll-behavior-x: none;
+  overscroll-behavior: none;
 }
 </style>
