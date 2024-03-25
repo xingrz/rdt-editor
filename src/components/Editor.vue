@@ -18,16 +18,16 @@ import {
 } from 'vue';
 
 import brace, {
-  Position,
-  IEditSession,
-  Editor as IEditor,
+  type Position,
+  type IEditSession,
+  type Editor,
 } from 'brace';
 import 'brace/theme/tomorrow';
 import 'brace/ext/language_tools';
 import '@/editor/rdt';
 
-import ISelection from '@/types/selection';
-import IIcon from '@/types/icon';
+import type ISelection from '@/types/selection';
+import type IIcon from '@/types/icon';
 
 import useClientSize from '@/composables/useClientSize';
 import bindEditorValue from '@/composables/bindEditorValue';
@@ -40,7 +40,7 @@ const props = defineProps<{
 }>();
 
 const holder = ref<HTMLElement>();
-const editor = ref<IEditor>();
+const editor = ref<Editor>();
 
 const content = defineModel<string>('content');
 bindEditorValue(editor, content);
@@ -71,7 +71,7 @@ const holderSize = useClientSize(holder);
 watch(holderSize, () => editor.value?.resize());
 
 function getCompletions(
-  _editor: IEditor,
+  _editor: Editor,
   _session: IEditSession,
   _pos: Position,
   _prefix: string,

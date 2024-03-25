@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 import { debounce } from 'radash';
 
-import ISelection from '@/types/selection';
+import type ISelection from '@/types/selection';
 
 const debouncedSetItem = debounce({ delay: 200 }, localStorage.setItem.bind(localStorage));
 

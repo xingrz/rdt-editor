@@ -3,7 +3,7 @@ import type { Editor, Range, VirtualRenderer } from 'brace';
 
 import onRefAssigned from './onRefAssigned';
 
-import ISelection from '@/types/selection';
+import type ISelection from '@/types/selection';
 
 interface Renderer extends VirtualRenderer {
   scrollTop: number;

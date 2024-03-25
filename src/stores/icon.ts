@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import md5 from 'md5';
 
-import IIcon from '@/types/icon';
+import type IIcon from '@/types/icon';
 
 const baseUrl = 'https://upload.wikimedia.org/wikipedia/commons';
 
