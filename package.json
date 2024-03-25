@@ -2,6 +2,7 @@
   "name": "rdt-editor",
   "version": "5.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 8080",
     "build": "vite build",
