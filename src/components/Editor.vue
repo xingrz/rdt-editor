@@ -17,14 +17,11 @@ import {
   useCssModule,
 } from 'vue';
 
-import brace, {
-  type Position,
-  type IEditSession,
-  type Editor,
-} from 'brace';
-import 'brace/theme/tomorrow';
-import 'brace/ext/language_tools';
-import '@/editor/rdt';
+import { Ace, edit as aceEdit, config as aceConfig } from 'ace-code';
+import 'ace-code/src/ext/language_tools';
+import 'ace-code/styles/ace.css';
+import 'ace-code/styles/theme/tomorrow.css';
+import * as RDT from '@/editor/rdt';
 
 import type ISelection from '@/types/selection';
 import type IIcon from '@/types/icon';
@@ -40,7 +37,7 @@ const props = defineProps<{
 }>();
 
 const holder = ref<HTMLElement>();
-const editor = ref<Editor>();
+const editor = ref<Ace.Editor>();
 
 const content = defineModel<string>('content');
 bindEditorValue(editor, content);
@@ -51,15 +48,21 @@ bindEditorSelection(editor, selection);
 const scroll = defineModel<number>('scroll');
 bindEditorScroll(editor, scroll);
 
+const aceModules: Record<string, unknown> = {
+  'ace/theme/tomorrow': { cssClass: 'ace-tomorrow' },
+  'ace/mode/rdt': RDT,
+};
+
+aceConfig.setLoader((path, callback) => {
+  callback(null, aceModules[path]);
+});
+
 onMounted(() => {
-  editor.value = brace.edit(holder.value!);
-  editor.value.$blockScrolling = Infinity;
-
-  const session = editor.value.getSession();
-  session.setMode('ace/mode/rdt');
-
-  editor.value.setTheme('ace/theme/tomorrow');
-  editor.value.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
+  editor.value = aceEdit(holder.value!, {
+    theme: 'ace/theme/tomorrow',
+    mode: 'ace/mode/rdt',
+    enableLiveAutocompletion: [new Completer()],
+  });
 });
 
 onBeforeUnmount(() => {
@@ -70,21 +73,19 @@ onBeforeUnmount(() => {
 const holderSize = useClientSize(holder);
 watch(holderSize, () => editor.value?.resize());
 
-function getCompletions(
-  _editor: Editor,
-  _session: IEditSession,
-  _pos: Position,
-  _prefix: string,
-  callback: (err: Error | null, completions?: { value: string }[]) => void
-): void {
-  callback(null, Object.keys(props.icons)
-    .filter((icon) => !!props.icons[icon])
-    .map((icon) => ({ value: icon })));
-}
+class Completer implements Ace.Completer {
+  private style = useCssModule();
 
-const style = useCssModule();
-function getDocTooltip(item: { value: string; docHTML: string }): void {
-  item.docHTML = `<img src="${props.icons[item.value]?.data}" class="${style.preview}" />`;
+  getCompletions(_editor: Ace.Editor, _session: Ace.EditSession, _pos: Ace.Point, _prefix: string, callback: Ace.CompleterCallback): void {
+    callback(null, Object.keys(props.icons)
+      .filter((icon) => !!props.icons[icon])
+      .map((icon) => ({ value: icon })));
+  }
+
+  getDocTooltip(item: Ace.ValueCompletion): string | Ace.ValueCompletion | undefined {
+    item.docHTML = `<img src="${props.icons[item.value]?.data}" class="${this.style.preview}" />`;
+    return;
+  }
 }
 </script>
 

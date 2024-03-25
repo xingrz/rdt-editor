@@ -1,16 +1,16 @@
 import { watch, type Ref } from 'vue';
-import type { Editor, Range, VirtualRenderer } from 'brace';
+import type { Ace } from 'ace-code';
 
 import onRefAssigned from './onRefAssigned';
 
 import type ISelection from '@/types/selection';
 
-interface Renderer extends VirtualRenderer {
+interface Renderer extends Ace.VirtualRenderer {
   scrollTop: number;
   scrollSelectionIntoView(): void;
 }
 
-export default function bindEditorSelection(editorRef: Ref<Editor | undefined>, selection: Ref<ISelection | undefined>): void {
+export default function bindEditorSelection(editorRef: Ref<Ace.Editor | undefined>, selection: Ref<ISelection | undefined>): void {
   onRefAssigned(editorRef, (editor) => {
     applyRange(editor, toRange({ row: 0, offset: 0, length: 0 }));
 
@@ -32,14 +32,14 @@ export default function bindEditorSelection(editorRef: Ref<Editor | undefined>, 
   });
 }
 
-function toRange({ row, offset, length }: Omit<ISelection, 'from'>): Range {
+function toRange({ row, offset, length }: Omit<ISelection, 'from'>): Ace.Range {
   return {
     start: { row: row, column: offset },
     end: { row: row, column: offset + length },
-  } as Range;
+  } as Ace.Range;
 }
 
-function applyRange(editor: Editor, range: Range) {
+function applyRange(editor: Ace.Editor, range: Ace.Range) {
   const renderer = editor.renderer as Renderer;
   editor.selection.setRange(range, false);
   renderer.scrollToX(0);
@@ -47,7 +47,7 @@ function applyRange(editor: Editor, range: Range) {
   editor.focus();
 }
 
-function toSelection(range: Range, from: ISelection['from']): ISelection {
+function toSelection(range: Ace.Range, from: ISelection['from']): ISelection {
   return {
     row: range.start.row,
     offset: range.start.column,

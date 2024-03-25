@@ -1,9 +1,9 @@
 import type { Ref } from 'vue';
-import type { Editor } from 'brace';
+import type { Ace } from 'ace-code';
 
 import onRefAssigned from './onRefAssigned';
 
-export default function bindEditorValue(editor: Ref<Editor | undefined>, val: Ref<string | undefined>): void {
+export default function bindEditorValue(editor: Ref<Ace.Editor | undefined>, val: Ref<string | undefined>): void {
   onRefAssigned(editor, (value) => {
     if (val.value) {
       value.setValue(val.value);

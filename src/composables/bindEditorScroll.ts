@@ -1,9 +1,9 @@
 import { watch, type Ref } from 'vue';
-import type { Editor } from 'brace';
+import type { Ace } from 'ace-code';
 
 import onRefAssigned from './onRefAssigned';
 
-export default function bindEditorScroll(editor: Ref<Editor | undefined>, scroll: Ref<number | undefined>): void {
+export default function bindEditorScroll(editor: Ref<Ace.Editor | undefined>, scroll: Ref<number | undefined>): void {
   onRefAssigned(editor, (value) => {
     const session = value.getSession();
     session.on('changeScrollTop', () => {
