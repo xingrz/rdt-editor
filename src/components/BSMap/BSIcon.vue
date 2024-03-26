@@ -22,7 +22,6 @@ import { useIconStore } from '@/stores/icon';
 
 const props = defineProps<{
   content: string;
-  index: number;
 }>();
 
 const emit = defineEmits<{
@@ -40,14 +39,17 @@ const label = computed(() => {
     const params = parseTextParams(RegExp.$4 || '');
     return { text, ratio, params };
   } else {
-    return null;
+    return undefined;
   }
 });
 
 const icon = computed(() => label.value ? undefined : iconStore.icons[content.value]);
 
-watch(content, (content) => !label.value && iconStore.resolve(content));
-onMounted(() => content.value && !label.value && iconStore.resolve(content.value));
+watch(content, (content) => {
+  if (content && !label.value) {
+    iconStore.resolve(content);
+  }
+}, { immediate: true });
 
 const ratio = computed(() => {
   if (!content.value) return 1;

@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.cell" :title="content" @click="handleClick" :style="style">
-    <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon" :index="index"
+    <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon"
       @ratio="(ratio: number) => updateRatio(index, ratio)" />
   </div>
 </template>
