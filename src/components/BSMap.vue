@@ -37,6 +37,6 @@ const style = computed(() => ({
 
 <style lang="scss" module>
 .map {
-  line-height: calc(var(--bs-map-size)* 1px);
+  line-height: calc(var(--bs-map-size) * 1px);
 }
 </style>

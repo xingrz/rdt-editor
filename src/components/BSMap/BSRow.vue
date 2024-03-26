@@ -2,12 +2,12 @@
   <div :class="$style.row">
     <div :class="$style.cells">
       <BSCell v-for="({ cell, offset }, index) in cells" :key="index"
-        :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
+        :class="{ [$style.seletable]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
         :row="row" :offset="offset" />
     </div>
     <div :class="$style.texts">
       <BSText v-for="({ text, offset, align }, index) in texts" :key="index"
-        :class="{ [$style.selection]: true, [$style.focused]: isFocused(row, offset, text.length) }" :content="text"
+        :class="{ [$style.seletable]: true, [$style.focused]: isFocused(row, offset, text.length) }" :content="text"
         :align="align" :row="row" :offset="offset" />
     </div>
   </div>
@@ -68,45 +68,45 @@ function isFocused(row: number, offset: number, length: number): boolean {
 .row {
   display: flex;
   align-items: stretch;
+}
 
-  >.cells {
-    flex: 0 0 calc(var(--bs-map-size) * var(--bs-map-cols) * 1px);
-    display: flex;
-    justify-content: center;
+.cells {
+  flex: 0 0 calc(var(--bs-map-size) * var(--bs-map-cols) * 1px);
+  display: flex;
+  justify-content: center;
+}
+
+.texts {
+  flex: 1 1 auto;
+  display: flex;
+}
+
+.seletable {
+  position: relative;
+
+  &::after {
+    display: block;
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background: #0099ff;
+    opacity: 0;
+
+    transition: opacity 200ms;
   }
 
-  >.texts {
-    flex: 1 1 auto;
-    display: flex;
+  &:hover::after {
+    opacity: 0.2;
   }
 
-  .selection {
-    position: relative;
-
-    &::after {
-      display: block;
-      content: "";
-
-      position: absolute;
-
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-
-      background: #0099ff;
-      opacity: 0;
-
-      transition: opacity 200ms;
-    }
-
-    &:hover::after {
-      opacity: 0.2;
-    }
-
-    &.focused::after {
-      opacity: 0.3;
-    }
+  &.focused::after {
+    opacity: 0.3;
   }
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div v-if="label" :class="{ [$style.label]: true, [$style.overlay]: index > 0 }" :style="style"
-    :data-bold="label.params.b || label.params.bold" :data-align="(label.params.align || ``).toUpperCase()">
+  <div v-if="label" :class="$style.label" :style="style" :data-bold="label.params.b || label.params.bold"
+    :data-align="(label.params.align || ``).toUpperCase()">
     <span>{{ label.text }}</span>
   </div>
-  <img v-else :class="{ [$style.icon]: true, [$style.overlay]: index > 0 }" :style="style" :src="icon?.data" />
+  <img v-else :class="$style.icon" :style="style" :src="icon?.data" />
 </template>
 
 <script lang="ts" setup>
@@ -97,10 +97,6 @@ function parseTextParams(str: string): Record<string, string> {
 
   width: calc(var(--bs-map-size) * var(--bs-map-icon-ratio, 1) * 1px);
   height: calc(var(--bs-map-size) * 1px);
-
-  .overlay {
-    z-index: 1;
-  }
 }
 
 .label {
