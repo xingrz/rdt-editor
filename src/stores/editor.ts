@@ -11,7 +11,7 @@ export const useEditorStore = defineStore('editor', () => {
   const width = ref(parseInt(localStorage.getItem('width') || '') || 200);
   const content = ref(localStorage.getItem('content') || '');
   const scroll = ref(0);
-  const selection = ref<ISelection | null>(null);
+  const selection = ref<ISelection>();
 
   watch(size, (value) => {
     debouncedSetItem('size', String(value));

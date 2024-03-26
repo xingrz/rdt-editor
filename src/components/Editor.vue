@@ -7,14 +7,20 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, onMounted, toRefs, watch, ref, useCssModule } from 'vue';
+import {
+  defineProps,
+  defineModel,
+  onBeforeUnmount,
+  onMounted,
+  watch,
+  ref,
+  useCssModule,
+} from 'vue';
 
 import brace, {
-  Range,
   Position,
   IEditSession,
   Editor as IEditor,
-  VirtualRenderer,
 } from 'brace';
 import 'brace/theme/tomorrow';
 import 'brace/ext/language_tools';
@@ -24,92 +30,45 @@ import ISelection from '@/types/selection';
 import IIcon from '@/types/icon';
 
 import useClientSize from '@/composables/useClientSize';
-
-interface IRenderer extends VirtualRenderer {
-  scrollTop: number;
-  scrollSelectionIntoView(): void;
-}
+import bindEditorValue from '@/composables/bindEditorValue';
+import bindEditorSelection from '@/composables/bindEditorSelection';
+import bindEditorScroll from '@/composables/bindEditorScroll';
 
 const props = defineProps<{
-  content: string;
-  selection: ISelection | null;
-  scroll: number;
   icons: Record<string, IIcon | null>;
   size: number;
 }>();
 
-const emit = defineEmits<{
-  (e: 'update:content', content: string): void;
-  (e: 'update:selection', selection: ISelection | null): void;
-  (e: 'update:scroll', scroll: number): void;
-}>();
+const holder = ref<HTMLElement>();
+const editor = ref<IEditor>();
 
-const { scroll, selection } = toRefs(props);
+const content = defineModel<string>('content');
+bindEditorValue(editor, content);
 
-let editor: IEditor | undefined;
-let renderer: IRenderer | undefined;
+const selection = defineModel<ISelection>('selection');
+bindEditorSelection(editor, selection);
 
-watch(scroll, (scroll) => renderer?.scrollToY(scroll));
+const scroll = defineModel<number>('scroll');
+bindEditorScroll(editor, scroll);
 
-function applySelection(row: number, offset: number, length: number) {
-  if (renderer && editor) {
-    const { selection } = editor.getSession();
-    selection.setRange({
-      start: { row: row, column: offset },
-      end: { row: row, column: offset + length },
-    } as Range, false);
-    renderer.scrollToX(0);
-    renderer.scrollSelectionIntoView();
-    editor.focus();
-  }
-}
+onMounted(() => {
+  editor.value = brace.edit(holder.value!);
+  editor.value.$blockScrolling = Infinity;
 
-watch(selection, (selection) => {
-  if (selection && selection.from != 'editor') {
-    applySelection(selection.row, selection.offset, selection.length);
-  }
+  const session = editor.value.getSession();
+  session.setMode('ace/mode/rdt');
+
+  editor.value.setTheme('ace/theme/tomorrow');
+  editor.value.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
 });
 
-const holder = ref<HTMLElement | undefined>();
-onMounted(() => {
-  if (holder.value) {
-    editor = brace.edit(holder.value);
-    editor.$blockScrolling = Infinity;
-
-    renderer = editor.renderer as IRenderer;
-
-    const session = editor.getSession();
-    session.setMode('ace/mode/rdt');
-    session.on('changeScrollTop', () => {
-      if (renderer) emit('update:scroll', renderer.scrollTop);
-    });
-
-    editor.setTheme('ace/theme/tomorrow');
-    editor.setValue(props.content);
-    editor.setOption('enableLiveAutocompletion', [{ getCompletions, getDocTooltip }]);
-
-    editor.on('change', () => {
-      if (editor) emit('update:content', editor.getValue());
-    });
-
-    editor.selection.on('changeCursor', () => {
-      if (editor) {
-        const { start } = editor.getSelection().getRange();
-        emit('update:selection', {
-          row: start.row,
-          offset: start.column,
-          length: 0,
-          from: 'editor',
-        });
-      }
-    });
-
-    applySelection(0, 0, 0);
-  }
+onBeforeUnmount(() => {
+  editor.value?.destroy();
+  editor.value = undefined;
 });
 
 const holderSize = useClientSize(holder);
-watch(holderSize, () => editor?.resize());
+watch(holderSize, () => editor.value?.resize());
 
 function getCompletions(
   _editor: IEditor,

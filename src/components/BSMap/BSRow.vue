@@ -56,7 +56,7 @@ const texts = computed(() => {
 function isFocused(row: number, offset: number, length: number): boolean {
   const { selection } = editorStore;
   return (
-    selection != null &&
+    typeof selection != 'undefined' &&
     selection.row == row &&
     selection.offset >= offset &&
     selection.offset <= offset + length
