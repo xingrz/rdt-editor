@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.cell" :title="content" @click="handleClick" :style="style">
-    <BSIcon v-for="(icon, index) in icons" :key="index" :content="icon"
+    <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
       @ratio="(ratio: number) => updateRatio(index, ratio)" />
   </div>
 </template>
@@ -14,6 +14,7 @@ import {
 } from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
+import styleFromParams from '@/utils/styleFromParams';
 
 import BSIcon from './BSIcon.vue';
 
@@ -27,15 +28,20 @@ const editorStore = useEditorStore();
 
 const ratio = ref(1);
 
-const icons = computed(() => {
-  if (!props.content) return [];
-  return props.content
-    .split('!~')
-    .map((icon) => icon.trim())
-    .filter((icon) => !!icon);
+const parts = computed(() => {
+  if (!props.content) return;
+
+  const [nonParam, ...params] = props.content.split('!_');
+  const [nonLink, ...links] = nonParam.split('!@');
+  const icons = nonLink.split('!~').filter((icon) => !!icon);
+
+  return { icons, links, params };
 });
 
+const stacked = computed(() => !!parts.value && parts.value.icons.length > 1);
+
 const style = computed(() => ({
+  ...styleFromParams(parts.value?.params?.[0], true),
   '--bs-map-cell-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 

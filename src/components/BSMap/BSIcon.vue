@@ -1,7 +1,6 @@
 <template>
-  <div v-if="label" :class="$style.label" :style="style" :data-bold="label.params.b || label.params.bold"
-    :data-align="(label.params.align || ``).toUpperCase()">
-    <span>{{ label.text }}</span>
+  <div v-if="text" :class="$style.text" :style="style">
+    <span>{{ text.data }}</span>
   </div>
   <img v-else :class="$style.icon" :style="style" :src="icon?.data" />
 </template>
@@ -12,16 +11,15 @@ import {
   computed,
   defineEmits,
   defineProps,
-  onMounted,
-  toRef,
   watch,
 } from 'vue';
-import { parse } from 'qs';
 
 import { useIconStore } from '@/stores/icon';
+import styleFromParams from '@/utils/styleFromParams';
 
 const props = defineProps<{
   content: string;
+  stacked: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -30,40 +28,39 @@ const emit = defineEmits<{
 
 const iconStore = useIconStore();
 
-const content = toRef(props, 'content');
+const content = computed<string>(() => {
+  return props.stacked ? props.content.split('__')[0] : props.content;
+});
 
-const label = computed(() => {
-  if (content.value && content.value.match(/^(.*)\*([^_]+)(__(.+)$)?/)) {
-    const ratio = selectTextWidth(RegExp.$1) as number;
-    const text = RegExp.$2;
-    const params = parseTextParams(RegExp.$4 || '');
-    return { text, ratio, params };
+const params = computed<string | undefined>(() => {
+  // available only for stacked icons
+  return props.stacked ? props.content.split('__')[1] : undefined;
+});
+
+const text = computed(() => {
+  let match: RegExpMatchArray | null = null;
+  if (content.value && (match = content.value.match(/^(.*)\*([^_]+)$/))) {
+    const ratio = selectTextWidth(match[1]) as number;
+    const data = match[2];
+    return { data, ratio };
   } else {
     return undefined;
   }
 });
 
-const icon = computed(() => label.value ? undefined : iconStore.icons[content.value]);
+const icon = computed(() => text.value ? undefined : iconStore.icons[content.value]);
 
 watch(content, (content) => {
-  if (content && !label.value) {
+  if (content && !text.value) {
     iconStore.resolve(content);
   }
 }, { immediate: true });
 
-const ratio = computed(() => {
-  if (!content.value) return 1;
-  if (label.value) {
-    return label.value.ratio || 1;
-  } else {
-    return icon.value?.ratio || 1;
-  }
-});
-
-watch(ratio, (ratio) => emit('ratio', ratio));
-onMounted(() => emit('ratio', ratio.value));
+const ratio = computed(() => (text.value ?? icon.value)?.ratio ?? 1);
+watch(ratio, (ratio) => emit('ratio', ratio), { immediate: true });
 
 const style = computed(() => ({
+  ...styleFromParams(params.value, true),
   '--bs-map-icon-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 
@@ -75,25 +72,25 @@ function selectTextWidth(flag: string): number | undefined {
       return 0.25;
     case 'd':
       return 0.5;
+    case 'cd':
+      return 0.75;
     case 'b':
       return 2;
     case 's':
       return 4;
+    case 'bs':
+      return 6;
     case 'w':
       return 8;
+    default:
+      return undefined;
   }
-}
-
-function parseTextParams(str: string): Record<string, string> {
-  return parse(str, {
-    delimiter: ','
-  }) as Record<string, string>;
 }
 </script>
 
 <style lang="scss" module>
 .icon,
-.label {
+.text {
   position: absolute;
   user-select: none;
 
@@ -101,33 +98,15 @@ function parseTextParams(str: string): Record<string, string> {
   height: calc(var(--bs-map-size) * 1px);
 }
 
-.label {
+.text {
   font-family: monospace;
-  font-size: calc(var(--bs-map-size) * 1px - 8px);
-  text-align: center;
+  font-size: calc(var(--bs-map-size) / 2 * 1px);
+  text-align: var(--bs-map-cell-halign, center);
+  z-index: 1; // texts are always stacked over icons
 
   span {
-    line-height: 0.75;
-  }
-
-  &[data-align="L"] {
-    text-align: left;
-  }
-
-  &[data-align="R"] {
-    text-align: right;
-  }
-
-  &[data-align="A"] span {
-    vertical-align: top;
-  }
-
-  &[data-align="E"] span {
-    vertical-align: bottom;
-  }
-
-  &[data-bold="1"] {
-    font-weight: bold;
+    line-height: 1;
+    vertical-align: var(--bs-map-cell-valign, center);
   }
 }
 </style>

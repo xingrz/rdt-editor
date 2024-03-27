@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.row">
-    <div :class="$style.cells">
+    <div :class="$style.cells" :style="rowStyle">
       <BSCell v-for="({ cell, offset }, index) in cells" :key="index"
         :class="{ [$style.seletable]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
         :row="row" :offset="offset" />
@@ -17,6 +17,7 @@
 import { computed, defineProps } from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
+import styleFromParams from '@/utils/styleFromParams';
 
 import BSCell from './BSCell.vue';
 import BSText from './BSText.vue';
@@ -47,7 +48,7 @@ const cells = computed(() => {
 });
 
 const texts = computed(() => {
-  const texts = parts.value.slice(1)
+  const texts = parts.value.slice(1, 5)
     .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }));
 
   // Shorthand that the only text is treated as the main (the 2nd) text
@@ -57,6 +58,8 @@ const texts = computed(() => {
 
   return texts.filter(({ text }) => text != '' && text != ' ');
 });
+
+const rowStyle = computed(() => styleFromParams(parts.value[5]?.part));
 
 function isFocused(row: number, offset: number, length: number): boolean {
   const { selection } = editorStore;
