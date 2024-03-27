@@ -47,10 +47,15 @@ const cells = computed(() => {
 });
 
 const texts = computed(() => {
-  return parts.value
-    .slice(1)
-    .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }))
-    .filter(({ text }) => text && text.trim());
+  const texts = parts.value.slice(1)
+    .map(({ part, offset }, i) => ({ text: part, offset, align: i + 1 }));
+
+  // Shorthand that the only text is treated as the main (the 2nd) text
+  if (texts.length == 1) {
+    texts[0].align = 2;
+  }
+
+  return texts.filter(({ text }) => text != '' && text != ' ');
 });
 
 function isFocused(row: number, offset: number, length: number): boolean {
