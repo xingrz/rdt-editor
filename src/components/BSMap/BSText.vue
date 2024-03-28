@@ -1,11 +1,16 @@
 <template>
-  <div :class="$style.text" :data-align="align" :title="content" @click="handleClick">{{ content }}</div>
+  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.content.length">
+    <div :class="[selectable, $style.text]" :data-align="align" :title="content" @click="handleClick">{{ content }}
+    </div>
+  </BSSelectable>
 </template>
 
 <script lang="ts" setup>
 import { defineProps } from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
+
+import BSSelectable from './BSSelectable.vue';
 
 const props = defineProps<{
   content: string;

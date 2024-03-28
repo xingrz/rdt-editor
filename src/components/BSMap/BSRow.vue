@@ -1,14 +1,11 @@
 <template>
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
-      <BSCell v-for="({ cell, offset }, index) in cells" :key="index"
-        :class="{ [$style.seletable]: true, [$style.focused]: isFocused(row, offset, cell.length) }" :content="cell"
-        :row="row" :offset="offset" />
+      <BSCell v-for="({ cell, offset }, index) in cells" :key="index" :content="cell" :row="row" :offset="offset" />
     </div>
     <div :class="$style.texts">
-      <BSText v-for="({ text, offset, align }, index) in texts" :key="index"
-        :class="{ [$style.seletable]: true, [$style.focused]: isFocused(row, offset, text.length) }" :content="text"
-        :align="align" :row="row" :offset="offset" />
+      <BSText v-for="({ text, offset, align }, index) in texts" :key="index" :content="text" :align="align" :row="row"
+        :offset="offset" />
     </div>
   </div>
 </template>
@@ -16,7 +13,6 @@
 <script lang="ts" setup>
 import { computed, defineProps } from 'vue';
 
-import { useEditorStore } from '@/stores/editor';
 import styleFromParams from '@/utils/styleFromParams';
 
 import BSCell from './BSCell.vue';
@@ -26,8 +22,6 @@ const props = defineProps<{
   content: string;
   row: number;
 }>();
-
-const editorStore = useEditorStore();
 
 const parts = computed(() => {
   let offset = 0;
@@ -60,16 +54,6 @@ const texts = computed(() => {
 });
 
 const rowStyle = computed(() => styleFromParams(parts.value[5]?.part));
-
-function isFocused(row: number, offset: number, length: number): boolean {
-  const { selection } = editorStore;
-  return (
-    typeof selection != 'undefined' &&
-    selection.row == row &&
-    selection.offset >= offset &&
-    selection.offset <= offset + length
-  );
-}
 </script>
 
 <style lang="scss" module>
@@ -87,34 +71,5 @@ function isFocused(row: number, offset: number, length: number): boolean {
 .texts {
   flex: 1 1 auto;
   display: flex;
-}
-
-.seletable {
-  position: relative;
-
-  &::after {
-    display: block;
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    background: #0099ff;
-    opacity: 0;
-
-    transition: opacity 200ms;
-  }
-
-  &:hover::after {
-    opacity: 0.2;
-  }
-
-  &.focused::after {
-    opacity: 0.3;
-  }
 }
 </style>
