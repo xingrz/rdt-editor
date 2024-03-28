@@ -2,11 +2,11 @@
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
       <BSCell v-for="({ part, offset }, index) in cells" :key="index" :src="part"
-        :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
+        :focused="isFocused(offset, part.length)" @select="(o, length) => emit('select', offset + o, length)" />
     </div>
     <div :class="$style.texts">
       <BSText v-for="({ part, offset, align }, index) in  texts" :key="index" :src="part" :align="align"
-        :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
+        :focused="isFocused(offset, part.length)" @select="(o, length) => emit('select', offset + o, length)" />
     </div>
   </div>
 </template>

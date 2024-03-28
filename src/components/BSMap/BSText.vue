@@ -1,6 +1,7 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
-    <div :class="[selectable, $style.text]" :data-align="align" :title="props.src" @click="() => emit('select')">
+    <div :class="[selectable, $style.text]" :data-align="align" :title="props.src"
+      @click="() => emit('select', 0, props.src.length)">
       {{ props.src }}
     </div>
   </BSSelectable>
@@ -18,7 +19,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'select'): void;
+  (e: 'select', offset: number, length: number): void;
 }>();
 </script>
 

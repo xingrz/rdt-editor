@@ -1,9 +1,13 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
-    <div :class="[selectable, $style.cell]" :title="props.src" :style="style" @click="() => emit('select')">
-      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="icon"
-        @ratio="(ratio: number) => updateRatio(index, ratio)" />
-    </div>
+    <BSPopover v-model:show="popoverShown" :ratio="ratio" :icons="parts?.icons || []" :params="parts?.params"
+      @select="(offset, length) => emit('select', offset, length)">
+      <div :class="[selectable, $style.cell]" :style="style" @click="() => emit('select', 0, props.src.length)"
+        @click.right.prevent="handleRightClick">
+        <BSIcon v-for="({ part }, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="part"
+          @ratio="(ratio: number) => updateRatio(index, ratio)" />
+      </div>
+    </BSPopover>
   </BSSelectable>
 </template>
 
@@ -16,9 +20,11 @@ import {
   ref,
 } from 'vue';
 
+import splitWithOffset from '@/utils/splitWithOffset';
 import styleFromParams from '@/utils/styleFromParams';
 
 import BSSelectable from './BSSelectable.vue';
+import BSPopover from './BSPopover.vue';
 import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
@@ -27,7 +33,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'select'): void;
+  (e: 'select', offset: number, length: number): void;
 }>();
 
 const ratio = ref(1);
@@ -35,9 +41,13 @@ const ratio = ref(1);
 const parts = computed(() => {
   if (!props.src) return;
 
-  const [nonParam, ...params] = props.src.trim().split('!_');
+  const match = props.src.match(/^( *)([^ ]+)( *)$/);
+  const leading = (match?.[1] || '').length;
+  const nonSpace = match?.[2] || props.src;
+
+  const [nonParam, ...params] = nonSpace.split('!_');
   const [nonLink, ...links] = nonParam.split('!@');
-  const icons = nonLink.split('!~').filter((icon) => !!icon);
+  const icons = splitWithOffset(nonLink, '!~', leading).filter(({ part }) => !!part);
 
   return { icons, links, params };
 });
@@ -46,6 +56,13 @@ const style = computed(() => ({
   ...styleFromParams(parts.value?.params?.[0], true),
   '--bs-map-cell-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
+
+const popoverShown = ref(false);
+
+function handleRightClick(): void {
+  popoverShown.value = true;
+  emit('select', 0, props.src.length);
+}
 
 function updateRatio(layer: number, newRatio: number): void {
   if (layer == 0) {
