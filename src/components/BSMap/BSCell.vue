@@ -1,19 +1,29 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.content.length">
-    <div :class="[selectable, $style.cell]" :title="content" @click="handleClick" :style="style">
-      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
-        @ratio="(ratio: number) => updateRatio(index, ratio)" />
-    </div>
+    <n-dropdown show-arrow placement="right" :trigger="dropdownTrigger" :options="dropdownOptions"
+      :render-label="renderDropdownLabel" :render-icon="renderDropdownIcon">
+      <div :class="[selectable, $style.cell]" :style="style" @click="handleClick">
+        <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
+          @ratio="(ratio: number) => updateRatio(index, ratio)" />
+      </div>
+    </n-dropdown>
   </BSSelectable>
 </template>
 
 <script lang="ts" setup>
 import {
   type CSSProperties,
+  type VNode,
   computed,
   defineProps,
+  h,
   ref,
 } from 'vue';
+
+import {
+  type DropdownOption,
+  NDropdown,
+} from 'naive-ui';
 
 import { useEditorStore } from '@/stores/editor';
 import styleFromParams from '@/utils/styleFromParams';
@@ -62,6 +72,29 @@ function updateRatio(layer: number, newRatio: number): void {
     // Only ratio of the first icon affects the cell
     ratio.value = newRatio;
   }
+}
+
+const dropdownTrigger = computed(() => (parts.value?.icons || []).length > 0 ? 'hover' : 'manual');
+
+const dropdownOptions = computed(() => (parts.value?.icons || []).map((icon) => ({
+  label: icon,
+  key: icon
+} as DropdownOption)));
+
+function renderDropdownLabel(option: DropdownOption): VNode {
+  return h('code', null, option.label as string);
+}
+
+function renderDropdownIcon(option: DropdownOption): VNode {
+  return h(BSIcon, {
+    content: option.label as string,
+    stacked: stacked.value,
+    style: {
+      width: '20px',
+      height: '20px',
+      border: '1px solid #ddd',
+    } as CSSProperties,
+  });
 }
 </script>
 
