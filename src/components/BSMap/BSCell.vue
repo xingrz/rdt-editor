@@ -1,8 +1,10 @@
 <template>
-  <div :class="$style.cell" :title="content" @click="handleClick" :style="style">
-    <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
-      @ratio="(ratio: number) => updateRatio(index, ratio)" />
-  </div>
+  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.content.length">
+    <div :class="[selectable, $style.cell]" :title="content" @click="handleClick" :style="style">
+      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
+        @ratio="(ratio: number) => updateRatio(index, ratio)" />
+    </div>
+  </BSSelectable>
 </template>
 
 <script lang="ts" setup>
@@ -16,6 +18,7 @@ import {
 import { useEditorStore } from '@/stores/editor';
 import styleFromParams from '@/utils/styleFromParams';
 
+import BSSelectable from './BSSelectable.vue';
 import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
