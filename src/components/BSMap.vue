@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.map" :style="style">
-    <BSRow v-for="(row, index) in rows" :key="index" :content="row" :row="index" />
+    <BSRow v-for="(row, index) in rows" :key="index" :src="row" :row="index" />
   </div>
 </template>
 
@@ -11,6 +11,8 @@ import {
   defineProps,
 } from 'vue';
 
+import { max } from 'radash';
+
 import BSRow from './BSMap/BSRow.vue';
 
 const props = defineProps<{
@@ -19,15 +21,7 @@ const props = defineProps<{
 }>();
 
 const rows = computed(() => props.content.split('\n'));
-
-const cols = computed(() => {
-  let cols = 0;
-  for (const row of rows.value) {
-    const c = Math.max(cols, row.split('\\').length);
-    if (c > cols) cols = c;
-  }
-  return cols;
-});
+const cols = computed(() => max(rows.value.map((row) => row.split('\\').length)) || 1);
 
 const style = computed(() => ({
   '--bs-map-size': props.size,

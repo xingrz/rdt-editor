@@ -1,8 +1,8 @@
 <template>
-  <div v-if="text" :class="$style.text" :style="style">
-    <span>{{ text.data }}</span>
+  <div v-if="parts.type == 'text'" :class="$style.text" :style="style">
+    <span>{{ parts.data }}</span>
   </div>
-  <img v-else :class="$style.icon" :style="style" :src="icon?.data" />
+  <img v-else :class="$style.icon" :style="style" :src="parts.data" />
 </template>
 
 <script lang="ts" setup>
@@ -18,8 +18,7 @@ import { useIconStore } from '@/stores/icon';
 import styleFromParams from '@/utils/styleFromParams';
 
 const props = defineProps<{
-  content: string;
-  stacked: boolean;
+  src: string;
 }>();
 
 const emit = defineEmits<{
@@ -28,39 +27,29 @@ const emit = defineEmits<{
 
 const iconStore = useIconStore();
 
-const content = computed<string>(() => {
-  return props.stacked ? props.content.split('__')[0] : props.content;
+const parts = computed(() => {
+  const [src, params] = props.src.split('__') as [string, string | undefined];
+  const type = src.includes('*') ? 'text' : 'icon';
+
+  const res = type == 'text' ? (() => {
+    const [prefix, data] = src.split('*');
+    return { data, ratio: selectTextWidth(prefix) };
+  })() : iconStore.icons[src];
+
+  return { src, params, type, ...res };
 });
 
-const params = computed<string | undefined>(() => {
-  // available only for stacked icons
-  return props.stacked ? props.content.split('__')[1] : undefined;
-});
-
-const text = computed(() => {
-  let match: RegExpMatchArray | null = null;
-  if (content.value && (match = content.value.match(/^(.*)\*([^_]+)$/))) {
-    const ratio = selectTextWidth(match[1]) as number;
-    const data = match[2];
-    return { data, ratio };
-  } else {
-    return undefined;
-  }
-});
-
-const icon = computed(() => text.value ? undefined : iconStore.icons[content.value]);
-
-watch(content, (content) => {
-  if (content && !text.value) {
-    iconStore.resolve(content);
+watch(parts, ({ type, src }) => {
+  if (type == 'icon') {
+    iconStore.resolve(src);
   }
 }, { immediate: true });
 
-const ratio = computed(() => (text.value ?? icon.value)?.ratio ?? 1);
+const ratio = computed(() => parts.value.ratio ?? 1);
 watch(ratio, (ratio) => emit('ratio', ratio), { immediate: true });
 
 const style = computed(() => ({
-  ...styleFromParams(params.value, true),
+  ...styleFromParams(parts.value.params, true),
   '--bs-map-icon-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 
@@ -106,7 +95,7 @@ function selectTextWidth(flag: string): number | undefined {
 
   span {
     line-height: 1;
-    vertical-align: var(--bs-map-cell-valign, center);
+    vertical-align: var(--bs-map-cell-valign, middle);
   }
 }
 </style>

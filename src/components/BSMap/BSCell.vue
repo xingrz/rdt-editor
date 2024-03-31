@@ -1,7 +1,7 @@
 <template>
-  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.content.length">
-    <div :class="[selectable, $style.cell]" :title="content" @click="handleClick" :style="style">
-      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :content="icon" :stacked="stacked"
+  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
+    <div :class="[selectable, $style.cell]" :title="props.src" @click="handleClick" :style="style">
+      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :src="icon"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
   </BSSelectable>
@@ -22,7 +22,7 @@ import BSSelectable from './BSSelectable.vue';
 import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
-  content: string;
+  src: string;
   row: number;
   offset: number;
 }>();
@@ -32,16 +32,14 @@ const editorStore = useEditorStore();
 const ratio = ref(1);
 
 const parts = computed(() => {
-  if (!props.content) return;
+  if (!props.src) return;
 
-  const [nonParam, ...params] = props.content.split('!_');
+  const [nonParam, ...params] = props.src.split('!_');
   const [nonLink, ...links] = nonParam.split('!@');
   const icons = nonLink.split('!~').filter((icon) => !!icon);
 
   return { icons, links, params };
 });
-
-const stacked = computed(() => !!parts.value && parts.value.icons.length > 1);
 
 const style = computed(() => ({
   ...styleFromParams(parts.value?.params?.[0], true),
@@ -52,7 +50,7 @@ function handleClick(): void {
   editorStore.selection = {
     row: props.row,
     offset: props.offset,
-    length: props.content.length,
+    length: props.src.length,
     from: 'preview',
   };
 }
