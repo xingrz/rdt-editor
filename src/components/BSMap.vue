@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.map" :style="style">
-    <BSRow v-for="(row, index) in rows" :key="index" :src="row" :row="index" />
+    <BSRow v-for="({ row, id }, index) in rows" :key="id" :src="row" :row="index" />
   </div>
 </template>
 
@@ -20,8 +20,16 @@ const props = defineProps<{
   size: number;
 }>();
 
-const rows = computed(() => props.content.split('\n'));
-const cols = computed(() => max(rows.value.map((row) => row.split('\\').length)) || 1);
+const rows = computed(() => {
+  const appears: Record<string, number> = {};
+  return props.content.split('\n').map((row) => {
+    const id = (appears[row] ?? -1) + 1;
+    appears[row] = id;
+    return { row, id: `${row}#${id}` };
+  });
+});
+
+const cols = computed(() => max(rows.value.map(({ row }) => row.split('\\').length)) || 1);
 
 const style = computed(() => ({
   '--bs-map-size': props.size,
