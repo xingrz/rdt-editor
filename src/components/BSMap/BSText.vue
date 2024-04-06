@@ -34,8 +34,6 @@ function handleClick(): void {
 
 <style lang="scss" module>
 .text {
-  user-select: none;
-  cursor: pointer;
   margin: 0 5px;
   font-family: monospace;
   white-space: nowrap;

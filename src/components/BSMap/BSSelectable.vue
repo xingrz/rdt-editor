@@ -32,6 +32,8 @@ const focused = computed(() => {
 <style lang="scss" module>
 .selectable {
   position: relative;
+  user-select: none;
+  cursor: pointer;
 
   &::after {
     display: block;

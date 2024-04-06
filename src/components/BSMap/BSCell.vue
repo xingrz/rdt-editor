@@ -1,7 +1,7 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
     <div :class="[selectable, $style.cell]" :title="props.src" @click="handleClick" :style="style">
-      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :src="icon"
+      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="icon"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
   </BSSelectable>
@@ -66,8 +66,11 @@ function updateRatio(layer: number, newRatio: number): void {
 <style lang="scss" module>
 .cell {
   position: relative;
-  cursor: pointer;
   width: calc(var(--bs-map-size) * var(--bs-map-cell-ratio, 1) * 1px);
   height: calc(var(--bs-map-size) * 1px);
+}
+
+.icon {
+  position: absolute;
 }
 </style>

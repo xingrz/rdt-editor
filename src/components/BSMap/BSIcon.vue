@@ -80,9 +80,6 @@ function selectTextWidth(flag: string): number | undefined {
 <style lang="scss" module>
 .icon,
 .text {
-  position: absolute;
-  user-select: none;
-
   width: calc(var(--bs-map-size) * var(--bs-map-icon-ratio, 1) * 1px);
   height: calc(var(--bs-map-size) * 1px);
 }
