@@ -40,7 +40,7 @@ const parts = computed(() => {
 });
 
 watch(parts, ({ type, src }) => {
-  if (type == 'icon') {
+  if (type == 'icon' && typeof iconStore.icons[src] == 'undefined') {
     iconStore.resolve(src);
   }
 }, { immediate: true });
