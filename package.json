@@ -27,7 +27,8 @@
     "eslint-plugin-vue": "^9.23.0",
     "sass": "^1.72.0",
     "typescript": "^5.4.3",
-    "vite": "^5.2.3"
+    "vite": "^5.2.3",
+    "vite-plugin-vue-devtools": "^7.0.25"
   },
   "eslintConfig": {
     "root": true,
