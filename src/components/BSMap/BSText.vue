@@ -1,15 +1,13 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
-    <div :class="[selectable, $style.text]" :data-align="align" :title="props.src" @click="handleClick">
+    <div :class="[selectable, $style.text]" :data-align="align" :title="props.src" @click="() => emit('select')">
       {{ props.src }}
     </div>
   </BSSelectable>
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue';
-
-import { useEditorStore } from '@/stores/editor';
+import { defineEmits, defineProps } from 'vue';
 
 import BSSelectable from './BSSelectable.vue';
 
@@ -20,16 +18,9 @@ const props = defineProps<{
   offset: number;
 }>();
 
-const editorStore = useEditorStore();
-
-function handleClick(): void {
-  editorStore.selection = {
-    row: props.row,
-    offset: props.offset,
-    length: props.src.length,
-    from: 'preview',
-  };
-}
+const emit = defineEmits<{
+  (e: 'select'): void;
+}>();
 </script>
 
 <style lang="scss" module>

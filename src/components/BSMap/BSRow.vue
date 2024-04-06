@@ -1,17 +1,18 @@
 <template>
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
-      <BSCell v-for="({ part, offset }, index) in cells" :key="index" :src="part" :row="row" :offset="offset" />
+      <BSCell v-for="({ part, offset }, index) in cells" :key="index" :src="part" :row="row" :offset="offset"
+        @select="() => emit('select', offset, part.length)" />
     </div>
     <div :class="$style.texts">
       <BSText v-for="({ part, offset, align }, index) in  texts" :key="index" :src="part" :align="align" :row="row"
-        :offset="offset" />
+        :offset="offset" @select="() => emit('select', offset, part.length)" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps } from 'vue';
+import { computed, defineEmits, defineProps } from 'vue';
 
 import splitWithOffset from '@/utils/splitWithOffset';
 import styleFromParams from '@/utils/styleFromParams';
@@ -22,6 +23,10 @@ import BSText from './BSText.vue';
 const props = defineProps<{
   src: string;
   row: number;
+}>();
+
+const emit = defineEmits<{
+  (e: 'select', offset: number, length: number): void;
 }>();
 
 const parts = computed(() => {

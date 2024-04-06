@@ -1,6 +1,6 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
-    <div :class="[selectable, $style.cell]" :title="props.src" @click="handleClick" :style="style">
+    <div :class="[selectable, $style.cell]" :title="props.src" :style="style" @click="() => emit('select')">
       <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="icon"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
@@ -11,11 +11,11 @@
 import {
   type CSSProperties,
   computed,
+  defineEmits,
   defineProps,
   ref,
 } from 'vue';
 
-import { useEditorStore } from '@/stores/editor';
 import styleFromParams from '@/utils/styleFromParams';
 
 import BSSelectable from './BSSelectable.vue';
@@ -27,7 +27,9 @@ const props = defineProps<{
   offset: number;
 }>();
 
-const editorStore = useEditorStore();
+const emit = defineEmits<{
+  (e: 'select'): void;
+}>();
 
 const ratio = ref(1);
 
@@ -45,15 +47,6 @@ const style = computed(() => ({
   ...styleFromParams(parts.value?.params?.[0], true),
   '--bs-map-cell-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
-
-function handleClick(): void {
-  editorStore.selection = {
-    row: props.row,
-    offset: props.offset,
-    length: props.src.length,
-    from: 'preview',
-  };
-}
 
 function updateRatio(layer: number, newRatio: number): void {
   if (layer == 0) {
