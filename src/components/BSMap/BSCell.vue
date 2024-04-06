@@ -34,7 +34,7 @@ const ratio = ref(1);
 const parts = computed(() => {
   if (!props.src) return;
 
-  const [nonParam, ...params] = props.src.split('!_');
+  const [nonParam, ...params] = props.src.trim().split('!_');
   const [nonLink, ...links] = nonParam.split('!@');
   const icons = nonLink.split('!~').filter((icon) => !!icon);
 
