@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.map" :style="style">
-    <BSRow v-for="({ row, id }, index) in rows" :key="id" :src="row" :row="index"
+    <BSRow v-for="({ row, id }, index) in rows" :key="id" :src="row" :focused="isFocused(index)"
       @select="(offset, length) => handleSelect(index, offset, length)" />
   </div>
 </template>
@@ -40,6 +40,14 @@ const style = computed(() => ({
   '--bs-map-size': props.size,
   '--bs-map-cols': cols.value,
 }) as CSSProperties);
+
+function isFocused(row: number): boolean {
+  const { selection } = editorStore;
+  return (
+    typeof selection != 'undefined' &&
+    selection.row == row
+  );
+}
 
 function handleSelect(row: number, offset: number, length: number): void {
   editorStore.selection = {

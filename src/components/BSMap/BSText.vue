@@ -1,5 +1,5 @@
 <template>
-  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
+  <BSSelectable v-slot="{ selectable }" :focused="props.focused">
     <div :class="[selectable, $style.text]" :data-align="align" :title="props.src" @click="() => emit('select')">
       {{ props.src }}
     </div>
@@ -14,8 +14,7 @@ import BSSelectable from './BSSelectable.vue';
 const props = defineProps<{
   src: string;
   align: number;
-  row: number;
-  offset: number;
+  focused: boolean;
 }>();
 
 const emit = defineEmits<{

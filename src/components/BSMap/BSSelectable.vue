@@ -1,32 +1,16 @@
 <template>
   <slot :selectable="{
     [$style.selectable]: true,
-    [$style.focused]: focused,
+    [$style.focused]: props.focused,
   }" />
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps } from 'vue';
-
-import { useEditorStore } from '@/stores/editor';
+import { defineProps } from 'vue';
 
 const props = defineProps<{
-  row: number;
-  offset: number;
-  length: number;
+  focused: boolean;
 }>();
-
-const editorStore = useEditorStore();
-
-const focused = computed(() => {
-  const { selection } = editorStore;
-  return (
-    typeof selection != 'undefined' &&
-    selection.row == props.row &&
-    selection.offset >= props.offset &&
-    selection.offset <= props.offset + props.length
-  );
-});
 </script>
 
 <style lang="scss" module>

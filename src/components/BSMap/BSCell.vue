@@ -1,5 +1,5 @@
 <template>
-  <BSSelectable v-slot="{ selectable }" :row="props.row" :offset="props.offset" :length="props.src.length">
+  <BSSelectable v-slot="{ selectable }" :focused="props.focused">
     <div :class="[selectable, $style.cell]" :title="props.src" :style="style" @click="() => emit('select')">
       <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="icon"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
@@ -23,8 +23,7 @@ import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
   src: string;
-  row: number;
-  offset: number;
+  focused: boolean;
 }>();
 
 const emit = defineEmits<{
