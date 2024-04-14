@@ -9,6 +9,7 @@
     "lint": "eslint --ext .ts,.vue src"
   },
   "dependencies": {
+    "@vueuse/core": "^10.9.0",
     "ace-code": "^1.32.8",
     "md5": "^2.3.0",
     "pinia": "^2.1.7",

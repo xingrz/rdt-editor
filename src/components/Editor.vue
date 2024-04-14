@@ -12,10 +12,11 @@ import {
   defineModel,
   onBeforeUnmount,
   onMounted,
-  watch,
   ref,
   useCssModule,
 } from 'vue';
+
+import { useResizeObserver } from '@vueuse/core';
 
 import { Ace, edit as aceEdit, config as aceConfig } from 'ace-code';
 import 'ace-code/src/ext/language_tools';
@@ -26,7 +27,6 @@ import * as RDT from '@/editor/rdt';
 import type ISelection from '@/types/selection';
 import type IIcon from '@/types/icon';
 
-import useClientSize from '@/composables/useClientSize';
 import bindEditorValue from '@/composables/bindEditorValue';
 import bindEditorSelection from '@/composables/bindEditorSelection';
 import bindEditorScroll from '@/composables/bindEditorScroll';
@@ -70,8 +70,7 @@ onBeforeUnmount(() => {
   editor.value = undefined;
 });
 
-const holderSize = useClientSize(holder);
-watch(holderSize, () => editor.value?.resize());
+useResizeObserver(holder, () => editor.value?.resize());
 
 class Completer implements Ace.Completer {
   private style = useCssModule();

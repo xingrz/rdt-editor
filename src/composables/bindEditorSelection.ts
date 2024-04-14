@@ -1,7 +1,6 @@
 import { watch, type Ref } from 'vue';
+import { whenever } from '@vueuse/core';
 import type { Ace } from 'ace-code';
-
-import onRefAssigned from './onRefAssigned';
 
 import type ISelection from '@/types/selection';
 
@@ -11,7 +10,7 @@ interface Renderer extends Ace.VirtualRenderer {
 }
 
 export default function bindEditorSelection(editorRef: Ref<Ace.Editor | undefined>, selection: Ref<ISelection | undefined>): void {
-  onRefAssigned(editorRef, (editor) => {
+  whenever(editorRef, (editor) => {
     applyRange(editor, toRange({ row: 0, offset: 0, length: 0 }));
 
     editor.selection.on('changeCursor', () => {

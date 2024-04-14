@@ -1,10 +1,9 @@
 import { watch, type Ref } from 'vue';
+import { whenever } from '@vueuse/core';
 import type { Ace } from 'ace-code';
 
-import onRefAssigned from './onRefAssigned';
-
 export default function bindEditorScroll(editor: Ref<Ace.Editor | undefined>, scroll: Ref<number | undefined>): void {
-  onRefAssigned(editor, (value) => {
+  whenever(editor, (value) => {
     const session = value.getSession();
     session.on('changeScrollTop', () => {
       const scrollTop = session.getScrollTop();
