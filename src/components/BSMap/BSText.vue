@@ -7,8 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps } from 'vue';
-
 import BSSelectable from './BSSelectable.vue';
 
 const props = defineProps<{

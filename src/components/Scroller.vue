@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, toRef, ref, watch } from 'vue';
+import { toRef, ref, watch } from 'vue';
 
 const props = defineProps<{
   scroll: number;

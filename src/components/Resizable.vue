@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
   width: number;

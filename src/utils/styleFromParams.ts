@@ -1,5 +1,5 @@
-import { parse } from 'qs';
 import type { CSSProperties } from 'vue';
+import { parse } from 'qs';
 
 const YES = ['1', 'yes', 'y', 'true'];
 const LEFT = ['l', 'left'];

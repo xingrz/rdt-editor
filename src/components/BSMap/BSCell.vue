@@ -8,13 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  type CSSProperties,
-  computed,
-  defineEmits,
-  defineProps,
-  ref,
-} from 'vue';
+import { type CSSProperties, computed, ref } from 'vue';
 
 import styleFromParams from '@/utils/styleFromParams';
 

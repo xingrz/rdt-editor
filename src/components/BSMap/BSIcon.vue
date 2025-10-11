@@ -6,13 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  type CSSProperties,
-  computed,
-  defineEmits,
-  defineProps,
-  watch,
-} from 'vue';
+import { type CSSProperties, computed, watch } from 'vue';
 
 import { useIconStore } from '@/stores/icon';
 import styleFromParams from '@/utils/styleFromParams';

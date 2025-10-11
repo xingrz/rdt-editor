@@ -5,14 +5,14 @@
         :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
     </div>
     <div :class="$style.texts">
-      <BSText v-for="({ part, offset, align }, index) in  texts" :key="index" :src="part" :align="align"
+      <BSText v-for="({ part, offset, align }, index) in texts" :key="index" :src="part" :align="align"
         :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps } from 'vue';
+import { computed } from 'vue';
 
 import { useEditorStore } from '@/stores/editor';
 import splitWithOffset from '@/utils/splitWithOffset';

@@ -6,12 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  type CSSProperties,
-  computed,
-  defineProps,
-} from 'vue';
-
+import { type CSSProperties, computed } from 'vue';
 import { max } from 'radash';
 
 import { useEditorStore } from '@/stores/editor';

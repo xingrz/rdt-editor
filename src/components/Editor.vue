@@ -7,15 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  defineProps,
-  defineModel,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useCssModule,
-} from 'vue';
-
+import { onBeforeUnmount, onMounted, ref, useCssModule } from 'vue';
 import { useResizeObserver } from '@vueuse/core';
 
 import { Ace, edit as aceEdit, config as aceConfig } from 'ace-code';
