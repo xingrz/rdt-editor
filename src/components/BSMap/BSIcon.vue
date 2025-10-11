@@ -27,7 +27,7 @@ const parts = computed(() => {
 
   const res = type == 'text' ? (() => {
     const [prefix, data] = src.split('*');
-    return { data, ratio: selectTextWidth(prefix) };
+    return { data, ratio: selectTextWidth(prefix ?? '') };
   })() : iconStore.icons[src];
 
   return { src, params, type, ...res };

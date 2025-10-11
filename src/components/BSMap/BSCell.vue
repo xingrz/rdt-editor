@@ -30,8 +30,8 @@ const parts = computed(() => {
   if (!props.src) return;
 
   const [nonParam, ...params] = props.src.trim().split('!_');
-  const [nonLink, ...links] = nonParam.split('!@');
-  const icons = nonLink.split('!~').filter((icon) => !!icon);
+  const [nonLink, ...links] = nonParam?.split('!@') ?? [];
+  const icons = nonLink?.split('!~').filter((icon) => !!icon) ?? [];
 
   return { icons, links, params };
 });

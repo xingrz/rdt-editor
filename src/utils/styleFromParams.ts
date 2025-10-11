@@ -36,40 +36,40 @@ export default function styleFromParams(text: string | undefined, inCell = false
     style.color = params.colour;
   }
 
-  if (YES.includes(params.b ?? params.bold)) {
+  if (YES.includes(params.b ?? params.bold ?? '')) {
     style.fontWeight = 'bold';
   }
 
-  if (YES.includes(params.i ?? params.it ?? params.italic)) {
+  if (YES.includes(params.i ?? params.it ?? params.italic ?? '')) {
     style.fontStyle = 'italic';
   }
 
-  if ([...LEFT, ...TOP_LEFT, ...BOTTOM_LEFT].includes(params.align)) {
+  if ([...LEFT, ...TOP_LEFT, ...BOTTOM_LEFT].includes(params.align ?? '')) {
     style['--bs-map-cell-halign'] = 'left';
-  } else if ([...RIGHT, ...TOP_RIGHT, ...BOTTOM_RIGHT].includes(params.align)) {
+  } else if ([...RIGHT, ...TOP_RIGHT, ...BOTTOM_RIGHT].includes(params.align ?? '')) {
     style['--bs-map-cell-halign'] = 'right';
   }
 
-  if ([...TOP_LEFT, ...TOP_RIGHT].includes(params.align)) {
+  if ([...TOP_LEFT, ...TOP_RIGHT].includes(params.align ?? '')) {
     style['--bs-map-cell-valign'] = 'top';
-  } else if ([...BOTTOM_LEFT, ...BOTTOM_RIGHT].includes(params.align)) {
+  } else if ([...BOTTOM_LEFT, ...BOTTOM_RIGHT].includes(params.align ?? '')) {
     style['--bs-map-cell-valign'] = 'bottom';
   }
 
   if (inCell) {
-    if ([...TOP, ...TOP_CENTER].includes(params.align)) {
+    if ([...TOP, ...TOP_CENTER].includes(params.align ?? '')) {
       style['--bs-map-cell-valign'] = 'top';
-    } else if ([...BOTTOM, ...BOTTOM_CENTER].includes(params.align)) {
+    } else if ([...BOTTOM, ...BOTTOM_CENTER].includes(params.align ?? '')) {
       style['--bs-map-cell-valign'] = 'bottom';
-    } else if ([...MIDDLE, ...MIDDLE_LEFT, ...MIDDLE_RIGHT, ...MIDDLE_CENTER].includes(params.align)) {
+    } else if ([...MIDDLE, ...MIDDLE_LEFT, ...MIDDLE_RIGHT, ...MIDDLE_CENTER].includes(params.align ?? '')) {
       style['--bs-map-cell-valign'] = 'middle';
     }
 
-    if (MIDDLE_LEFT.includes(params.align)) {
+    if (MIDDLE_LEFT.includes(params.align ?? '')) {
       style['--bs-map-cell-halign'] = 'left';
-    } else if (MIDDLE_RIGHT.includes(params.align)) {
+    } else if (MIDDLE_RIGHT.includes(params.align ?? '')) {
       style['--bs-map-cell-halign'] = 'right';
-    } else if ([...CENTER, ...TOP_CENTER, ...BOTTOM_CENTER, ...MIDDLE_CENTER].includes(params.align)) {
+    } else if ([...CENTER, ...TOP_CENTER, ...BOTTOM_CENTER, ...MIDDLE_CENTER].includes(params.align ?? '')) {
       style['--bs-map-cell-halign'] = 'center';
     }
   }

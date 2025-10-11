@@ -37,7 +37,7 @@ const parts = computed(() => {
   return { cells, texts };
 });
 
-const cells = computed(() => splitWithOffset(parts.value.cells.part, '\\'));
+const cells = computed(() => splitWithOffset(parts.value.cells?.part ?? '', '\\'));
 
 const texts = computed(() => parts.value.texts
   .slice(0, 4)
