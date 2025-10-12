@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.map" :style="style">
-    <BSRow v-for="({ row, id }, index) in rows" :key="id" :src="row" :focused="isFocused(index)"
+    <BSRow v-for="({ row, id }, index) in rows" :key="id" :row="row" :focused="isFocused(index)"
       @select="(offset, length) => handleSelect(index, offset, length)" />
   </div>
 </template>
@@ -9,12 +9,13 @@
 import { type CSSProperties, computed } from 'vue';
 import { max } from 'radash';
 
+import type { RDTMap, RDTRow } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
 
 import BSRow from './BSMap/BSRow.vue';
 
 const props = defineProps<{
-  content: string;
+  map: RDTMap;
   size: number;
 }>();
 
@@ -22,14 +23,15 @@ const editorStore = useEditorStore();
 
 const rows = computed(() => {
   const appears: Record<string, number> = {};
-  return props.content.split('\n').map((row) => {
-    const id = (appears[row] ?? -1) + 1;
-    appears[row] = id;
-    return { row, id: `${row}#${id}` };
+  return props.map.rows.map((row) => {
+    const src = (row as RDTRow).src;
+    const id = (appears[src] ?? -1) + 1;
+    appears[src] = id;
+    return { row: row as RDTRow, id: `${src}#${id}` };
   });
 });
 
-const cols = computed(() => max(rows.value.map(({ row }) => row.split('\\').length)) || 1);
+const cols = computed(() => max(rows.value.map(({ row }) => row.cells.length)) || 1);
 
 const style = computed(() => ({
   '--bs-map-size': props.size,

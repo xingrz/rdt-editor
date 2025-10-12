@@ -6,7 +6,7 @@
     </template>
     <template v-slot:fixed>
       <scroller v-model:scroll="editorStore.scroll">
-        <BSMap :content="editorStore.content" :size="editorStore.size" />
+        <BSMap :map="ast" :size="editorStore.size" />
       </scroller>
     </template>
   </resizable>
@@ -15,6 +15,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { parseMap } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
 import { useIconStore } from '@/stores/icon';
 
@@ -37,6 +38,8 @@ const width = computed({
     editorStore.width = v;
   }
 });
+
+const ast = computed(() => parseMap(editorStore.content));
 </script>
 
 <style lang="scss" module>

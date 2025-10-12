@@ -1,17 +1,18 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
-    <div :class="[selectable, $style.text]" :data-align="align" :title="props.src" @click="() => emit('select')">
-      {{ props.src }}
+    <div :class="[selectable, $style.info]" :data-column="info.column" :title="props.info.text"
+      @click="() => emit('select')">
+      {{ props.info.text }}
     </div>
   </BSSelectable>
 </template>
 
 <script lang="ts" setup>
+import type { RDTInfo } from '@/ast';
 import BSSelectable from './BSSelectable.vue';
 
 const props = defineProps<{
-  src: string;
-  align: number;
+  info: RDTInfo;
   focused: boolean;
 }>();
 
@@ -21,14 +22,14 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" module>
-.text {
+.info {
   margin: 0 5px;
   font-family: monospace;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  &[data-align="4"] {
+  &[data-column="4"] {
     flex-grow: 1;
     text-align: end;
   }

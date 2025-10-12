@@ -1,12 +1,14 @@
 <template>
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
-      <BSCell v-for="({ part, offset }, index) in cells" :key="index" :src="part"
-        :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
+      <BSCell v-for="(cell, index) in props.row.cells" :key="index" :cell="cell"
+        :focused="isFocused(cell.offset - props.row.offset, cell.length)"
+        @select="() => emit('select', cell.offset - props.row.offset, cell.length)" />
     </div>
-    <div :class="$style.texts">
-      <BSText v-for="({ part, offset, align }, index) in texts" :key="index" :src="part" :align="align"
-        :focused="isFocused(offset, part.length)" @select="() => emit('select', offset, part.length)" />
+    <div :class="$style.infos">
+      <BSInfo v-for="(info, index) in props.row.rInfo.filter(({ text }) => !!text)" :key="index" :info="info"
+        :focused="isFocused(info.offset - props.row.offset, info.length)"
+        @select="() => emit('select', info.offset - props.row.offset, info.length)" />
     </div>
   </div>
 </template>
@@ -14,15 +16,15 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import type { RDTRow } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
-import splitWithOffset from '@/utils/splitWithOffset';
 import styleFromParams from '@/utils/styleFromParams';
 
 import BSCell from './BSCell.vue';
-import BSText from './BSText.vue';
+import BSInfo from './BSInfo.vue';
 
 const props = defineProps<{
-  src: string;
+  row: RDTRow;
   focused: boolean;
 }>();
 
@@ -31,18 +33,6 @@ const emit = defineEmits<{
 }>();
 
 const editorStore = useEditorStore();
-
-const parts = computed(() => {
-  const [cells, ...texts] = splitWithOffset(props.src, '~~');
-  return { cells, texts };
-});
-
-const cells = computed(() => splitWithOffset(parts.value.cells?.part ?? '', '\\'));
-
-const texts = computed(() => parts.value.texts
-  .slice(0, 4)
-  .map((part, index, { length }) => ({ ...part, align: length == 1 ? 2 : index + 1 }))
-  .filter(({ part }) => !!part));
 
 function isFocused(offset: number, length: number): boolean {
   const { selection } = editorStore;
@@ -54,7 +44,7 @@ function isFocused(offset: number, length: number): boolean {
   );
 }
 
-const rowStyle = computed(() => styleFromParams(parts.value.texts[4]?.part));
+const rowStyle = computed(() => styleFromParams(props.row.params));
 </script>
 
 <style lang="scss" module>
@@ -69,7 +59,7 @@ const rowStyle = computed(() => styleFromParams(parts.value.texts[4]?.part));
   justify-content: center;
 }
 
-.texts {
+.infos {
   flex: 1 1 auto;
   display: flex;
 }

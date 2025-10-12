@@ -1,7 +1,7 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
-    <div :class="[selectable, $style.cell]" :title="props.src" :style="style" @click="() => emit('select')">
-      <BSIcon v-for="(icon, index) in (parts?.icons || [])" :key="index" :class="$style.icon" :src="icon"
+    <div :class="[selectable, $style.cell]" :title="props.cell.src" :style="style" @click="() => emit('select')">
+      <BSIcon v-for="(icon, index) in props.cell.icons" :key="index" :class="$style.icon" :icon="icon"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
   </BSSelectable>
@@ -10,13 +10,14 @@
 <script lang="ts" setup>
 import { type CSSProperties, computed, ref } from 'vue';
 
+import type { RDTCell } from '@/ast';
 import styleFromParams from '@/utils/styleFromParams';
 
 import BSSelectable from './BSSelectable.vue';
 import BSIcon from './BSIcon.vue';
 
 const props = defineProps<{
-  src: string;
+  cell: RDTCell;
   focused: boolean;
 }>();
 
@@ -26,18 +27,8 @@ const emit = defineEmits<{
 
 const ratio = ref(1);
 
-const parts = computed(() => {
-  if (!props.src) return;
-
-  const [nonParam, ...params] = props.src.trim().split('!_');
-  const [nonLink, ...links] = nonParam?.split('!@') ?? [];
-  const icons = nonLink?.split('!~').filter((icon) => !!icon) ?? [];
-
-  return { icons, links, params };
-});
-
 const style = computed(() => ({
-  ...styleFromParams(parts.value?.params?.[0], true),
+  ...styleFromParams(props.cell.params, true),
   '--bs-map-cell-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 

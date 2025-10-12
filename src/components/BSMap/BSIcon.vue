@@ -1,18 +1,19 @@
 <template>
-  <div v-if="parts.type == 'text'" :class="$style.text" :style="style">
-    <span>{{ parts.data }}</span>
+  <div v-if="props.icon.kind == 'text'" :class="$style.text" :style="style">
+    <span>{{ props.icon.text }}</span>
   </div>
-  <img v-else :class="$style.icon" :style="style" :src="parts.data" />
+  <img v-else :class="$style.icon" :style="style" :src="icon?.data" />
 </template>
 
 <script lang="ts" setup>
 import { type CSSProperties, computed, watch } from 'vue';
 
+import type { RDTIcon, RDTText } from '@/ast';
 import { useIconStore } from '@/stores/icon';
 import styleFromParams from '@/utils/styleFromParams';
 
 const props = defineProps<{
-  src: string;
+  icon: RDTIcon | RDTText;
 }>();
 
 const emit = defineEmits<{
@@ -21,33 +22,28 @@ const emit = defineEmits<{
 
 const iconStore = useIconStore();
 
-const parts = computed(() => {
-  const [src, params] = props.src.split('__') as [string, string | undefined];
-  const type = src.includes('*') ? 'text' : 'icon';
+const icon = computed(() => props.icon.kind == 'icon'
+  ? iconStore.icons[props.icon.name]
+  : undefined);
 
-  const res = type == 'text' ? (() => {
-    const [prefix, data] = src.split('*');
-    return { data, ratio: selectTextWidth(prefix ?? '') };
-  })() : iconStore.icons[src];
-
-  return { src, params, type, ...res };
-});
-
-watch(parts, ({ type, src }) => {
-  if (type == 'icon' && typeof iconStore.icons[src] == 'undefined') {
-    iconStore.resolve(src);
+watch(() => props.icon, (icon) => {
+  if (icon.kind == 'icon' && typeof iconStore.icons[icon.name] == 'undefined') {
+    iconStore.resolve(icon.name);
   }
 }, { immediate: true });
 
-const ratio = computed(() => parts.value.ratio ?? 1);
+const ratio = computed(() => (props.icon.kind == 'text'
+  ? selectTextWidth(props.icon.prefix)
+  : icon.value?.ratio
+) ?? 1);
 watch(ratio, (ratio) => emit('ratio', ratio), { immediate: true });
 
 const style = computed(() => ({
-  ...styleFromParams(parts.value.params, true),
+  ...styleFromParams(props.icon.params, true),
   '--bs-map-icon-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 
-function selectTextWidth(flag: string): number | undefined {
+function selectTextWidth(flag: string | undefined): number | undefined {
   switch (flag) {
     case 'o':
       return 0.125;

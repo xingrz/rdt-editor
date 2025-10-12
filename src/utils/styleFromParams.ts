@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'vue';
-import { parse } from 'qs';
 
 const YES = ['1', 'yes', 'y', 'true'];
 const LEFT = ['l', 'left'];
@@ -18,9 +17,8 @@ const MIDDLE_LEFT = ['lm', 'ml', 'middle-left', 'middleleft'];
 const MIDDLE_RIGHT = ['rm', 'mr', 'middle-right', 'middleright'];
 const MIDDLE_CENTER = ['mc', 'cm', 'middle-center', 'middle-centre', 'middlecenter', 'middlecentre'];
 
-export default function styleFromParams(text: string | undefined, inCell = false): CSSProperties {
+export default function styleFromParams(params: Record<string, string> = {}, inCell = false): CSSProperties {
   const style = {} as CSSProperties;
-  const params = parse(text ?? '', { delimiter: ',' }) as Record<string, string>;
 
   if (params.bg) {
     style.backgroundColor = params.bg;
