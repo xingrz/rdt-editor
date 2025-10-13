@@ -51,7 +51,7 @@ export const useIconStore = defineStore('icon', () => {
     fetching(name);
 
     try {
-      const file = `BSicon_${name}.svg`;
+      const file = `BSicon_${name.replaceAll(' ', '_')}.svg`;
       const hash = md5(file);
 
       const res = await fetch(`${baseUrl}/${hash.substring(0, 1)}/${hash.substring(0, 2)}/${file}`);
