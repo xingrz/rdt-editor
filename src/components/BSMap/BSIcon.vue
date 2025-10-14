@@ -43,7 +43,7 @@ const style = computed(() => ({
   '--bs-map-icon-ratio': (ratio.value == 1 ? undefined : ratio.value),
 }) as CSSProperties);
 
-function selectTextWidth(flag: string | undefined): number | undefined {
+function selectTextWidth(flag: string): number | undefined {
   switch (flag) {
     case 'o':
       return 0.125;

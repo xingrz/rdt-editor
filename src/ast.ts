@@ -42,7 +42,7 @@ export type RDTIcon = RDTNode & {
 export type RDTText = RDTNode & {
   kind: 'text';
   text: string;
-  prefix?: string;
+  prefix: string;
   params?: Record<string, string>;
 };
 
@@ -116,14 +116,14 @@ export function parseCells(src: string, offset: number): RDTCell[] {
 }
 
 export function parseCell(src: string, offset: number): RDTCell {
-  const [, name = '', link, params] = src.match(/^(.*?)(?:!@(.+?))?(?:!_(.+?))?$/) ?? [];
+  const [, icons = '', link, params] = src.match(/^(.*?)(?:!@(.+?))?(?:!_(.+?))?$/) ?? [];
 
   return {
     kind: 'cell',
     src,
     offset,
     length: src.length,
-    icons: parseIcons(name, offset),
+    icons: parseIcons(icons, offset),
     link,
     params: parseParams(params),
   };
@@ -151,7 +151,7 @@ export function parseIcon(src: string, offset: number): RDTIcon {
 }
 
 export function parseText(src: string, offset: number): RDTText {
-  const [, prefix, text = '', params] = src.match(/^(.*?)\*(.*?)(?:__(.+))?$/) ?? [];
+  const [, prefix = '', text = '', params] = src.match(/^(.*?)\*(.*?)(?:__(.+))?$/) ?? [];
 
   return {
     kind: 'text',
