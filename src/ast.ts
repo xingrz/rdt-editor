@@ -52,26 +52,42 @@ export type RDTInfo = RDTNode & {
   column: number;
 };
 
-export function parseMap(src: string): RDTMap {
-  const rows = parseRows(src);
+export type ParseMapOptions = {
+  parseRows?: typeof parseRows;
+};
+
+export function parseMap(src: string, opts?: ParseMapOptions): RDTMap {
+  const rows = (opts?.parseRows ?? parseRows)(src);
   // TODO: support collapsible rows
   return { rows };
 }
 
-export function parseRows(src: string): RDTRow[] {
+export type ParseRowsOptions = {
+  parseRow?: typeof parseRow;
+};
+
+export function parseRows(src: string, opts?: ParseRowsOptions): RDTRow[] {
   return split(src, /\r?\n/)
     .map(({ part, offset }) =>
-      parseRow(part, offset)
+      (opts?.parseRow ?? parseRow)(part, offset)
     );
 }
 
-export function parseRow(src: string, offset: number): RDTRow {
-  const [, lInfo = '', cells = '', rInfo = ''] = src.match(/^(.*! !)?(.*?)(~~.*)?$/) ?? [];
+export type ParseRowOptions = {
+  parseLInfos?: typeof parseInfos;
+  parseRInfos?: typeof parseInfos;
+  parseCells?: typeof parseCells;
+  parseParams?: typeof parseParams;
+};
 
-  const lInfoItems = parseInfos(lInfo.slice(0, -3), offset, 'L');
-  const rInfoItems = parseInfos(rInfo.slice(2), offset + lInfo.length + cells.length + 2, 'R');
+export function parseRow(src: string, offset: number, opts?: ParseRowOptions): RDTRow {
+  const [, lInfo = '', lSplitter = '', cells = '', rSplitter = '', rInfo = ''] =
+    src.match(/^(?:(.*)(! !))?(.*?)(?:(~~)(.*))?$/) ?? [];
 
-  const params = parseParams(rInfoItems[4]?.text);
+  const lInfoItems = (opts?.parseLInfos ?? parseInfos)(lInfo, offset, 'L');
+  const rInfoItems = (opts?.parseRInfos ?? parseInfos)(rInfo, offset + lInfo.length + lSplitter.length + cells.length + rSplitter.length, 'R');
+
+  const params = (opts?.parseParams ?? parseParams)(rInfoItems[4]?.text);
 
   return {
     kind: 'row',
@@ -80,17 +96,21 @@ export function parseRow(src: string, offset: number): RDTRow {
     src,
     lInfo: lInfoItems.slice(0, 4),
     rInfo: rInfoItems.slice(0, 4),
-    cells: parseCells(cells, offset + lInfo.length),
+    cells: (opts?.parseCells ?? parseCells)(cells, offset + lInfo.length + lSplitter.length),
     params,
   };
 }
 
-export function parseInfos(src: string, offset: number, placement: 'L' | 'R'): RDTInfo[] {
+export type ParseInfosOptions = {
+  parseInfo?: typeof parseInfo;
+};
+
+export function parseInfos(src: string, offset: number, placement: 'L' | 'R', opts?: ParseInfosOptions): RDTInfo[] {
   if (!src) return [];
 
   return ((parts) => placement == 'L' ? parts.reverse() : parts)(split(src, '~~'))
     .map(({ part, offset: partOffset }, index, parts) =>
-      parseInfo(part, offset + partOffset, index, parts.length)
+      (opts?.parseInfo ?? parseInfo)(part, offset + partOffset, index, parts.length)
     );
 }
 
@@ -108,14 +128,23 @@ export function parseInfo(src: string, offset: number, index: number, total: num
   };
 }
 
-export function parseCells(src: string, offset: number): RDTCell[] {
+export type ParseCellsOptions = {
+  parseCell?: typeof parseCell;
+};
+
+export function parseCells(src: string, offset: number, opts?: ParseCellsOptions): RDTCell[] {
   return split(src, '\\')
     .map(({ part, offset: partOffset }) =>
-      parseCell(part, offset + partOffset)
+      (opts?.parseCell ?? parseCell)(part, offset + partOffset)
     );
 }
 
-export function parseCell(src: string, offset: number): RDTCell {
+export type ParseCellOptions = {
+  parseIcons?: typeof parseIcons;
+  parseParams?: typeof parseParams;
+};
+
+export function parseCell(src: string, offset: number, opts?: ParseCellOptions): RDTCell {
   const [, icons = '', link, params] = src.match(/^(.*?)(?:!@(.+?))?(?:!_(.+?))?$/) ?? [];
 
   return {
@@ -123,22 +152,31 @@ export function parseCell(src: string, offset: number): RDTCell {
     src,
     offset,
     length: src.length,
-    icons: parseIcons(icons, offset),
+    icons: (opts?.parseIcons ?? parseIcons)(icons, offset),
     link,
-    params: parseParams(params),
+    params: (opts?.parseParams ?? parseParams)(params),
   };
 }
 
-export function parseIcons(src: string, offset: number): (RDTIcon | RDTText)[] {
+export type ParseIconsOptions = {
+  parseIcon?: typeof parseIcon;
+  parseText?: typeof parseText;
+};
+
+export function parseIcons(src: string, offset: number, opts?: ParseIconsOptions): (RDTIcon | RDTText)[] {
   return split(src, '!~')
     .map(({ part, offset: partOffset }) =>
       part.includes('*')
-        ? parseText(part, offset + partOffset)
-        : parseIcon(part, offset + partOffset)
+        ? (opts?.parseText ?? parseText)(part, offset + partOffset)
+        : (opts?.parseIcon ?? parseIcon)(part, offset + partOffset)
     );
 }
 
-export function parseIcon(src: string, offset: number): RDTIcon {
+export type ParseIconOptions = {
+  parseParams?: typeof parseParams;
+};
+
+export function parseIcon(src: string, offset: number, opts?: ParseIconOptions): RDTIcon {
   const [, name = '', params] = src.match(/^(.*?)(?:__(.+))?$/) ?? [];
 
   return {
@@ -146,11 +184,15 @@ export function parseIcon(src: string, offset: number): RDTIcon {
     offset,
     length: src.length,
     name,
-    params: parseParams(params),
+    params: (opts?.parseParams ?? parseParams)(params),
   };
 }
 
-export function parseText(src: string, offset: number): RDTText {
+export type ParseTextOptions = {
+  parseParams?: typeof parseParams;
+};
+
+export function parseText(src: string, offset: number, opts?: ParseTextOptions): RDTText {
   const [, prefix = '', text = '', params] = src.match(/^(.*?)\*(.*?)(?:__(.+))?$/) ?? [];
 
   return {
@@ -159,7 +201,7 @@ export function parseText(src: string, offset: number): RDTText {
     length: src.length,
     text,
     prefix,
-    params: parseParams(params),
+    params: (opts?.parseParams ?? parseParams)(params),
   };
 }
 
