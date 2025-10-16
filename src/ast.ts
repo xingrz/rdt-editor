@@ -8,12 +8,14 @@ export type RDTNode = {
 };
 
 export type RDTMap = {
-  rows: (RDTRow | RDTCollapsible)[];
+  rows: (RDTRow | RDTKeyword)[];
 };
 
-export type RDTCollapsible = RDTNode & {
-  kind: 'collapsible';
-  rows: RDTRow[];
+export type RDTKeyword = RDTNode & {
+  kind: 'keyword';
+  src: string;
+  func: string;
+  args: string[];
 };
 
 export type RDTRow = RDTNode & {
@@ -58,19 +60,33 @@ export type ParseMapOptions = {
 
 export function parseMap(src: string, opts?: ParseMapOptions): RDTMap {
   const rows = (opts?.parseRows ?? parseRows)(src);
-  // TODO: support collapsible rows
   return { rows };
 }
 
 export type ParseRowsOptions = {
   parseRow?: typeof parseRow;
+  parseKeyword?: typeof parseKeyword;
 };
 
-export function parseRows(src: string, opts?: ParseRowsOptions): RDTRow[] {
+export function parseRows(src: string, opts?: ParseRowsOptions): (RDTRow | RDTKeyword)[] {
   return split(src, /\r?\n/)
     .map(({ part, offset }) =>
-      (opts?.parseRow ?? parseRow)(part, offset)
+      part.startsWith('-')
+        ? (opts?.parseKeyword ?? parseKeyword)(part, offset)
+        : (opts?.parseRow ?? parseRow)(part, offset)
     );
+}
+
+export function parseKeyword(src: string, offset: number): RDTKeyword {
+  const [, func = '', ...args] = src.split('-');
+  return {
+    kind: 'keyword',
+    offset,
+    length: src.length,
+    src,
+    func,
+    args,
+  };
 }
 
 export type ParseRowOptions = {

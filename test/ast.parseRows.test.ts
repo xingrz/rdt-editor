@@ -30,6 +30,31 @@ test('single row', () => {
   expect(parseRow).toHaveBeenCalledWith('STR\\DEX', 0);
 });
 
+test('single row of keyword', () => {
+  const parseKeyword = vi.fn().mockReturnValue({
+    kind: 'keyword',
+    offset: 300,
+    length: 333,
+    src: 'mock-keyword',
+    func: 'mock',
+    args: ['keyword'],
+  });
+
+  expect(parseRows('-startCollapsible-collapsed-replace', { parseKeyword })).toStrictEqual([
+    {
+      kind: 'keyword',
+      offset: 300,
+      length: 333,
+      src: 'mock-keyword',
+      func: 'mock',
+      args: ['keyword'],
+    },
+  ]);
+
+  expect(parseKeyword).toHaveBeenCalledOnce();
+  expect(parseKeyword).toHaveBeenCalledWith('-startCollapsible-collapsed-replace', 0);
+});
+
 test('multiple rows with LF', () => {
   const parseRow = vi.fn()
     .mockReturnValueOnce({
