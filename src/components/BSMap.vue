@@ -2,9 +2,9 @@
   <div :class="$style.map" :style="style">
     <template v-for="({ row, id }, index) in rows" :key="id">
       <BSRow v-if="row.kind == 'row'" :row="row" :focused="isFocused(index)"
-        @select="(offset, length) => handleSelect(index, offset, length)" />
+        @select="(offset, length) => handleSelect(index, offset - row.offset, length)" />
       <BSKeyword v-else :keyword="row" :focused="isFocused(index)"
-        @select="(offset, length) => handleSelect(index, offset, length)" />
+        @select="(offset, length) => handleSelect(index, offset - row.offset, length)" />
     </template>
   </div>
 </template>
@@ -56,7 +56,7 @@ function isFocused(row: number): boolean {
 function handleSelect(row: number, offset: number, length: number): void {
   editorStore.selection = {
     row: row,
-    offset: offset,
+    offset: offset,  // row offset, not global offset
     length: length,
     from: 'preview',
   };

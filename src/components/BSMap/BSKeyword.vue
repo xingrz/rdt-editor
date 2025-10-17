@@ -1,6 +1,7 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
-    <div :class="[selectable, $style.keyword]" @click="() => emit('select', 0, props.keyword.length)">
+    <div :class="[selectable, $style.keyword]"
+      @click="() => emit('select', props.keyword.offset, props.keyword.length)">
       {{ props.keyword.src }}
     </div>
   </BSSelectable>

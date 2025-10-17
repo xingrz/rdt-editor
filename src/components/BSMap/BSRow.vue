@@ -2,13 +2,11 @@
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
       <BSCell v-for="(cell, index) in props.row.cells" :key="index" :cell="cell"
-        :focused="isFocused(cell.offset - props.row.offset, cell.length)"
-        @select="() => emit('select', cell.offset - props.row.offset, cell.length)" />
+        :focused="isFocused(cell.offset, cell.length)" @select="() => emit('select', cell.offset, cell.length)" />
     </div>
     <div :class="$style.infos">
       <BSInfo v-for="(info, index) in props.row.rInfo.filter(({ text }) => !!text)" :key="index" :info="info"
-        :focused="isFocused(info.offset - props.row.offset, info.length)"
-        @select="() => emit('select', info.offset - props.row.offset, info.length)" />
+        :focused="isFocused(info.offset, info.length)" @select="() => emit('select', info.offset, info.length)" />
     </div>
   </div>
 </template>
@@ -39,8 +37,8 @@ function isFocused(offset: number, length: number): boolean {
   return (
     props.focused &&
     typeof selection != 'undefined' &&
-    selection.offset >= offset &&
-    selection.offset <= offset + length
+    selection.offset >= offset - props.row.offset &&
+    selection.offset <= offset - props.row.offset + length
   );
 }
 
