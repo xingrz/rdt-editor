@@ -181,6 +181,7 @@ export type ParseIconsOptions = {
 
 export function parseIcons(src: string, offset: number, opts?: ParseIconsOptions): (RDTIcon | RDTText)[] {
   return split(src, '!~')
+    .filter(({ part }) => !!part)
     .map(({ part, offset: partOffset }) =>
       part.includes('*')
         ? (opts?.parseText ?? parseText)(part, offset + partOffset)

@@ -43,55 +43,28 @@ test('mixed', () => {
 });
 
 test('empty', () => {
-  const parseIcon = vi.fn().mockReturnValue({ kind: 'icon', offset: 0, length: 111, name: 'foo' });
-
-  expect(parseIcons('', 0, { parseIcon })).toStrictEqual([
-    { kind: 'icon', offset: 0, length: 111, name: 'foo' },
-  ]);
-
-  expect(parseIcon).toHaveBeenCalledOnce();
-  expect(parseIcon).toHaveBeenCalledWith('', 0);
+  expect(parseIcons('', 0)).toStrictEqual([]);
 });
 
 test('only splitter', () => {
-  const parseIcon = vi.fn()
-    .mockReturnValueOnce({ kind: 'icon', offset: 0, length: 111, name: 'aaa' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 1, length: 222, name: 'bbb' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 2, length: 333, name: 'ccc' });
-
-  expect(parseIcons('!~!~', 0, { parseIcon })).toStrictEqual([
-    { kind: 'icon', offset: 0, length: 111, name: 'aaa' },
-    { kind: 'icon', offset: 1, length: 222, name: 'bbb' },
-    { kind: 'icon', offset: 2, length: 333, name: 'ccc' },
-  ]);
-
-  expect(parseIcon).toHaveBeenCalledTimes(3);
-  expect(parseIcon).toHaveBeenNthCalledWith(1, '', 0);
-  expect(parseIcon).toHaveBeenNthCalledWith(2, '', 2);
-  expect(parseIcon).toHaveBeenNthCalledWith(3, '', 4);
+  expect(parseIcons('!~!~', 0)).toStrictEqual([]);
 });
 
 test('leading and trailing splitter', () => {
   const parseIcon = vi.fn()
-    .mockReturnValueOnce({ kind: 'icon', offset: 100, length: 111, name: 'empty1' })
     .mockReturnValueOnce({ kind: 'icon', offset: 200, length: 222, name: 'mock-str' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 300, length: 333, name: 'mock-dex' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 400, length: 444, name: 'empty2' });
+    .mockReturnValueOnce({ kind: 'icon', offset: 300, length: 333, name: 'mock-dex' });
   const parseText = vi.fn().mockReturnValue({ kind: 'text', offset: 500, length: 555, text: 'mock-text', prefix: 'mock-prefix' });
 
   expect(parseIcons('!~STR!~*Hello World!~DEX!~', 0, { parseIcon, parseText })).toStrictEqual([
-    { kind: 'icon', offset: 100, length: 111, name: 'empty1' },
     { kind: 'icon', offset: 200, length: 222, name: 'mock-str' },
     { kind: 'text', offset: 500, length: 555, text: 'mock-text', prefix: 'mock-prefix' },
     { kind: 'icon', offset: 300, length: 333, name: 'mock-dex' },
-    { kind: 'icon', offset: 400, length: 444, name: 'empty2' },
   ]);
 
-  expect(parseIcon).toHaveBeenCalledTimes(4);
-  expect(parseIcon).toHaveBeenNthCalledWith(1, '', 0);
-  expect(parseIcon).toHaveBeenNthCalledWith(2, 'STR', 2);
-  expect(parseIcon).toHaveBeenNthCalledWith(3, 'DEX', 21);
-  expect(parseIcon).toHaveBeenNthCalledWith(4, '', 26);
+  expect(parseIcon).toHaveBeenCalledTimes(2);
+  expect(parseIcon).toHaveBeenNthCalledWith(1, 'STR', 2);
+  expect(parseIcon).toHaveBeenNthCalledWith(2, 'DEX', 21);
   expect(parseText).toHaveBeenCalledOnce();
   expect(parseText).toHaveBeenCalledWith('*Hello World', 7);
 });
@@ -99,24 +72,18 @@ test('leading and trailing splitter', () => {
 test('consecutive splitters', () => {
   const parseIcon = vi.fn()
     .mockReturnValueOnce({ kind: 'icon', offset: 1010, length: 1111, name: 'first-icon' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 2020, length: 2222, name: 'empty-middle1' })
-    .mockReturnValueOnce({ kind: 'icon', offset: 3030, length: 3333, name: 'empty-middle2' })
     .mockReturnValueOnce({ kind: 'icon', offset: 4040, length: 4444, name: 'last-icon' });
   const parseText = vi.fn().mockReturnValue({ kind: 'text', offset: 5050, length: 5555, text: 'fake-text', prefix: 'fake-prefix' });
 
   expect(parseIcons('STR!~!~*Hello World!~!~DEX', 0, { parseIcon, parseText })).toStrictEqual([
     { kind: 'icon', offset: 1010, length: 1111, name: 'first-icon' },
-    { kind: 'icon', offset: 2020, length: 2222, name: 'empty-middle1' },
     { kind: 'text', offset: 5050, length: 5555, text: 'fake-text', prefix: 'fake-prefix' },
-    { kind: 'icon', offset: 3030, length: 3333, name: 'empty-middle2' },
     { kind: 'icon', offset: 4040, length: 4444, name: 'last-icon' },
   ]);
 
-  expect(parseIcon).toHaveBeenCalledTimes(4);
+  expect(parseIcon).toHaveBeenCalledTimes(2);
   expect(parseIcon).toHaveBeenNthCalledWith(1, 'STR', 0);
-  expect(parseIcon).toHaveBeenNthCalledWith(2, '', 5);
-  expect(parseIcon).toHaveBeenNthCalledWith(3, '', 21);
-  expect(parseIcon).toHaveBeenNthCalledWith(4, 'DEX', 23);
+  expect(parseIcon).toHaveBeenNthCalledWith(2, 'DEX', 23);
   expect(parseText).toHaveBeenCalledOnce();
   expect(parseText).toHaveBeenCalledWith('*Hello World', 7);
 });
