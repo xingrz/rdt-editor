@@ -1,8 +1,12 @@
 <template>
   <BSSelectable v-slot="{ selectable }" :focused="props.focused">
     <div :class="[selectable, $style.cell]" :title="props.cell.src" :style="style" @click="() => emit('select')">
-      <BSIcon v-for="(icon, index) in props.cell.icons" :key="index" :class="$style.icon" :icon="icon"
-        @ratio="(ratio: number) => updateRatio(index, ratio)" />
+      <template v-for="(icon, index) in props.cell.icons" :key="index">
+        <BSIcon v-if="icon.kind == 'icon'" :class="$style.icon" :icon="icon"
+          @ratio="(ratio: number) => updateRatio(index, ratio)" />
+        <BSText v-else-if="icon.kind == 'text'" :class="$style.icon" :icon="icon"
+          @ratio="(ratio: number) => updateRatio(index, ratio)" />
+      </template>
     </div>
   </BSSelectable>
 </template>
@@ -15,6 +19,7 @@ import styleFromParams from '@/utils/styleFromParams';
 
 import BSSelectable from './BSSelectable.vue';
 import BSIcon from './BSIcon.vue';
+import BSText from './BSText.vue';
 
 const props = defineProps<{
   cell: RDTCell;
