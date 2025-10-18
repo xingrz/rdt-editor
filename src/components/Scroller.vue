@@ -33,7 +33,7 @@ function onScroll(): void {
 
 <style lang="scss" module>
 .scroller {
-  height: 100vh;
+  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   background: #f9f9f9;
