@@ -17,7 +17,7 @@ import 'ace-code/styles/theme/tomorrow.css';
 import * as RDT from '@/editor/rdt';
 
 import type ISelection from '@/types/selection';
-import type IIcon from '@/types/icon';
+import type { IIcon } from '@/types/icon';
 
 import bindEditorValue from '@/composables/bindEditorValue';
 import bindEditorSelection from '@/composables/bindEditorSelection';
@@ -69,7 +69,7 @@ class Completer implements Ace.Completer {
 
   getCompletions(_editor: Ace.Editor, _session: Ace.EditSession, _pos: Ace.Point, _prefix: string, callback: Ace.CompleterCallback): void {
     callback(null, Object.keys(props.icons)
-      .filter((icon) => !!props.icons[icon])
+      .filter((icon) => props.icons[icon]?.status == 'ready')
       .map((icon) => ({ value: icon })));
   }
 

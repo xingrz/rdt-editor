@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import md5 from 'md5';
 
-import type IIcon from '@/types/icon';
+import type { IIcon } from '@/types/icon';
 
 const baseUrl = 'https://upload.wikimedia.org/wikipedia/commons';
 
@@ -16,9 +16,9 @@ function loadImage(url: string): Promise<HTMLImageElement> {
 }
 
 export const useIconStore = defineStore('icon', () => {
-  const icons = ref<Record<string, IIcon | null>>({});
+  const icons = ref<Record<string, IIcon>>({});
 
-  function patch(name: string, icon: IIcon | null): void {
+  function patch(name: string, icon: IIcon): void {
     icons.value = {
       ...icons.value,
       [name]: icon,
@@ -26,15 +26,15 @@ export const useIconStore = defineStore('icon', () => {
   }
 
   function fetching(name: string): void {
-    patch(name, null);
+    patch(name, { status: 'loading' });
   }
 
   function fetched(name: string, data: string) {
-    patch(name, { data, ratio: 1 });
+    patch(name, { status: 'ready', data, ratio: 1 });
   }
 
   function failed(name: string): void {
-    patch(name, null);
+    patch(name, { status: 'failed' });
   }
 
   function resolved(name: string, ratio: number) {
