@@ -2,7 +2,8 @@
   <div :class="$style.map" :style="style">
     <template v-for="({ row, id }, index) in rows" :key="id">
       <BSRow v-if="row.kind == 'row'" :row="row" :focused="isFocused(index)"
-        @select="(offset, length) => handleSelect(index, offset - row.offset, length)" />
+        @select="(offset, length) => handleSelect(index, offset - row.offset, length)"
+        @width="(width) => updateWidth(index, width)" />
       <BSKeyword v-else :keyword="row" :focused="isFocused(index)"
         @select="(offset, length) => handleSelect(index, offset - row.offset, length)" />
     </template>
@@ -10,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { type CSSProperties, computed } from 'vue';
+import { type CSSProperties, computed, ref } from 'vue';
 import { max } from 'radash';
 
 import type { RDTMap } from '@/ast';
@@ -35,9 +36,16 @@ const rows = computed(() => {
   });
 });
 
+const widths = ref<number[]>([]);
+
+function updateWidth(rowIndex: number, width: number): void {
+  widths.value[rowIndex] = width;
+}
+
 const cols = computed(() => max(props.map.rows
+  .map((row, index) => ({ ...row, width: widths.value[index] }))
   .filter((row) => row.kind == 'row')
-  .map((row) => row.cells.length)
+  .map((row) => row.width ?? row.cells.length)
 ) || 1);
 
 const style = computed(() => ({

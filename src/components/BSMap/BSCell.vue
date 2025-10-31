@@ -28,6 +28,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select'): void;
+  (e: 'ratio', ratio: number): void;
 }>();
 
 const ratio = ref(1);
@@ -41,6 +42,7 @@ function updateRatio(layer: number, newRatio: number): void {
   if (layer == 0) {
     // Only ratio of the first icon affects the cell
     ratio.value = newRatio;
+    emit('ratio', newRatio);
   }
 }
 </script>

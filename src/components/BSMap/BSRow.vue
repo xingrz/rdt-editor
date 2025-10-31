@@ -2,7 +2,8 @@
   <div :class="$style.row">
     <div :class="$style.cells" :style="rowStyle">
       <BSCell v-for="(cell, index) in props.row.cells" :key="index" :cell="cell"
-        :focused="isFocused(cell.offset, cell.length)" @select="() => emit('select', cell.offset, cell.length)" />
+        :focused="isFocused(cell.offset, cell.length)" @select="() => emit('select', cell.offset, cell.length)"
+        @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
     <div :class="$style.infos">
       <BSInfo v-for="(info, index) in props.row.rInfo.filter(({ text }) => !!text)" :key="index" :info="info"
@@ -12,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
 import type { RDTRow } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
@@ -20,6 +21,7 @@ import styleFromParams from '@/utils/styleFromParams';
 
 import BSCell from './BSCell.vue';
 import BSInfo from './BSInfo.vue';
+import { sum } from 'radash';
 
 const props = defineProps<{
   row: RDTRow;
@@ -28,6 +30,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select', offset: number, length: number): void;
+  (e: 'width', width: number): void;
 }>();
 
 const editorStore = useEditorStore();
@@ -41,6 +44,16 @@ function isFocused(offset: number, length: number): boolean {
     selection.offset <= offset - props.row.offset + length
   );
 }
+
+const ratios = ref<number[]>([]);
+
+function updateRatio(cellIndex: number, ratio: number): void {
+  ratios.value[cellIndex] = ratio;
+}
+
+watchEffect(() => {
+  emit('width', sum(props.row.cells.map((_, index) => ratios.value[index] ?? 1)));
+});
 
 const rowStyle = computed(() => styleFromParams(props.row.params));
 </script>
