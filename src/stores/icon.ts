@@ -60,7 +60,11 @@ export const useIconStore = defineStore('icon', () => {
         return;
       }
 
-      const data = URL.createObjectURL(await res.blob());
+      // Some SVGs have wrong MIME type, so we use Blob to force it.
+      const bytes = await res.arrayBuffer();
+      const blob = new Blob([bytes], { type: 'image/svg+xml' });
+
+      const data = URL.createObjectURL(blob);
       fetched(name, data);
 
       const img = await loadImage(data);
