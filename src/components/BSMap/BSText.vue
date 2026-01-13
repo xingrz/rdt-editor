@@ -58,6 +58,8 @@ function selectTextWidth(flag: string): number | undefined {
   font-family: monospace;
   font-size: calc(var(--bs-map-size) / 2 * 1px);
   text-align: var(--bs-map-cell-halign, center);
+  text-overflow: ellipsis;
+  overflow: hidden;
   z-index: 1; // texts are always stacked over icons
 
   span {
