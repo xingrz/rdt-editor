@@ -1,5 +1,8 @@
 <template>
-  <img :class="$style.icon" :style="style" :src="icon?.data" />
+  <img v-if="icon?.status !== 'failed'" :class="$style.icon" :style="style" :src="icon?.data" />
+  <div v-else :class="$style.failed" :style="style" :title="`Failed to load: ${props.icon.name}`">
+    <span>!</span>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -39,5 +42,22 @@ const style = computed(() => ({
 .icon {
   width: calc(var(--bs-map-size) * var(--bs-map-icon-ratio, 1) * 1px);
   height: calc(var(--bs-map-size) * 1px);
+}
+
+.failed {
+  width: calc(var(--bs-map-size) * var(--bs-map-icon-ratio, 1) * 1px);
+  height: calc(var(--bs-map-size) * 1px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee;
+
+  span {
+    font-size: calc(var(--bs-map-size) / 2 * 1px);
+    color: #c00;
+    font-weight: bold;
+    line-height: 1;
+  }
 }
 </style>
