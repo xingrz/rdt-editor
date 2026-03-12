@@ -1,11 +1,15 @@
 <template>
   <div :class="$style.row">
+    <div v-if="props.hasLInfo" :class="$style.lInfos">
+      <BSInfo v-for="(info, index) in props.row.lInfo.filter(({ text }) => !!text)" :key="index" :info="info"
+        :focused="isFocused(info.offset, info.length)" @select="() => emit('select', info.offset, info.length)" />
+    </div>
     <div :class="$style.cells" :style="rowStyle">
       <BSCell v-for="(cell, index) in props.row.cells" :key="index" :cell="cell"
         :focused="isFocused(cell.offset, cell.length)" @select="() => emit('select', cell.offset, cell.length)"
         @ratio="(ratio: number) => updateRatio(index, ratio)" />
     </div>
-    <div :class="$style.infos">
+    <div :class="$style.rInfos">
       <BSInfo v-for="(info, index) in props.row.rInfo.filter(({ text }) => !!text)" :key="index" :info="info"
         :focused="isFocused(info.offset, info.length)" @select="() => emit('select', info.offset, info.length)" />
     </div>
@@ -26,6 +30,7 @@ import { sum } from 'radash';
 const props = defineProps<{
   row: RDTRow;
   focused: boolean;
+  hasLInfo: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -70,7 +75,13 @@ const rowStyle = computed(() => styleFromParams(props.row.params));
   justify-content: center;
 }
 
-.infos {
+.lInfos {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rInfos {
   flex: 1 1 auto;
   display: flex;
 }
