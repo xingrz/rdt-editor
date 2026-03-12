@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { shallowRef, triggerRef } from 'vue';
 import md5 from 'md5';
 
 import type { IIcon } from '@/types/icon';
@@ -16,13 +16,15 @@ function loadImage(url: string): Promise<HTMLImageElement> {
 }
 
 export const useIconStore = defineStore('icon', () => {
-  const icons = ref<Record<string, IIcon>>({});
+  const icons = shallowRef<Record<string, IIcon>>({});
 
   function patch(name: string, icon: IIcon): void {
-    icons.value = {
-      ...icons.value,
-      [name]: icon,
-    };
+    const prev = icons.value[name];
+    if (prev?.data && prev.data !== icon.data) {
+      URL.revokeObjectURL(prev.data);
+    }
+    icons.value[name] = icon;
+    triggerRef(icons);
   }
 
   function fetching(name: string): void {
