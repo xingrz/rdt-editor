@@ -57,7 +57,7 @@ export const useIconStore = defineStore('icon', () => {
       const hash = md5(file);
 
       const res = await fetch(`${baseUrl}/${hash.substring(0, 1)}/${hash.substring(0, 2)}/${file}`);
-      if (res.status < 200 || res.status >= 300) {
+      if (!res.ok) {
         failed(name);
         return;
       }
