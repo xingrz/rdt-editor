@@ -54,6 +54,8 @@ export default function styleFromParams(params: Record<string, string> = {}, inC
     style['--bs-map-cell-valign'] = 'bottom';
   }
 
+  // Directional alignments (top, bottom, center, middle) only apply inside cells,
+  // since rows don't support vertical alignment or centering on their own.
   if (inCell) {
     if ([...TOP, ...TOP_CENTER].includes(params.align ?? '')) {
       style['--bs-map-cell-valign'] = 'top';

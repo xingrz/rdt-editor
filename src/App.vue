@@ -62,6 +62,8 @@ function clampWithWindowSize(value: number): number {
   const min = 200;
   return Math.max(Math.min(value, max), min);
 }
+// n-split's size is the first pane (preview) width, but the store persists the
+// editor width. We invert between the two via windowWidth subtraction.
 const width = computed({
   get(): string {
     return `${clampWithWindowSize(windowWidth.value - editorStore.width)}px`;
