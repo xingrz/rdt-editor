@@ -47,10 +47,11 @@ function applyRange(editor: Ace.Editor, range: Ace.Range) {
 }
 
 function toSelection(range: Ace.Range, from: ISelection['from']): ISelection {
+  const multiLine = range.end.row !== range.start.row;
   return {
     row: range.start.row,
     offset: range.start.column,
-    length: range.end.column - range.start.column,
-    from: from,
-  } as ISelection;
+    length: multiLine ? Infinity : range.end.column - range.start.column,
+    from,
+  };
 }
