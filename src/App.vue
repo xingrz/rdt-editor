@@ -32,8 +32,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { useWindowSize } from '@vueuse/core';
+import { computed, toRef } from 'vue';
+import { refDebounced, useWindowSize } from '@vueuse/core';
 import {
   NConfigProvider,
   NSplit,
@@ -71,7 +71,8 @@ const width = computed({
   }
 });
 
-const ast = computed(() => parseMap(editorStore.content));
+const debouncedContent = refDebounced(toRef(editorStore, 'content'), 100);
+const ast = computed(() => parseMap(debouncedContent.value));
 </script>
 
 <style lang="scss" module>
