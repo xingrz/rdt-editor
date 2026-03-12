@@ -6,6 +6,8 @@ export default function bindEditorValue(editor: Ref<Ace.Editor | undefined>, val
   whenever(editor, (value) => {
     if (val.value) {
       value.setValue(val.value);
+      value.moveCursorTo(0, 0);
+      value.clearSelection();
     }
 
     value.on('change', () => {
