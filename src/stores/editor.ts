@@ -4,7 +4,17 @@ import { debounce } from 'radash';
 
 import type ISelection from '@/types/selection';
 
-const debouncedSetItem = debounce({ delay: 200 }, localStorage.setItem.bind(localStorage));
+const PREFIX = 'rdt-editor:';
+
+function getItem(key: string): string | null {
+  return localStorage.getItem(PREFIX + key) ?? localStorage.getItem(key);
+}
+
+function setItem(key: string, value: string): void {
+  localStorage.setItem(PREFIX + key, value);
+}
+
+const debouncedSetItem = debounce({ delay: 200 }, setItem);
 
 const EXAMPLE = `KBHFa~~Redmond
 STR
@@ -23,9 +33,9 @@ STR
 KBHFe~~Angle Lake`;
 
 export const useEditorStore = defineStore('editor', () => {
-  const size = ref(parseInt(localStorage.getItem('size') || '') || 20);
-  const width = ref(parseInt(localStorage.getItem('width') || '') || 200);
-  const content = ref(localStorage.getItem('content') ?? EXAMPLE);
+  const size = ref(parseInt(getItem('size') || '') || 20);
+  const width = ref(parseInt(getItem('width') || '') || 200);
+  const content = ref(getItem('content') ?? EXAMPLE);
   const scroll = ref(0);
   const selection = ref<ISelection>();
 
