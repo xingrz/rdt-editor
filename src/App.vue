@@ -3,13 +3,13 @@
     <div :class="$style.container">
       <n-split :class="$style.main" direction="horizontal" :resize-trigger-size="8" v-model:size="width">
         <template #1>
-          <editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
+          <code-editor v-model:content="editorStore.content" v-model:selection="editorStore.selection"
             v-model:scroll="editorStore.scroll" :icons="iconStore.icons" :size="editorStore.size" />
         </template>
         <template #2>
-          <scroller v-model:scroll="editorStore.scroll">
+          <scroll-container v-model:scroll="editorStore.scroll">
             <BSMap :map="ast" :size="editorStore.size" />
-          </scroller>
+          </scroll-container>
         </template>
         <template #resize-trigger>
           <div :class="$style.resizer" />
@@ -43,9 +43,9 @@ import { parseMap } from '@/ast';
 import { useEditorStore } from '@/stores/editor';
 import { useIconStore } from '@/stores/icon';
 
-import Scroller from './components/Scroller.vue';
+import ScrollContainer from './components/ScrollContainer.vue';
 import BSMap from './components/BSMap.vue';
-import Editor from './components/Editor.vue';
+import CodeEditor from './components/CodeEditor.vue';
 import AppBar from './components/AppBar.vue';
 
 import SizeSetter from './components/AppBar/SizeSetter.vue';

@@ -36,23 +36,6 @@
     "vite-plugin-vue-devtools": "^8.0.2",
     "vitest": "^3.2.4"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "browser": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:vue/vue3-essential",
-      "@vue/typescript/recommended"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2020
-    },
-    "rules": {
-      "vue/multi-word-component-names": "warn"
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",
