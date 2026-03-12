@@ -74,7 +74,13 @@ class Completer implements Ace.Completer {
   }
 
   getDocTooltip(item: Ace.ValueCompletion): string | Ace.ValueCompletion | undefined {
-    item.docHTML = `<img src="${props.icons[item.value]?.data}" class="${this.style.preview}" />`;
+    const icon = props.icons[item.value];
+    if (icon?.data) {
+      const img = document.createElement('img');
+      img.src = icon.data;
+      img.className = this.style.preview;
+      item.docHTML = img.outerHTML;
+    }
     return;
   }
 }
