@@ -14,7 +14,31 @@ function setItem(key: string, value: string): void {
   localStorage.setItem(PREFIX + key, value);
 }
 
-const debouncedSetItem = debounce({ delay: 200 }, setItem);
+// Writes are queued per key so that a burst of updates to different keys
+// (e.g. typing content then dragging the size slider) doesn't cancel each
+// other's pending save, which a single shared debounce would.
+const pendingWrites = new Map<string, string>();
+
+function flushWrites(): void {
+  for (const [key, value] of pendingWrites) {
+    setItem(key, value);
+  }
+  pendingWrites.clear();
+}
+
+const debouncedFlushWrites = debounce({ delay: 200 }, flushWrites);
+
+function debouncedSetItem(key: string, value: string): void {
+  pendingWrites.set(key, value);
+  debouncedFlushWrites();
+}
+
+// Pending writes would be lost if the page goes away before the debounce
+// timer fires.
+window.addEventListener('pagehide', flushWrites);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushWrites();
+});
 
 const EXAMPLE = `KBHFa~~Redmond
 STR
